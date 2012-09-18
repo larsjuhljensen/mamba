@@ -19,11 +19,5 @@ http://www.cpr.ku.dk
 [FOOTER:ENTITY]
 <p class="footer_description">The subcellular localizations are derived from database annotations, automatic text mining of the biomedical literature, and sequence-based predictions. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
 
-[FOOTER:SEARCH]
-
 [CONTENT:SEARCH]
 Search for a protein from human, mouse, rat, fly, worm, or budding yeast:
-
-[PAGE:ABOUT]
-
-[PAGE:DOWNLOAD]

@@ -20,11 +20,5 @@ http://www.cpr.ku.dk
 <p class="footer_description">The tissue associations are derived from manually curated knowledge in UniProtKB and via automatic text mining of the biomedical literature, which has not been manually verified. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
 <p class="footer_description">Each tissue&ndash;gene association is based on a text-mining score, which is proportional to 1) the absolute number of comentionings and 2) the ratio of observed to expected comentionings (i.e. the enrichment). These scores are normalized to z-scores by comparing them to a random background. This is represented by stars, each star corresponding to two standard deviations above the mean of the background distribution.</p>
 
-[FOOTER:SEARCH]
-
 [CONTENT:SEARCH]
 Search for a human gene or tissue:
-
-[PAGE:ABOUT]
-
-[PAGE:DOWNLOAD]
