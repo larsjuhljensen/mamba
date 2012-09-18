@@ -1,0 +1,20 @@
+[CSS]
+/css/blackmamba.css
+
+[TITLE]
+ORGANISMS
+
+[SUBTITLE]
+Retrieval of documents
+
+[LINK]
+http://www.cpr.ku.dk
+
+[LOGO]
+/cpr.png
+
+[FOOTER]
+<p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+
+[CONTENT:SEARCH]
+Search for an organism:

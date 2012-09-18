@@ -1,0 +1,29 @@
+[CSS]
+/css/blackmamba.css
+
+[TITLE]
+COMPARTMENTS
+
+[SUBTITLE]
+Subcellular localization database
+
+[LINK]
+http://www.cpr.ku.dk
+
+[LOGO]
+/cpr.png
+
+[FOOTER]
+<p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+
+[FOOTER:ENTITY]
+<p class="footer_description">The subcellular localizations are derived from database annotations, automatic text mining of the biomedical literature, and sequence-based predictions. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
+
+[FOOTER:SEARCH]
+
+[CONTENT:SEARCH]
+Search for a protein from human, mouse, rat, fly, worm, or budding yeast:
+
+[PAGE:ABOUT]
+
+[PAGE:DOWNLOAD]
