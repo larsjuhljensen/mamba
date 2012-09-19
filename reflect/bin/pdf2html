@@ -1,0 +1,13 @@
+#!/bin/csh
+
+unsetenv DISPLAY
+pdftohtml -q -noframes $1
+abiword --to=html --exp-props="embed-css: yes;" $1
+perl -pe 'last if /<\/body>/' $1:r.html > $1:r
+echo '<div>' >> $1:r
+foreach i (`ls -1 $1:r-[0-9]*_[0-9]*.jpg`)
+    echo '<p><img style="border-style: solid; border-width: thin;" src="data:image/jpg;base64,'`base64 "$i"`'" /></p>' >> $1:r
+    rm $i
+end
+echo '</div>\n</body>\n</html>' >> $1:r
+mv $1:r $1:r.html

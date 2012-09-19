@@ -1,0 +1,98 @@
+#!/usr/bin/perl
+#
+# Convert CSV to HTML
+
+use Getopt::Std;
+
+getopts('ec:r:')
+    or die ("Usage: csv2html.pl csvfiles...\n");
+
+
+sub parse_csv {
+    my ($line) = @_;
+    my @a = ();
+    while ($line =~ /("[^"]*(?:""[^"]*)*"|[^,]*),?/g) {
+        $_ = $1;
+        s/^\"(.*)\"$/$1/ && s/\"\"/\"/g;
+	s/\r//g;
+	s/ +$//;
+        push(@a, $_);
+    }
+    while (@a > 0 && $a[-1] eq '') {
+        pop(@a);
+    }
+    return @a;
+}
+
+
+# fake line for emacs
+
+$n = $nrows = 0;
+$ncols = 0;
+$buff = '';
+while (<>) {
+    chomp;
+    s/\r//;
+
+    # ignore newline in quotes
+    $_ = $buff . $_;
+    $nq = 0;
+    $nq ^= 1 while (/\"/g);
+    if ($nq) {
+	$buff = $_;
+	next;
+    }
+    $buff = '';
+
+    @aline = parse_csv($_);
+    $ncols = @aline if (@aline > $ncols);
+    $n++;
+    $nrows = $n if (@aline != 0);
+    push @lines, [ @aline ]
+}
+
+# Retouch data.
+
+if (0) {
+    $dataline = 0;
+    for my $i (0 .. $nrows - 1) {
+	$line = $lines[$i];
+
+	if ($dataline || ($line->[0] =~ /^19\d\d/) || ($line->[0] =~ /^20\d\d/)) {
+	    $dataline = 1;
+	    $line->[0] =~ s/\.1$/.10/;
+	    $line->[0] =~ s/(\d+)\.(\d+)/$1-$2/g;
+	    for my $j (0 .. $#{$line}) {
+		$line->[$j] =~ s/,//g;
+	    }
+	}
+    }
+}
+
+# Convert to html
+
+print "<html>\n";
+print "<head></head>\n";
+print "<body>\n";
+print "<table border=1 cellspacing=0 cellpadding=0>\n";
+
+for ($i = 0; $i < $nrows; $i++) {
+    $row = $lines[$i];
+    $n = $#{$row};
+    print '<tr>';
+    for ($j = 0; $j < $ncols; $j++) {
+	if ($j > $n || $row->[$j] eq '') {
+	    print "<td><br></td>";
+	} else {
+	    $row->[$j] =~ s/&/&amp;/g;
+	    $row->[$j] =~ s/</&lt;/g;
+	    $row->[$j] =~ s/>/&gt;/g;
+	    print "<td>$row->[$j]</td>";
+	}
+    }
+    print "</tr>\n";
+}
+print "</table>\n";
+print "</body></html>\n";
+
+0;
