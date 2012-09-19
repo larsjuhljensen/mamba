@@ -163,19 +163,19 @@ class Configuration:
 					if name == 'command':
 						self.commands = value
 					elif name == 'max_wait':
-						self.max_wait = value
+						self.max_wait = int(value)
 					elif name == 'max_msg_header':
-						self.max_msg_header = value
+						self.max_msg_header = int(value)
 					elif name == 'max_msg_content':
-						self.max_msg_content = value
+						self.max_msg_content = int(value)
 					elif name == 'max_data_total':
-						self.max_data_total = value
+						self.max_data_total = int(value)
 					elif name == 'max_data_client':
-						self.max_data_client = value
+						self.max_data_client = int(value)
 					elif name == 'max_http_total':
-						self.max_http_total = value
+						self.max_http_total = int(value)
 					elif name == 'max_http_client':
-						self.max_http_client = value
+						self.max_http_client = int(value)
 					elif name == 'error_details':
 						self.error_details = config_is_true(value)
 			except ConfigParser.NoSectionError:
