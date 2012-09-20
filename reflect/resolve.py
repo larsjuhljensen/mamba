@@ -1,7 +1,5 @@
-import os
 import xml.dom.minidom
 
-import mamba.util
 import mamba.task
 import mamba.http
 import mamba.setup
@@ -18,38 +16,6 @@ class GetHead(mamba.task.EmptyRequest):
 
 class GetHeader(GetHead):
     pass
-
-
-class RunTests(mamba.task.SecureRequest):
-    
-    class RunTestsCommand(mamba.util.Command):
-        def __init__(self, interface):
-            filename = os.path.abspath(os.path.join("./Reflect/Test", "RunTestCommands.py"))
-            mamba.util.Command.__init__(self, "%s %s" % (filename, interface))
-
-    def __init__(self, http):
-        mamba.task.SecureRequest.__init__(self, http)
-        
-    def edit(self):
-        rest = mamba.task.RestDecoder(self)
-        if rest["passwd"] == None:
-            raise mamba.task.SyntaxError, "Required parameter 'passwd' missing."
-        if not self.request_is_allowed():
-            raise mamba.task.PermissionError, "Wrong password."
-        who = "REST"
-        if rest["who"]:
-            who = rest["who"]
-        cmd = RunTests.RunTestsCommand(who)
-        exit_status, sub_stdout, sub_stderr = cmd.run()
-        self.info("RunTest script returned exit-code: %i." % exit_status)
-        if exit_status == 0:
-            reply = mamba.http.HTTPResponse(self, sub_stdout + sub_stderr, content_type="text/html")
-        else:
-            reply = mamba.http.HTTPResponse(self, status=500, body=sub_stdout+sub_stderr, content_type="text/html")
-        reply.send()
-        
-    def main(self):
-        self.queue("edit")
 
 
 class ResolveRequest(tagging.GetEntities):

@@ -1,6 +1,5 @@
 import os
 import re
-import pg
 import sys
 import hashlib
 
@@ -100,39 +99,23 @@ class TaggingRequest(mamba.task.Request):
                 raise mamba.task.SyntaxError, 'ignore_blacklist must be either 0 or 1.'
             
         if rest['entity_types']:
-            self.entity_types = []
+            self.entity_types = set()
             types = rest['entity_types'].split()
             for type in types:
                 try:
-                    self.entity_types.append((int(type), 0))
+                    self.entity_types.add(int(type))
                 except ValueError, e:
                     raise mamba.task.SyntaxError, 'All elements in entity_types must be integers.'
 
-        #
-        # Set entity-styles if both entity-types and -styles are defined.
-        #
-        if self.entity_types and rest['entity_styles']:
-            Nt = len(self.entity_types)
-            Ns = len(self.entity_styles)
-            N  = min(Nt, Ns)
-            self.entity_styles = {}
-            for i in range(N):
-                type = self.entity_types[i]
-                css  = entity_stylesp[type]
-                self.entity_styles[type] = css
-
     def set_defaults(self):
-        #
-        # Default entity types.
-        #
         if not self.entity_types:
-            self.entity_types = []
+            self.entity_types = set()
             if mamba.setup.config_is_true(self.user_settings['proteins']):
-                self.entity_types.append(( 9606, 0))
+                self.entity_types.add(9606)
             if mamba.setup.config_is_true(self.user_settings['chemicals']):
-                self.entity_types.append((-1, 0))
+                self.entity_types.add(-1)
             if mamba.setup.config_is_true(self.user_settings['wikipedia']):
-                self.entity_types.append((-11, 0))
+                self.entity_types.add(-11)
         
         #
         # Auto-detect and auto-detect-DOI.
@@ -146,34 +129,6 @@ class TaggingRequest(mamba.task.Request):
         if self.ignore_blacklist == None:
             self.ignore_blacklist = 0
             
-        #
-        # Fetch document-specific entity types if auto-detect is enabled.
-        #
-        
-        if self.auto_detect and self.document_id != None:
-            if self.entity_types == None:
-                self.entity_types = []
-            try:
-                sql = "SELECT type FROM document_types WHERE document_identifier='%s'" %  pg.escape_string(mamba.util.string_to_bytes(self.document_id, 'utf-8'))
-                for row in conn.query(sql).getresult():
-                    type = int(row[0])
-                    if type not in self.entity_types:
-                        self.entity_types.append(type)
-            except:
-                self.err('Failed to fetch document-specific entity types for %s' % self.document_id.encode('utf-8'))
-        
-        #
-        # Default styles.
-        #
-        if not self.entity_styles:
-            self.entity_styles = {}
-            if mamba.setup.config():
-                self.entity_styles[0]   = mamba.setup.config().tagger.class_styles[0][1]
-                self.entity_styles[-11] = mamba.setup.config().tagger.class_styles[-11][1]
-            else:
-                self.entity_styles[0]   = ''
-                self.entity_styles[-11] = ''
-        
         #
         # Fill in document_id based on DOI/URI/PMID information.
         #
@@ -285,12 +240,11 @@ class TaggingRequest(mamba.task.Request):
                         # a response has already been send back and we are done.
         byte_doc  = mamba.util.string_to_bytes(self.document, self.http.charset)
         doc_id    = self.document_id
-        ent_types = map(lambda x: x[0], self.entity_types)
         footer = ['<div class="reflect_user_settings" style="display: none;">']
         for key in self.user_settings:
             footer.append('  <span name="%s">%s</span>' % (key, self.user_settings[key]))
         footer.append('</div>\n')
-        html = mamba.setup.config().tagger.GetHTML(document=byte_doc, document_id=doc_id, entity_types=ent_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer='\n'.join(footer))
+        html = mamba.setup.config().tagger.GetHTML(document=byte_doc, document_id=doc_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer='\n'.join(footer))
         reply = mamba.http.HTTPResponse(self, html, "text/html")
         reply.send()
         
@@ -317,8 +271,7 @@ class GetURI(GetHTML):
     def tagging(self):
         byte_doc  = mamba.util.string_to_bytes(self.document, self.http.charset)
         doc_id    = self.document_id
-        ent_types = map(lambda x: x[0], self.entity_types)
-        html = mamba.setup.config().tagger.GetHTML(byte_doc, doc_id, ent_types, self.auto_detect, self.ignore_blacklist)
+        html = mamba.setup.config().tagger.GetHTML(byte_doc, doc_id, self.entity_types, self.auto_detect, self.ignore_blacklist)
         document = mamba.util.string_to_bytes(html, self.http.charset)
         hashfun  = hashlib.md5()
         hashfun.update(document)
@@ -349,7 +302,7 @@ class GetEntities(TaggingRequest):
             raise mamba.task.SyntaxError, 'In action: %s unknown format: "%s". Supports only: %s' % (self.action, self.format, ', '.join(supported_formats))
         
     def get_entities(self):
-        return mamba.setup.config().tagger.GetEntities(mamba.util.string_to_bytes(self.document, self.http.charset), self.document_id, map(lambda x: x[0], self.entity_types), self.auto_detect, self.ignore_blacklist, format=self.format)
+        return mamba.setup.config().tagger.GetEntities(mamba.util.string_to_bytes(self.document, self.http.charset), self.document_id, self.entity_types, self.auto_detect, self.ignore_blacklist, format=self.format)
         
     def tagging(self):
         data = self.get_entities()
