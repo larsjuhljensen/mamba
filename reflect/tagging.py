@@ -29,7 +29,6 @@ class TaggingRequest(mamba.task.Request):
         self.document         = None # The document as a string.
         self.document_id      = None # Either the DOI, URI, PMID or CHECKSUM.
         self.entity_types     = None # Entity types (chemicals, tax etc.)
-        self.entity_styles    = None # CSS styles associated with entity types.
         self.auto_detect      = None # Autodetection of entities.
         self.auto_detect_doi  = None # Autodetect DOI from attached document.
         self.ignore_blacklist = None # Completely ignore any blocking rules.
