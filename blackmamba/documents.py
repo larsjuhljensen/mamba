@@ -26,20 +26,30 @@ class Snippets(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		qdocument = int(rest["document"])
-		qranges = rest["ranges"]
+		textmining = database.Connect("textmining")
+
+		if "document" in rest and "ranges" in rest:
+			qdocument = int(rest["document"])
+			qranges = mamba.util.string_to_bytes(rest["ranges"])
+		else:
+			mamba.http.HTTPErrorResponse(self, 400, "Bad Request").send()
 		
 		tsv = []
-		data = textmining.query("SELECT * FROM documents WHERE document=%s;" % document).dictresult()
+		data = textmining.query("SELECT * FROM documents WHERE document=%s;" % qdocument).dictresult()
 		if len(data):
-			text = data[0]["text"]
+			text = mamba.util.string_to_bytes(data[0]["text"])
 			for qrange in qranges.split(","):
 				range = qrange.split("-")
+				start = int(range[0])
+				stop = int(range[1])
+				if stop-start > 255:
+					stop = start+255
 				tsv.append(qrange)
 				tsv.append("\t")
-				tsv.append(text[range[0], range[1]])
+				tsv.append(text[start:stop])
 				tsv.append("\n")
-		return "".join(tsv)
+		
+		mamba.http.HTTPResponse(self, "".join(tsv), "text/plain").send()
 
 
 class Documents(mamba.task.Request):
