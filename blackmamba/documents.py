@@ -1,5 +1,4 @@
 import httplib
-import pg
 import urllib
 import xml.etree.ElementTree as etree
 import database
@@ -7,6 +6,7 @@ import html
 import xpage
 import mamba.task
 import mamba.util
+
 
 class PopupHeader(mamba.task.Request):
 
@@ -20,6 +20,27 @@ class PopupHeader(mamba.task.Request):
 		xpage.EntityHeader(xroot, qtype, qid)
 
 		mamba.http.HTTPResponse(self, xroot.tohtml()).send()
+
+
+class Snippets(mamba.task.Request):
+	
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		qdocument = int(rest["document"])
+		qranges = rest["ranges"]
+		
+		tsv = []
+		data = textmining.query("SELECT * FROM documents WHERE document=%s;" % document).dictresult()
+		if len(data):
+			text = data[0]["text"]
+			for qrange in qranges.split(","):
+				range = qrange.split("-")
+				tsv.append(qrange)
+				tsv.append("\t")
+				tsv.append(text[range[0], range[1]])
+				tsv.append("\n")
+		return "".join(tsv)
+
 
 class Documents(mamba.task.Request):
 	
