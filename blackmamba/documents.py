@@ -42,8 +42,8 @@ class Snippets(mamba.task.Request):
 				range = qrange.split("-")
 				start = int(range[0])
 				stop = int(range[1])
-				if stop-start > 255:
-					stop = start+255
+				if stop-start > 1023:
+					stop = start+1023
 				tsv.append(qrange)
 				tsv.append("\t")
 				tsv.append(text[start:stop])
