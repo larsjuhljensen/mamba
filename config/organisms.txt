@@ -5,7 +5,7 @@
 ORGANISMS
 
 [SUBTITLE]
-Retrieval of documents
+Taxonomy-based retrieval of documents
 
 [LINK]
 http://www.cpr.ku.dk
