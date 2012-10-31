@@ -157,7 +157,7 @@ class XP(XTag):
 	def __init__(self, parent, text=None, attr={}):
 		XTag.__init__(self, parent, "p", attr)
 		if text != None:
-			if issubclass(type(text), basestring):
+			if isinstance(text, basestring):
 				self.text = text
 			else:
 				self.nodes.append(text)
@@ -259,9 +259,9 @@ class XTable(XTag):
 	def addhead(self, *args):
 		row = XTr(self.thead)
 		for arg in args:
-			if issubclass(type(arg), XTd):
+			if isinstance(arg, XTd):
 				row.add(arg)
-			elif issubclass(type(arg), XNode):
+			elif isinstance(arg, XNode):
 				XTh(row).add(arg)
 			else:
 				XTh(row).text = str(arg)
@@ -276,9 +276,9 @@ class XTable(XTag):
 		else:
 			row["class"] = "odd"
 		for arg in args:
-			if issubclass(type(arg), XTd):
+			if isinstance(arg, XTd):
 				row.add(arg)
-			elif issubclass(type(arg), XNode):
+			elif isinstance(arg, XNode):
 				XTd(row).add(arg)
 			else:
 				XTd(row).text = str(arg)
