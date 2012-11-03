@@ -286,5 +286,13 @@ class Entity(mamba.task.Request):
 		if ndocuments:
 			XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
 		
-		reply = mamba.http.HTMLResponse(self, page.tohtml())
-		reply.send()
+		mamba.http.HTMLResponse(self, page.tohtml()).send()
+
+
+class OpenSearchDescription(mamba.task.Request):
+	
+	def main(self):
+		design = get_design()
+		xml = '''<?xml version="1.0"?><OpenSearchDescription xmlns="http://a9.com/-/spec/ope
+nsearch/1.1/"><ShortName>%s</ShortName><Description>%s</Description><Url type="text/html" method="get" template="http://%s/Search?query={searchTerms}"/></OpenSearchDescription>''' % (design["TITLE"], design["SUBTITLE"], self.http.headers["Host"])
+		mamba.http.HTTPResponse(self, xml, "application/opensearchdescription+xml").send()

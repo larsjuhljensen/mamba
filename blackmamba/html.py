@@ -304,7 +304,6 @@ class XHead(XTag):
 		self.title = ""
 		
 		self.css = []
-		#self.css.append("/css/blackmamba.css")
 		
 		self.scripts = []
 		self.scripts.append("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
@@ -317,10 +316,11 @@ class XHead(XTag):
 			html.append("  <title>%s</title>" % self.title)
 		html.append("""  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>""")
 		html.append("""  <meta http-equiv="X-UA-Compatible" content="IE=9"></meta>""")
+		html.append("""  <link rel="search" href="/OpenSearchDescription" type="application/opensearchdescription+xml"></link>""")
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
-		for java in self.scripts:
-			html.append("""  <script type="text/javascript" src="%s"></script>""" % java)
+		for script in self.scripts:
+			html.append("""  <script type="text/javascript" src="%s"></script>""" % script)
 		return "\r\n".join(html)
 
 
