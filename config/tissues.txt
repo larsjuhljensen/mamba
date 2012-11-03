@@ -15,6 +15,17 @@ http://www.cpr.ku.dk
 
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36065925-1']);
+  _gaq.push(['_setDomainName', 'jensenlab.org']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 
 [FOOTER:ENTITY]
 <p class="footer_description">The tissue associations are derived from manually curated knowledge in UniProtKB and via automatic text mining of the biomedical literature, which has not been manually verified. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>

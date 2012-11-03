@@ -24,6 +24,11 @@ function blackmamba_request(xmlhttp, url, query, container)
 		}
 	}
 	xmlhttp.send(query);
+	try {
+		_gaq.push(['_trackPageview', url]);
+	}
+	catch (err) {
+	}
 }
 
 
