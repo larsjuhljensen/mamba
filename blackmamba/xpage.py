@@ -120,7 +120,7 @@ class Knowledge(XAjaxTable):
 		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
 	
 	def add_row(self, row, name, stars):
-		if 'url' in row:
+		if 'url' in row and row['url'] != "":
 			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
 		self.xtable.addrow(name, row['source'], row['evidence'], stars)
 		
