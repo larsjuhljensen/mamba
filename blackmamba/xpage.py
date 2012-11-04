@@ -66,11 +66,11 @@ class XPagesDiv(html.XDiv):
 			query = '&'.join(query)
 			container = rest["container"]
 	                if page > 1:
-        	                html.XLink(self, "javascript:blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container), "&lt;&nbsp;Prev")
+        	                html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container)}), "&lt;&nbsp;Prev")
                 	if count > page*limit:
 				if page > 1:
 					html.XText(self, "&nbsp;|&nbsp;")
-	                        html.XLink(self, "javascript:blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container), "Next&nbsp;&gt;")
+	                        html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container)}), "Next&nbsp;&gt;")
 
 
 class XAjaxTable(mamba.task.Request):
