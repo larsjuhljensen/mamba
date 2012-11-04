@@ -33,3 +33,7 @@ http://www.cpr.ku.dk
 
 [CONTENT:SEARCH]
 Search for a human gene or a disease:
+
+[EXAMPLES:SEARCH]
+KLK3
+Prostate cancer
