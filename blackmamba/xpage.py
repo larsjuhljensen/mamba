@@ -120,6 +120,8 @@ class Knowledge(XAjaxTable):
 		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
 	
 	def add_row(self, row, name, stars):
+		if 'url' in row:
+			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
 		self.xtable.addrow(name, row['source'], row['evidence'], stars)
 		
 	def get_sql(self, rest):
@@ -268,8 +270,6 @@ class Entity(mamba.task.Request):
 			EntityHeader(associations.body, qtype1, qid1, dictionary)
 		elif documents:
 			EntityHeader(documents.body, qtype1, qid1, dictionary)
-		
-		#stat = ' <span style="color:inherit;float:right;">Mentioned in %d documents. &nbsp;&nbsp;</span>' % len(database.mentions(qtype1, qid1))		
 		
 		for n, qfigure in enumerate(qfigures):
 			visualization.AjaxSVG(associations.body, "visualization%d" % n, qfigure, qtype1, qid1)
