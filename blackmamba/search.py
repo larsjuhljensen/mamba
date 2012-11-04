@@ -36,11 +36,11 @@ class Table(html.XNode):
 						break
 			if count > limit:
 				if page > 1:
-					html.XLink(xpages, "javascript:blackmamba_search('EntityQuery', '%s', %d, %d, '%s')" % (section, limit, page-1, container), "&lt;&nbsp;Prev")
+					html.XText(html.XSpan(xpages, {"class":"silent_link","onclick":"blackmamba_search('EntityQuery', '%s', %d, %d, '%s')" % (section, limit, page-1, container)}), "&lt;&nbsp;Prev")
 				if count > page*limit:
 					if page > 1:
 						html.XText(xpages, "&nbsp;|&nbsp;")
-					html.XLink(xpages, "javascript:blackmamba_search('EntityQuery', '%s', %d, %d, '%s')" % (section, limit, page+1, container), "Next&nbsp;&gt;")
+					html.XText(html.XSpan(xpages, {"class":"silent_link","onclick":"blackmamba_search('EntityQuery', '%s', %d, %d, '%s')" % (section, limit, page+1, container)}), "Next&nbsp;&gt;")
 		else:
 			html.XP(self, "Nothing found for '%s'" % query)
 
@@ -95,7 +95,7 @@ class Search(mamba.task.Request):
 			for example in design[key].split("\n"):
 				count += 1
 				html.XText(examples, " ")
-				html.XLink(examples, "javascript:document.blackmamba_search_form.query.value='"+example+"';", "#"+str(count))
+				html.XText(html.XSpan(examples, {"class":"silent_link", "onclick":"document.blackmamba_search_form.query.value='"+example+"';"}), "#"+str(count))
 			html.XText(examples, ")")
 		form = html.XTag(page.content, "form", {"name":"blackmamba_search_form"})
 		form["action"] = "javascript:blackmamba_search('/%s/', '%s', %d, 1, '%s');" % (action, section, limit, container)
