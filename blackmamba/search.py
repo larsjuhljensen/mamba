@@ -85,7 +85,18 @@ class Search(mamba.task.Request):
 		md5.update(action)
 		container = md5.hexdigest()
 		
+		design = xpage.get_design()
 		page = xpage.XPage(section, "Search")
+		key = "EXAMPLES:"+section.upper()
+		if key in design:
+			examples = html.XSpan(page.content, {"class":"examples"})
+			html.XText(examples, "(examples:")
+			count = 0
+			for example in design[key].split("\n"):
+				count += 1
+				html.XText(examples, " ")
+				html.XLink(examples, "javascript:document.blackmamba_search_form.query.value='"+example+"';", "#"+str(count))
+			html.XText(examples, ")")
 		form = html.XTag(page.content, "form", {"name":"blackmamba_search_form"})
 		form["action"] = "javascript:blackmamba_search('/%s/', '%s', %d, 1, '%s');" % (action, section, limit, container)
 		for name in rest:

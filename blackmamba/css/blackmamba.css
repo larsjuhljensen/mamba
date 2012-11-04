@@ -302,6 +302,13 @@ form div.spacer {
 	width: 2em;
 }
 
+span.examples {
+	left: 8em;
+	position: absolute;
+	text-align: right;
+	width: 40em;
+}
+
 .header_left {
 	display: inline-block;
 }
