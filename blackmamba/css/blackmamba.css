@@ -100,14 +100,12 @@ img {
 }
 
 .document_authors {
-	/*color: darkgreen;*/
 	color: #004300;
 	font-size: 0.7em;
 	margin-left: 0px;
 }
 
 .document_authors a {
-	/*color: darkgreen;*/
 	color: #004300;
 	text-decoration: none;
 }
@@ -218,7 +216,6 @@ img {
 	clear: both;
 	text-align: left;
 	font-size: 0.9em;
-	font-family: Helvetica;
 	border-top: solid 2px #4F4F4F;
 	border-bottom: solid 2px #4F4F4F;
 }
