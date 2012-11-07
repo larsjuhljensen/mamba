@@ -380,10 +380,9 @@ class XForm(XTag):
 	
 	def __init__(self, parent, attr = {}):
 		self.data_store = {}
-		XTag.__init__(self, parent, "form", attr)
+		XTag.__init__(self, parent, "form", attr)		
 	
-	def end_html(self):
-		print "in store"
+	def end_html(self):		
 		html = ""
 		if len(self.data_store):
 			mamba_data_store = base64.urlsafe_b64encode(json.dumps(self.data_store))
