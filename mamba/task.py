@@ -32,6 +32,8 @@ import os
 import re
 import sys
 import glob
+import json
+import base64
 import types
 import urllib
 import hashlib
@@ -48,16 +50,17 @@ import mamba.http
 import mamba.setup
 
 
-class RestDecoder:
+class RestDecoder(dict):
 	
-	CONTENT_TYPE        = re.compile('''boundary=([^ \t\r\n]+)''', re.I)
+	CONTENT_MIME_PARTS  = re.compile('''boundary=([^ \t\r\n]+)''', re.I)
 	CONTENT_DISPOSITION = re.compile('''^Content-Disposition: .*? name="(.+?)".*?\r\n\r\n''', re.I | re.M | re.S)
 	
 	def __init__(self, request):
 		self._table = {}
+		self.data_store = None
 		mime_multipart = False
 		if "Content-Type" in request.http.headers:
-			match = RestDecoder.CONTENT_TYPE.search(request.http.headers["Content-Type"])
+			match = RestDecoder.CONTENT_MIME_PARTS.search(request.http.headers["Content-Type"])
 			if match:
 				mime_multipart = True
 				for mime_part in request.http.body.split("\r\n--"+match.group(1)):
@@ -79,6 +82,11 @@ class RestDecoder:
 					if request.http.charset != None:
 						value = unicode(value, request.http.charset, errors="replace")
 					self._table[key] = value
+		if "mamba_data_store" in self._table:
+			data = self._table["mamba_data_store"]
+			if request.http.charset != None:
+				data = data.encode(request.http.charset)			
+			self.data_store = json.loads(base64.urlsafe_b64decode(data))
 
 	def __contains__(self, key):
 		return key in self._table
@@ -97,6 +105,8 @@ class RestDecoder:
 	
 	def __setitem__(self, key, item):
 		self._table[key] = item
+		
+	
 
 
 class SyntaxError(Exception)         : pass

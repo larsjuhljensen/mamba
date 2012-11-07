@@ -1,4 +1,6 @@
 import mamba.util
+import json
+import base64
 
 def xcase(name):
 	tokens = name.split(" ")
@@ -97,11 +99,11 @@ class XTag(XNode):
 		
 	def begin_html(self):
 		att = [""]
-		for name in self.attr:
+		for name in self.attr:			
 			try:
 				value = self.attr[name].replace('"', '\\"')
 			except AttributeError:
-				print self, self.attr[name]
+				print self, name, self.attr[name]
 			att.append("%s=\"%s\"" % (name, value))
 		if len(att):
 			att = " ".join(att)
@@ -157,6 +159,8 @@ class XP(XTag):
 	def __init__(self, parent, text=None, attr={}):
 		XTag.__init__(self, parent, "p", attr)
 		if text != None:
+			# issubclass changed to isinstance - Jan
+			# if issubclass(type(text), basestring):
 			if isinstance(text, basestring):
 				self.text = text
 			else:
@@ -256,6 +260,7 @@ class XTable(XTag):
 		self.tfoot   = XOuterTag(self, "tfoot")
 		self.tbody   = XOuterTag(self, "tbody")
 		
+	# changed isinstance to is subclass - Jan
 	def addhead(self, *args):
 		row = XTr(self.thead)
 		for arg in args:
@@ -269,6 +274,7 @@ class XTable(XTag):
 			th["class"] = th.text.lower()
 		return row
 	
+	# changed isinstance to is subclass - Jan
 	def addrow(self, *args):
 		row = XTr(self.tbody)
 		if len(self.tbody.nodes) % 2 == 0:
@@ -302,12 +308,11 @@ class XHead(XTag):
 	def __init__(self, parent):
 		XTag.__init__(self, parent, "head")
 		self.title = ""
-		
 		self.css = []
-		
 		self.scripts = []
 		self.scripts.append("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
 		self.scripts.append("/scripts/blackmamba.js")
+		self.scripts.append("/scripts/base64.js")
 		
 	def begin_html(self):
 		html = []
@@ -316,11 +321,10 @@ class XHead(XTag):
 			html.append("  <title>%s</title>" % self.title)
 		html.append("""  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>""")
 		html.append("""  <meta http-equiv="X-UA-Compatible" content="IE=9"></meta>""")
-		html.append("""  <link rel="search" href="/OpenSearchDescription" type="application/opensearchdescription+xml"></link>""")
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
-		for script in self.scripts:
-			html.append("""  <script type="text/javascript" src="%s"></script>""" % script)
+		for java in self.scripts:
+			html.append("""  <script type="text/javascript" src="%s"></script>""" % java)
 		return "\r\n".join(html)
 
 
@@ -363,3 +367,60 @@ class XNakedPage(XTag):
 		self.header = XDiv(self.body, "header")
 		self.content = XDiv(self.body, "content")
 		self.footer = XDiv(self.body, "footer")
+		
+class XBr(XTag):
+
+	def __init__(self, parent):
+		XTag.__init__(self, parent, "br")
+		
+	def end_html(self):
+		return ""
+
+class XForm(XTag):
+	
+	def __init__(self, parent, attr = {}):
+		self.data_store = {}
+		XTag.__init__(self, parent, "form", attr)
+	
+	def end_html(self):
+		print "in store"
+		html = ""
+		if len(self.data_store):
+			mamba_data_store = base64.urlsafe_b64encode(json.dumps(self.data_store))
+			html = "<input type=\"hidden\" name=\"mamba_data_store\" id=\"mamba_data_store\" value=\"%s\" />" % mamba_data_store
+			
+		html = html + "</%s>" % self.tag
+		return html
+		
+		
+class XInput(XTag):
+
+	def __init__(self, parent, attr = {}):
+		XTag.__init__(self, parent, "input", attr)
+
+
+class XTextArea(XTag):
+	
+	def __init__(self, parent, attr = {}):
+		XTag.__init__(self, parent, "textarea", attr)
+
+
+class XSelect(XTag):
+
+	def __init__(self, parent, attr = {}):
+		XTag.__init__(self, parent, "select", attr)
+	
+	def add_option(self, text, value = None):
+		XOption(self, text, value)
+
+	
+class XOption(XTag):
+
+	def __init__(self, parent, text, value = None, attr = {}):
+		XTag.__init__(self, parent, "option", attr)
+		self.text = text
+		if value:
+			self['value'] = value
+
+	
+
