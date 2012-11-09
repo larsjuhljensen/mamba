@@ -57,7 +57,7 @@ class RestDecoder(dict):
 	
 	def __init__(self, request):
 		self._table = {}
-		self.data_store = None
+		self.data_store = {}
 		mime_multipart = False
 		if "Content-Type" in request.http.headers:
 			match = RestDecoder.CONTENT_MIME_PARTS.search(request.http.headers["Content-Type"])
