@@ -146,12 +146,35 @@ img {
 .header {
 	background-color: #E3E3E3;
 	border-bottom: solid 1px #4F4F4F;
-	padding: 2em 8em 1em 8em;
+	padding: 2em 8em 0em 8em;
+}
+
+.menu {
+	margin: 2em 0em 0.5em 0em;
+}
+
+.menu a {
+	background-color: #FFFFFF;
+	border: solid 1px #4F4F4F;
+	font-weight: bold;
+	margin: 0em 0em 0em 2em;
+	padding: 0.5em 1em;
+}
+
+.menu span {
+	background-color: #FFFFFF;
+	border-bottom: solid 1px #FFFFFF;
+	border-left: solid 1px #4F4F4F;
+	border-right: solid 1px #4F4F4F;
+	border-top: solid 1px #4F4F4F;
+	font-weight: bold;
+	margin: 0em 0em 0em 2em;
+	padding: 0.5em 1em;
 }
 
 .content {
 	display: block;
-	margin: 4em 0em;
+	margin: 4em 0em 4em 0em;
 	padding: 0em 8em;
 }
 
