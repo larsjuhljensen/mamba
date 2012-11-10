@@ -157,7 +157,15 @@ class XPage(html.XNakedPage):
 				html.XImg(html.XLink(html.XDiv(self.header, "header_right"), design["LINK"]), design["LOGO"])
 			else:
 				html.XImg(html.XDiv(self.header, "header_right"), design["LOGO"])
-		html.XText(self.content, design["CONTENT"])
+		menu = html.XDiv(self.header, "menu")
+		if "MENU" in design:
+			for item in design["MENU"].split("\n"):
+				if item.upper() == page_class.upper():
+					html.XText(html.XSpan(menu), item)
+				else:
+					html.XLink(menu, "/"+item, item, None, {"class":"silent_link"})
+		if "CONTENT" in design:
+			html.XText(self.content, design["CONTENT"])
 		if page_class != None:
 			key = "CONTENT:"+page_class.upper()
 			if key in design:
@@ -222,6 +230,13 @@ class EntityHeader(html.XNode):
 				if len(synonyms) > maxsyn:
 					text += " ..."
 				html.XP(self, text, {"class":"synonyms"})
+
+
+class Downloads(mamba.task.Request):
+	
+	def main(self):
+		page = XPage("Downloads", "Downloads")
+		mamba.http.HTMLResponse(self, page.tohtml()).send()
 
 
 class Entity(mamba.task.Request):

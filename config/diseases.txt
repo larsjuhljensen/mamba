@@ -13,6 +13,10 @@ http://www.cpr.ku.dk
 [LOGO]
 /cpr.png
 
+[MENU]
+Search
+Downloads
+
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script type="text/javascript">
@@ -37,3 +41,8 @@ Search for a human gene or a disease:
 [EXAMPLES:SEARCH]
 KLK3
 Prostate cancer
+
+[CONTENT:DOWNLOADS]
+<p style="font-weight: bold;">The DISEASES database is also available for download in tab-delimited format:</p>
+<p><a href="http://download.jensenlab.org/human_disease_textmining_filtered.tsv">Download filtered set of gene-disease associations</a></p>
+<p><a href="http://download.jensenlab.org/human_disease_textmining_full.tsv">Download full set of gene-disease associations</a></p><p><a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a>.</p>
