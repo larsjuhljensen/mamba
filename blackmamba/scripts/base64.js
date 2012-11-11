@@ -1,4 +1,3 @@
-
 function encode64(input) {
    input = escape(input);
    var output = "";

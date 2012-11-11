@@ -120,25 +120,24 @@ img {
 .document_match_type1 {
 	color: darkred;
 	font-weight: bold;
-	background: #E0E0E0;
 }
 
 .document_match_type2 {
 	color: darkblue;
 	font-weight: bold;
-	background: #E0E0E0;
 }
 
 /* ------------------------------------------- */
 
 .popup {
 	background: #FFFFFF;
-	border: solid;
+	border: solid 2px #4F4F4F;
+	border-radius: 0.4em;
+	box-shadow: 5px 5px 15px #BFBFBF;
+	padding: 0em 1em 1em 1em;
 	position: absolute;
 	visibility: hidden;
 	z-index: 2;
-	padding: 0em 1em 1em 1em;
-	box-shadow: 5px 5px 15px #BFBFBF;
 }
 
 /* ------------------------------------------- */
@@ -156,6 +155,8 @@ img {
 .menu a {
 	background-color: #FFFFFF;
 	border: solid 1px #4F4F4F;
+        border-top-left-radius: 0.4em;
+        border-top-right-radius: 0.4em;
 	font-weight: bold;
 	margin: 0em 0em 0em 2em;
 	padding: 0.5em 1em;
@@ -167,6 +168,8 @@ img {
 	border-left: solid 1px #4F4F4F;
 	border-right: solid 1px #4F4F4F;
 	border-top: solid 1px #4F4F4F;
+	border-top-left-radius: 0.4em;
+	border-top-right-radius: 0.4em;
 	font-weight: bold;
 	margin: 0em 0em 0em 2em;
 	padding: 0.5em 1em;
