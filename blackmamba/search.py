@@ -65,31 +65,17 @@ class EntityQuery(mamba.task.Request):
 		mamba.http.HTMLResponse(self, Table(None, database.Connect("dictionary"), query, section, limit, page, container).tohtml()).send()
 
 
-class Search(mamba.task.Request):
+class SearchPage(xpage.XPage):
 	
-	def main(self):
-		rest = mamba.task.RestDecoder(self)
-		action = "EntityQuery"
-		if "action" in rest:
-			action = rest["action"]
-		section = "SEARCH"
-		if "section" in rest:
-			section = rest["section"].upper()
-		limit = 20
-		if "limit" in rest:
-			limit = int(rest["limit"])
-		query = ""
-		if "query" in rest:
-			query = rest["query"]
+	def __init__(self, page_class, page_name, action, limit, query):
+		xpage.XPage.__init__(self, page_class, page_name)
 		md5 = hashlib.md5()
 		md5.update(action)
 		container = md5.hexdigest()
-		
 		design = xpage.get_design()
-		page = xpage.XPage(section, "Search")
-		key = "EXAMPLES:"+section.upper()
+		key = "EXAMPLES:"+page_class.upper()
 		if key in design:
-			examples = html.XSpan(page.content, {"class":"examples"})
+			examples = html.XSpan(self.content, {"class":"examples"})
 			html.XText(examples, "(examples:")
 			count = 0
 			for example in design[key].split("\n"):
@@ -97,16 +83,27 @@ class Search(mamba.task.Request):
 				html.XText(examples, " ")
 				html.XText(html.XSpan(examples, {"class":"silent_link", "onclick":"document.blackmamba_search_form.query.value='"+example+"';"}), "#"+str(count))
 			html.XText(examples, ")")
-		form = html.XTag(page.content, "form", {"name":"blackmamba_search_form"})
-		form["action"] = "javascript:blackmamba_search('/%s/', '%s', %d, 1, '%s');" % (action, section, limit, container)
-		for name in rest:
-			if name not in ["action", "query", "submit"]:
-				html.XTag(form, "input", {"type":"hidden", "name":name, "value":rest[name]})
+		form = html.XTag(self.content, "form", {"name":"blackmamba_search_form"})
+		form["action"] = "javascript:blackmamba_search('/%s/', '%s', %d, 1, '%s');" % (action, page_class, limit, container)
 		html.XTag(form, "input", {"type":"text", "name":"query", "value":query, "class":"query"})
 		html.XDiv(form, "spacer")
 		html.XTag(form, "input", {"type":"submit", "value":"search", "class":"search"})
-		html.XDiv(page.content, "ajax_table", container)
+		html.XDiv(self.content, "ajax_table", container)
 		if query != "":
-			html.XScript(page.content, "document.blackmamba_search_form.submit();")
-		
-		mamba.http.HTMLResponse(self, page.tohtml()).send()
+			html.XScript(self.content, "document.blackmamba_search_form.submit();")
+
+
+class Search(mamba.task.Request):
+	
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		action = "EntityQuery"
+		if "action" in rest:
+			action = rest["action"]
+		limit = 20
+		if "limit" in rest:
+			imit = int(rest["limit"])
+		query = ""
+		if "query" in rest:
+			query = rest["query"]
+		mamba.http.HTMLResponse(self, SearchPage("SEARCH", "Search", action, limit, query).tohtml()).send()
