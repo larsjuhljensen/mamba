@@ -301,7 +301,8 @@ class GetEntities(TaggingRequest):
             raise mamba.task.SyntaxError, 'In action: %s unknown format: "%s". Supports only: %s' % (self.action, self.format, ', '.join(supported_formats))
         
     def get_entities(self):
-        return mamba.setup.config().tagger.GetEntities(mamba.util.string_to_bytes(self.document, self.http.charset), self.document_id, self.entity_types, self.auto_detect, self.ignore_blacklist, format=self.format)
+	byte_doc = mamba.util.string_to_bytes(self.document, self.http.charset)
+        return mamba.setup.config().tagger.GetEntities(document=byte_doc, document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, format=self.format)
         
     def tagging(self):
         data = self.get_entities()
