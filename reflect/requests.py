@@ -11,18 +11,23 @@ class Setup(mamba.setup.Configuration):
 		mamba.setup.Configuration.__init__(self, ini_file)
 		sys.setcheckinterval(10000)
 		styles = {}
-		for priority in self.sections['styles']:
-			styles[int(priority)] = self.sections['styles'][priority]
+		if "STYLES" in self.sections:
+			for priority in self.sections["STYLES"]:
+				styles[int(priority)] = self.sections["STYLES"][priority]
 		types = {}
-		for priority in self.sections['types']:
-			types[priority] = lambda x: evail(self.sections['types'][priority])
+		if "TYPES" in self.sections:
+			for priority in self.sections["TYPES"]:
+				types[int(priority)] = self.sections["TYPES"][priority]
 		print '[INIT]  Loading tagger ...'
 		self.tagger = tagger.tagger.Tagger()
 		self.tagger.SetStyles(styles, types)
-		self.tagger.LoadHeaders(self.globals['java_scripts'])
-		self.tagger.LoadNames(self.globals['entities_file'], self.globals['names_file'])
-		self.tagger.LoadGlobal(self.globals['global_file'])
-		self.tagger.LoadLocal(self.globals['local_file'])
+		if "java_scripts" in self.globals:
+			self.tagger.LoadHeaders(self.globals["java_scripts"])
+		self.tagger.LoadNames(self.globals["entities_file"], self.globals["names_file"])
+		if "global_file" in self.globals:
+			self.tagger.LoadGlobal(self.globals["global_file"])
+		if "local_file" in self.globals:
+			self.tagger.LoadLocal(self.globals["local_file"])
 		if 'changelog_file' in self.globals:
 			self.tagger.LoadChangelog(self.globals['changelog_file'])
 
@@ -75,24 +80,37 @@ class ResolveName(mamba.task.Request):
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		names = []
-		if 'name' in rest:
-			names += rest['name']
-		elif 'names' in rest:
-			names += rest['names'].split('\n')
+		if "name" in rest:
+			names.append(mamba.util.string_to_bytes(rest["name"], self.http.charset))
+		elif "names" in rest:
+			names += mamba.util.string_to_bytes(rest["names"], self.http.charset).split("\n")
 		else:
 			raise mamba.task.SyntaxError, 'Required parameter "name" or "names" is missing.'
-		if self.format == "xml":
-			doc = []
-			doc.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-			doc.append("<ResolveNameResponse xmlns=\"Reflect\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
-			doc.append(xdoc.getElementsByTagName("items")[0].toxml())
-			doc.append("</ResolveNameResponse>")
-			data = "".join(doc)
+		format = "tsv"
+		if "format" in rest:
+			format = rest["format"]
+		if format == "xml":
+			xml = []
+			xml.append("""<?xml version="1.0" encoding="UTF-8"?>\n""")
+			xml.append("""<ResolveNameResponse xmlns="Reflect" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">""")
+			xml.append("""<items>""")
+			for name in names:
+				xml.append("""<item><name xsi:type="xsd:string">%s</name><entities>""" % name)
+				for entity in mamba.setup.config().tagger.ResolveName(name):
+					xml.append("""<entity><type xsi:type="xsd:int">%d</type><identifier xsi:type="xsd:string">%s</identifier></entity>""" % (entity[0], entity[1]))
+				xml.append("""</entities></item>""")
+			xml.append("</items>")
+			xml.append("</ResolveNameResponse>")
+			result = "".join(xml)
 			content_type = "text/xml"
 		else:
-			data = self.get_entities()
+			tsv = []
+			for name in names:
+				for entity in mamba.setup.config().tagger.ResolveName(name):
+					tsv.append("%s\t%d\t%s\n" % (name, entity[0], entity[1]))
+			result = "".join(tsv)
 			content_type = "text/plain"
-		mamba.http.HTTPResponse(self, data, content_type).send()
+		mamba.http.HTTPResponse(self, result, content_type).send()
 
 
 class GetPopup(mamba.task.Request):
