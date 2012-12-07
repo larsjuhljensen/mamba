@@ -28,22 +28,32 @@ class TaggingRequest(mamba.task.Request):
 		
 	def parse(self):
 		rest = mamba.task.RestDecoder(self)
+		self.pmid = None
 		if "pmid" in rest:
 			self.pmid = rest["pmid"]
+		self.doi = None
 		if "doi" in rest:
 			self.doi  = rest["doi"]
 		elif "document_identifier" in rest:
 			self.doi = rest["document_identifier"]
 		if self.doi and self.doi.startswith('doi:'):
 			self.doi = self.doi[4:]
+		self.uri = None
 		if "uri" in rest:
 			self.uri  = rest["uri"]
 		if self.uri and not self.uri.startswith("http"):
 			self.uri = "http://"+self.uri
+		self.hash = None
+		if "hash" in rest:
+			self.hash = rest["hash"]
 		if "document" in rest:
 			self.document = rest["document"]
 			if "content_type" in rest and rest["content_type"].lower() == "text/html" or isinstance(self.document, str):
 					self.document = unicode(self.document, self.http.charset, errors="replace")
+			if self.hash == None:
+				hash  = hashlib.md5()
+				hash.update(mamba.util.string_to_bytes(self.document, self.http.charset))
+				self.hash = hash.hexdigest()
 		if "auto_detect" in rest:
 			self.auto_detect = int(rest["auto_detect"])
 		if "auto_detect_doi" in rest:
@@ -77,10 +87,8 @@ class TaggingRequest(mamba.task.Request):
 			self.document_id = self.uri
 		elif self.pmid:
 			self.document_id = self.pmid
-		elif self.document != None:
-			hashfun  = hashlib.md5()
-			hashfun.update(mamba.util.string_to_bytes(self.document, self.http.charset))
-			self.document_id = hashfun.hexdigest()
+		elif self.hash != None:
+			self.document_id = self.hash
 		else:
 			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
 
@@ -200,9 +208,7 @@ class GetURI(GetHTML):
 	def tagging(self):
 		html = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
 		document = mamba.util.string_to_bytes(html, self.http.charset)
-		hashfun  = hashlib.md5()
-		hashfun.update(document)
-		filename = hashfun.hexdigest()+".html"
+		filename = self.hash+".html"
 		f = open(self.worker.params["tmp_dir"]+"/"+filename, "w")
 		f.write(document)
 		f.flush()
