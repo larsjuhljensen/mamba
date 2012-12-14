@@ -123,9 +123,23 @@ class Knowledge(XAjaxTable):
 		if 'url' in row and row['url'] != "":
 			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
 		self.xtable.addrow(name, row['source'], row['evidence'], stars)
-		
+	
 	def get_sql(self, rest):
 		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+
+
+class Experiments(XAjaxTable):
+	
+	def add_head(self):
+		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
+	
+	def add_row(self, row, name, stars):
+		if 'url' in row and row['url'] != "":
+			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
+		self.xtable.addrow(name, row['source'], row['evidence'], stars)
+	
+	def get_sql(self, rest):
+		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Predictions(XAjaxTable):
@@ -248,6 +262,7 @@ class Entity(mamba.task.Request):
 		qfigures = []
 		nnetwork     = 0
 		nknowledge   = 0
+		nexperiments = 0
 		ntextmining  = 0
 		npredictions = 0
 		ndocuments   = 0
@@ -258,6 +273,8 @@ class Entity(mamba.task.Request):
 			nnetwork = int(rest["network"])
 		if "knowledge" in rest:
 			nknowledge = int(rest["knowledge"])
+		if "experiments" in rest:
+			nexperiments = int(rest["experiments"])
 		if "textmining" in rest:
 			ntextmining = int(rest["textmining"])
 		if "predictions" in rest:
@@ -293,6 +310,8 @@ class Entity(mamba.task.Request):
 			html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
 		if nknowledge:
 			XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nknowledge)
+		if nexperiments:
+			XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nexperiments)
 		if ntextmining:
 			XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&title=Text+mining" % (qtype1, qid1, qtype2), ntextmining)
 		if npredictions:

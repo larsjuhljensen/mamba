@@ -75,6 +75,30 @@ class GetHeader(GetHead):
 	pass
 
 
+class GetPopup(mamba.task.Request):
+	 
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		entities = mamba.setup.config().tagger.ResolveName(mamba.util.string_to_bytes(rest["name"], self.http.charset))
+		if len(entities):
+			url_params = []
+			show_first = ['9606', '10090']
+			for pref_organism in show_first:
+				for type, id in entities:
+					if type == pref_organism:
+						url_params.append(type + '.' + id + '+')
+			for type, id in entities:
+				if type not in show_first:
+					url_params.append(type + '.' + id + '+')
+			popup_url = 'http://reflect.ws/popup/fcgi-bin/createPopup.fcgi?' + ''.join(url_params)
+			popup_url = popup_url[:-1]
+			reply = mamba.http.HTTPRedirect(self, popup_url)
+			reply.send()
+		else:
+			html = "<html><head><title>No Reflect popup available</title></head><body>The name '%s' was not found in our dictionary.</body></html>" % self.names[0]
+			mamba.http.HTTPResponse(self, html, content_type="text/html").send()
+
+
 class ResolveName(mamba.task.Request):
 	
 	def main(self):
@@ -111,34 +135,3 @@ class ResolveName(mamba.task.Request):
 			result = "".join(tsv)
 			content_type = "text/plain"
 		mamba.http.HTTPResponse(self, result, content_type).send()
-
-
-class GetPopup(mamba.task.Request):
-	 
-	def main(self):
-		try:
-			doc = xml.dom.minidom.parseString(self.xml)
-			found_proteins = []
-			for entity in doc.getElementsByTagName('entity'):
-				type = entity.getElementsByTagName('type')[0].childNodes[0].nodeValue.strip()
-				id   = entity.getElementsByTagName('identifier')[0].childNodes[0].nodeValue.strip()
-				found_proteins.append((type, id))
-			if len(found_proteins):
-				url_params = []
-				show_first = ['9606', '10090']
-				for pref_organism in show_first:
-					for type, id in found_proteins:
-						if type == pref_organism:
-							url_params.append(type + '.' + id + '+')
-				for type, id in found_proteins:
-					if type not in show_first:
-						url_params.append(type + '.' + id + '+')
-				popup_url = 'http://reflect.ws/popup/fcgi-bin/createPopup.fcgi?' + ''.join(url_params)
-				popup_url = popup_url[:-1]
-        	        	reply = mamba.http.HTTPRedirect(self, popup_url)
-				reply.send()
-			else:
-				html = "<html><head><title>No Reflect popup available</title></head><body>The name '%s' was not found in our dictionary.</body></html>" % self.names[0]
-				mamba.http.HTTPResponse(self, html, content_type="text/html").send()
-		finally:
-			doc.unlink()
