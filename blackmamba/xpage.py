@@ -139,7 +139,7 @@ class Experiments(XAjaxTable):
 		self.xtable.addrow(name, row['source'], row['evidence'], stars)
 	
 	def get_sql(self, rest):
-		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Predictions(XAjaxTable):
