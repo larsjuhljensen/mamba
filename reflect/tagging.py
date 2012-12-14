@@ -16,57 +16,56 @@ class TaggingRequest(mamba.task.Request):
 	
 	def __init__(self, http, action):
 		mamba.task.Request.__init__(self, http, action, priority=1)	  
-		self.uri = None
-		self.doi = None
-		self.pmid = None
-		self.document = None
-		self.document_id = None
-		self.entity_types = None
-		self.auto_detect = None
-		self.auto_detect_doi = None
-		self.ignore_blacklist = None
-		
-	def parse(self):
-		rest = mamba.task.RestDecoder(self)
-		self.pmid = None
-		if "pmid" in rest:
-			self.pmid = rest["pmid"]
-		self.doi = None
-		if "doi" in rest:
-			self.doi  = rest["doi"]
-		elif "document_identifier" in rest:
-			self.doi = rest["document_identifier"]
-		if self.doi and self.doi.startswith('doi:'):
-			self.doi = self.doi[4:]
-		self.uri = None
-		if "uri" in rest:
-			self.uri  = rest["uri"]
-		if self.uri and not self.uri.startswith("http"):
-			self.uri = "http://"+self.uri
+	
+	def parse(self, rest):
 		self.hash = None
 		if "hash" in rest:
 			self.hash = rest["hash"]
+		self.document = None
 		if "document" in rest:
 			self.document = rest["document"]
 			if "content_type" in rest and rest["content_type"].lower() == "text/html" or isinstance(self.document, str):
-					self.document = unicode(self.document, self.http.charset, errors="replace")
-			if self.hash == None:
-				hash  = hashlib.md5()
-				hash.update(mamba.util.string_to_bytes(self.document, self.http.charset))
-				self.hash = hash.hexdigest()
+				self.document = unicode(self.document, self.http.charset, errors="replace")
+		
+		doi = None
+		if "doi" in rest:
+			doi  = rest["doi"]
+		elif "document_identifier" in rest:
+			doi = rest["document_identifier"]
+		if doi:
+			if self.doi.startswith('doi:'):
+				doi = doi[4:]
+			self.document_id = doi
+			self.document_url = "http://dx.doi.org/"+doi
+		elif "uri" in rest:
+			if rest["uri"].startswith("http"):
+				self.document_id = rest["uri"]
+				self.document_url = rest["uri"]
+			else:
+				self.document_id = "http://"+rest["uri"]
+				self.document_url = "http://"+rest["uri"]
+		elif "pmid" in rest:
+			self.document_id = rest["pmid"]
+			self.document_url = "http://www.ncbi.nlm.nih.gov/pubmed/"+rest["pmid"]
+		elif self.hash != None:
+			self.document_id = self.hash
+			self.document_url = None
+		
+		self.auto_detect = 1
 		if "auto_detect" in rest:
 			self.auto_detect = int(rest["auto_detect"])
+		self.auto_detect_doi = 1
 		if "auto_detect_doi" in rest:
 			self.auto_detect_doi = int(rest["auto_detect_doi"])
+		self.ignore_blacklist = 0
+		if "ignore_blacklist" in rest:
+			self.ignore_blacklist = int(rest["ignore_blacklist"])
+		
 		if "entity_types" in rest:
 			self.entity_types = set()
 			for type in rest["entity_types"].split():
 				self.entity_types.add(int(type))
-		if "ignore_blacklist" in rest:
-			self.ignore_blacklist = int(rest["ignore_blacklist"])
-	
-	def set_defaults(self):
-		if not self.entity_types:
+		else:
 			self.entity_types = set()
 			if mamba.setup.config_is_true(self.user_settings["proteins"]):
 				self.entity_types.add(9606)
@@ -74,59 +73,6 @@ class TaggingRequest(mamba.task.Request):
 				self.entity_types.add(-1)
 			if mamba.setup.config_is_true(self.user_settings["wikipedia"]):
 				self.entity_types.add(-11)
-		
-		if self.auto_detect == None:
-			self.auto_detect =  mamba.setup.config_is_true(self.user_settings["proteins"])
-		if self.auto_detect_doi == None:
-			self.auto_detect_doi = 1
-		if self.ignore_blacklist == None:
-			self.ignore_blacklist = 0
-		if self.doi:
-			self.document_id = self.doi
-		elif self.uri:
-			self.document_id = self.uri
-		elif self.pmid:
-			self.document_id = self.pmid
-		elif self.hash != None:
-			self.document_id = self.hash
-		else:
-			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
-
-	def download(self):
-		if not self.uri and not self.doi and not self.pmid:
-			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
-		else:
-			fetch_url = None
-			if self.doi:
-				fetch_url = "http://dx.doi.org/"+self.doi
-			elif self.pmid:
-				fetch_url = "http://www.ncbi.nlm.nih.gov/sites/entrez/"+str(self.pmid)
-			elif self.uri:
-				fetch_url = self.uri
-			if fetch_url:
-				self.info("Downloading: %s" % fetch_url)
-				page, status, headers, page_url, charset = mamba.http.Internet().download(fetch_url)
-				if charset:
-					page = unicode(page, charset, "replace")
-					self.http.charset = charset
-				if status != 200:
-					mamba.http.HTTPErrorResponse(self, status, page).send()
-				else:
-					page_is_text = False
-					if "Content-Type" in headers:
-						for accepted in _taggable_types:
-							if headers["Content-Type"].lower().startswith(accepted):
-								page_is_text = True
-								break
-					if not page_is_text:
-						mamba.http.Redirect(self, location=page_url).send()
-					else:
-						if page:
-							self.uri = page_url # URI could have been changed via multiple redirects.
-							self.document = page
-							self.queue("tagging")
-						else:
-							mamba.http.HTTPErrorResponse(self, 404, "Unable to download URI: '%s'" % str(fetch_url)).send()
 	
 	def convert(self):
 		md5 = hashlib.md5()
@@ -142,56 +88,81 @@ class TaggingRequest(mamba.task.Request):
 		f.write(self.document)
 		f.flush()
 		f.close()
-		error = 0
 		if self.document.startswith('%PDF'):
-			self.info("Converting PDF document...")
-			error = os.system("%s/pdf2html %s >& /dev/null" % (bin_dir, infile))
-		else:
-			self.info("Converting document using AbiWord, format either text or binary...")
-			error = os.system("unset DISPLAY; abiword --to=html --exp-props='embed-css: yes; embed-images: yes;' %s" % infile)
-			if error:
-				self.warn("Abiword returned %i. Continue conversion assuming Microsoft Excel format..." % error)
-				os.system("%s/xls2csv %s | %s/csv2html > %s" % (bin_dir, infile, bin_dir, outfile))
+			os.system("%s/pdf2html %s >& /dev/null" % (bin_dir, infile))
+		elif os.system("unset DISPLAY; abiword --to=html --exp-props='embed-css: yes; embed-images: yes;' %s" % infile):
+			os.system("%s/xls2csv %s | %s/csv2html > %s" % (bin_dir, infile, bin_dir, outfile))
 		f = open(outfile, "r")
 		html = f.read();
 		f.close()
-		try:
-			if len(html):
-				self.document = unicode(html, "utf-8", "replace")
-				return True
-			else:
-				reply = mamba.http.HTTPErrorResponse(self, 400, "Request contains an unsupported document type")
-				reply.send()
-				return False
-		finally:
-				if os.path.exists(infile):
-					try:
-						os.remove(infile)
-					except:
-						self.err('Error while removing conversion input file "%s"' % infile)
-				if os.path.exists(outfile):
-					try:
-						os.remove(outfile)
-					except:
-						self.err('Error while removing convertion output file "%s"' % outfile)
-								
-	def tagging(self):
-		if not isinstance(self.document, unicode) and not self.convert():
-			return
-		footer = ['<div class="reflect_user_settings" style="display: none;">']
-		for key in self.user_settings:
-			footer.append('  <span name="%s">%s</span>' % (key, self.user_settings[key]))
-		footer.append('</div>\n')
-		html = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer="\n".join(footer))
-		mamba.http.HTTPResponse(self, html, "text/html").send()
-		
-	def main(self):
-		self.parse()
-		self.set_defaults()
-		if self.document:
-			self.queue("tagging")
+		os.remove(infile)
+		os.remove(outfile)
+		if len(html):
+			self.document = unicode(html, "utf-8", "replace")
+			self.queue("main")
 		else:
+			mamba.http.HTTPErrorResponse(self, 400, "Request contains an unsupported document type").send()
+	
+	def download(self):
+		self.info("Downloading: %s" % self.document_url)
+		page, status, headers, page_url, charset = mamba.http.Internet().download(self.document_url)
+		if charset:
+			page = unicode(page, charset, "replace")
+			self.http.charset = charset
+		if status != 200:
+			mamba.http.HTTPErrorResponse(self, status, page).send()
+		else:
+			page_is_text = False
+			if "Content-Type" in headers:
+				for accepted in _taggable_types:
+					if headers["Content-Type"].lower().startswith(accepted):
+						page_is_text = True
+						break
+			if not page_is_text:
+				mamba.http.Redirect(self, location=page_url).send()
+			elif page:
+				self.uri = page_url # URI could have been changed via multiple redirects.
+				self.document = page
+				self.queue("main")
+			else:
+				mamba.http.HTTPErrorResponse(self, 404, "Unable to download URI: '%s'" % str(fetch_url)).send()
+	
+	def main(self):
+		if not hasattr(self, "document"):
+			self.parse(mamba.task.RestDecoder(self))
+		elif isinstance(self.document, unicode):
+			if self.hash == None:
+				hash  = hashlib.md5()
+				hash.update(mamba.util.string_to_bytes(self.document, self.http.charset))
+				self.hash = hash.hexdigest()
+			self.queue("tagging")
+		elif self.document != None:
+			self.queue("convert")
+		elif self.document_url != None:
 			self.queue("download")
+		else:
+			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
+
+
+class GetEntities(TaggingRequest):
+	
+	def __init__(self, http, action = "GetEntities"):
+		TaggingRequest.__init__(self, http, action)
+	
+	def parse(self, rest):
+		TaggingRequest.parse(self, rest)
+		self.format = "xml"
+		if "format" in rest:
+			self.format = rest["format"].lower()
+		if self.format not in ("xml", "tsv", "csv", "ssv"):
+			raise mamba.task.SyntaxError, 'In action: %s unknown format: "%s". Supports only: %s' % (self.action, format, ', '.join(supported_formats))		
+	
+	def tagging(self):
+		data = mamba.setup.config().tagger.GetEntities(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, format=self.format)
+		if format == "xml":
+			mamba.http.HTTPResponse(self, data, "text/xml").send()
+		else:
+			mamba.http.HTTPResponse(self, data, "text/plain").send()
 
 
 class GetHTML(TaggingRequest):
@@ -199,40 +170,25 @@ class GetHTML(TaggingRequest):
 	def __init__(self, http):
 		TaggingRequest.__init__(self, http, "GetHTML")
 		
-		
+	def tagging(self):
+		footer = ['<div class="reflect_user_settings" style="display: none;">']
+		for key in self.user_settings:
+			footer.append('  <span name="%s">%s</span>' % (key, self.user_settings[key]))
+		footer.append('</div>\n')
+		self.document = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer="\n".join(footer))
+		self.respond()
+	
+	def respond(self):
+		mamba.http.HTMLResponse(self, self.document).send()
+
+
 class GetURI(GetHTML):
 	
 	def __init__(self, http):
 		TaggingRequest.__init__(self, http, "GetURI")
 
-	def tagging(self):
-		html = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
-		document = mamba.util.string_to_bytes(html, self.http.charset)
-		filename = self.hash+".html"
-		f = open(self.worker.params["tmp_dir"]+"/"+filename, "w")
-		f.write(document)
-		f.flush()
+	def respond(self):
+		f = open(self.worker.params["tmp_dir"]+"/"+self.hash+".html", "w")
+		f.write(mamba.util.string_to_bytes(self.document, self.http.charset))
 		f.close()
-		mamba.http.HTTPResponse(self, self.worker.params["tmp_uri"]+"/"+filename, "text/html").send()
-
-
-class GetEntities(TaggingRequest):
-	
-	def __init__(self, http, action = "GetEntities"):
-		TaggingRequest.__init__(self, http, action)
-		
-	def parse(self):
-		TaggingRequest.parse(self)
-		rest = mamba.task.RestDecoder(self)
-		self.format = "xml"
-		if "format" in rest:
-			self.format = rest["format"].lower()
-		if self.format not in ("xml", "tsv", "csv", "ssv"):
-			raise mamba.task.SyntaxError, 'In action: %s unknown format: "%s". Supports only: %s' % (self.action, self.format, ', '.join(supported_formats))
-		
-	def tagging(self):
-		data = mamba.setup.config().tagger.GetEntities(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, format=self.format)
-		content_type = "text/plain"
-		if self.format == "xml":
-			content_type = "text/xml"
-		mamba.http.HTTPResponse(self, data, content_type).send()
+		mamba.http.HTTPResponse(self, self.worker.params["tmp_uri"]+"/"+filename, "text/plain").send()
