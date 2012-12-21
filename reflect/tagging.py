@@ -131,15 +131,13 @@ class TaggingRequest(mamba.task.Request):
 		if not hasattr(self, "document"):
 			self.parse(mamba.task.RestDecoder(self))
 		elif isinstance(self.document, unicode):
-			if self.hash == None:
-				hash  = hashlib.md5()
-				hash.update(mamba.util.string_to_bytes(self.document, self.http.charset))
-				self.hash = hash.hexdigest()
 			self.queue("tagging")
 		elif self.document != None:
 			self.queue("convert")
 		elif self.document_url != None:
 			self.queue("download")
+		elif self.hash != None:
+			self.load()
 		else:
 			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
 
@@ -169,7 +167,30 @@ class GetHTML(TaggingRequest):
 	
 	def __init__(self, http):
 		TaggingRequest.__init__(self, http, "GetHTML")
+	
+	def load():
+		try:
+			f = open(self.worker.params["tmp_dir"]+"/"+self.hash+".html", "r")
+			self.document = f.read()
+			f.close()
+			mamba.http.HTMLResponse(self, self.document).send()
+		except:
+			mamba.http.HTTPErrorResponse(self, 404, "Pretagged document not available.").send()
+	
+	def respond(self):
+		if self.hash != None:
+			self.save()
+		mamba.http.HTMLResponse(self, self.document).send()
 		
+	def save(self):
+		if self.hash == None:
+			hash  = hashlib.md5()
+			hash.update(mamba.util.string_to_bytes(self.document, self.http.charset))
+			self.hash = hash.hexdigest()
+		f = open(self.worker.params["tmp_dir"]+"/"+self.hash+".html", "w")
+		f.write(mamba.util.string_to_bytes(self.document, self.http.charset))
+		f.close()
+	
 	def tagging(self):
 		footer = ['<div class="reflect_user_settings" style="display: none;">']
 		for key in self.user_settings:
@@ -177,18 +198,13 @@ class GetHTML(TaggingRequest):
 		footer.append('</div>\n')
 		self.document = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer="\n".join(footer))
 		self.respond()
-	
-	def respond(self):
-		mamba.http.HTMLResponse(self, self.document).send()
 
 
 class GetURI(GetHTML):
 	
 	def __init__(self, http):
 		TaggingRequest.__init__(self, http, "GetURI")
-
+	
 	def respond(self):
-		f = open(self.worker.params["tmp_dir"]+"/"+self.hash+".html", "w")
-		f.write(mamba.util.string_to_bytes(self.document, self.http.charset))
-		f.close()
-		mamba.http.HTTPResponse(self, self.worker.params["tmp_uri"]+"/"+filename, "text/plain").send()
+		self.save()
+		mamba.http.HTTPResponse(self, self.worker.params["tmp_dir"]+"/"+self.hash+".html", "text/plain").send()
