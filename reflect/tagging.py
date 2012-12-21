@@ -27,6 +27,8 @@ class TaggingRequest(mamba.task.Request):
 			if "content_type" in rest and rest["content_type"].lower() == "text/html" or isinstance(self.document, str):
 				self.document = unicode(self.document, self.http.charset, errors="replace")
 		
+		self.document_id = None
+		self.document_url = None
 		doi = None
 		if "doi" in rest:
 			doi  = rest["doi"]
@@ -49,7 +51,6 @@ class TaggingRequest(mamba.task.Request):
 			self.document_url = "http://www.ncbi.nlm.nih.gov/pubmed/"+rest["pmid"]
 		elif self.hash != None:
 			self.document_id = self.hash
-			self.document_url = None
 		
 		self.auto_detect = 1
 		if "auto_detect" in rest:
@@ -130,7 +131,7 @@ class TaggingRequest(mamba.task.Request):
 	def main(self):
 		if not hasattr(self, "document"):
 			self.parse(mamba.task.RestDecoder(self))
-		elif isinstance(self.document, unicode):
+		if isinstance(self.document, unicode):
 			self.queue("tagging")
 		elif self.document != None:
 			self.queue("convert")
@@ -168,7 +169,7 @@ class GetHTML(TaggingRequest):
 	def __init__(self, http):
 		TaggingRequest.__init__(self, http, "GetHTML")
 	
-	def load():
+	def load(self):
 		try:
 			f = open(self.worker.params["tmp_dir"]+"/"+self.hash+".html", "r")
 			self.document = f.read()
