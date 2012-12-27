@@ -28,18 +28,18 @@ class Setup(mamba.setup.Configuration):
 			self.tagger.LoadGlobal(self.globals["global_file"])
 		if "local_file" in self.globals:
 			self.tagger.LoadLocal(self.globals["local_file"])
-		if 'changelog_file' in self.globals:
-			self.tagger.LoadChangelog(self.globals['changelog_file'])
+		if "changelog_file" in self.globals:
+			self.tagger.LoadChangelog(self.globals["changelog_file"])
 
 
 class AddName(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		for check in ('name', 'document_id', 'entity_type', 'entity_identifier'):
+		for check in ("name", "document_id", "entity_type", "entity_identifier"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.AddName(rest['name'], int(rest['entity_type']), rest['entity_identifier'], rest['document_id'])
+		mamba.setup.config().tagger.AddName(mamba.util.string_to_bytes(rest["name"], "utf-8"), int(rest["entity_type"]), mamba.util.string_to_bytes(rest["entity_identifier"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, "AddName succeeded.").send()
 
 
@@ -47,10 +47,10 @@ class AllowName(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		for check in ('name', 'document_id'):
+		for check in ("name", "document_id"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.AllowName(rest['name'], rest['document_id'])
+		mamba.setup.config().tagger.AllowName(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, 'AllowName succeeded.').send()
 
 
@@ -58,10 +58,10 @@ class BlockName(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		for check in ('name', 'document_id'):
+		for check in ("name", "document_id"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.BlockName(rest['name'], rest['document_id'])
+		mamba.setup.config().tagger.BlockName(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, 'BlockName succeeded.').send()
 
 
@@ -82,14 +82,14 @@ class GetPopup(mamba.task.Request):
 		entities = mamba.setup.config().tagger.ResolveName(mamba.util.string_to_bytes(rest["name"], self.http.charset))
 		if len(entities):
 			url_params = []
-			show_first = ['9606', '10090']
+			show_first = ["9606", "10090"]
 			for pref_organism in show_first:
 				for type, id in entities:
 					if type == pref_organism:
-						url_params.append(type + '.' + id + '+')
+						url_params.append(type + "." + id + "+")
 			for type, id in entities:
 				if type not in show_first:
-					url_params.append(type + '.' + id + '+')
+					url_params.append(type + "." + id + "+")
 			popup_url = 'http://reflect.ws/popup/fcgi-bin/createPopup.fcgi?' + ''.join(url_params)
 			popup_url = popup_url[:-1]
 			reply = mamba.http.HTTPRedirect(self, popup_url)
