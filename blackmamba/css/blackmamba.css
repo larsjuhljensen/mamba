@@ -271,9 +271,9 @@ img {
 }
 
 .data .evidence {
-	width: 8em;
+	width: 10em;
 }
-
+i
 .data .identifier {
 	text-align: right;
 }
@@ -283,7 +283,7 @@ img {
 }
 
 .data .z-score {
-	width: 8em;
+	width: 10em;
 }
 
 .data span.stars {
