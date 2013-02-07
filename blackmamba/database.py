@@ -138,3 +138,30 @@ def entity_names(qtype, qid, dictionary=None):
 	for row in dictionary.query("SELECT name FROM names WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult():
 		names.append(row[0])
 	return names
+
+
+class GetSynonyms(mamba.task.Request):
+	
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		
+		qtype = int(rest["type"])
+		qid = rest["id"]
+		limit = 1000
+		if "limit" in rest:
+			limit = int(rest["limit"])
+		
+		text = "\n".join(map(str.strip, synonyms(qtype, qid)[:limit]))+"\n"
+		mamba.http.HTTPResponse(self, text, "text/plain").send()
+
+
+class GetDescription(mamba.task.Request):
+	
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		
+		qtype = int(rest["type"])
+		qid = rest["id"]
+		
+		text = description(qtype, qid)+"\n"
+		mamba.http.HTTPResponse(self, text, "text/plain").send()

@@ -65,12 +65,12 @@ class XPagesDiv(html.XDiv):
 					query.append(urllib.quote(key)+"="+urllib.quote(rest[key]))
 			query = '&'.join(query)
 			container = rest["container"]
-	                if page > 1:
-        	                html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container)}), "&lt;&nbsp;Prev")
-                	if count > page*limit:
+			if page > 1:
+				html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container)}), "&lt;&nbsp;Prev")
+			if count > page*limit:
 				if page > 1:
 					html.XText(self, "&nbsp;|&nbsp;")
-	                        html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container)}), "Next&nbsp;&gt;")
+				html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container)}), "Next&nbsp;&gt;")
 
 
 class XAjaxTable(mamba.task.Request):
@@ -240,7 +240,7 @@ class EntityHeader(html.XNode):
 		synonyms = database.synonyms(qtype, qid, dictionary, userdata)
 		if len(synonyms):
 			if len(synonyms) > 1 or synonyms[0].lower() != name.lower():
-				text = "Synonyms:&nbsp;&nbsp;%s" % ",&nbsp;&nbsp;".join(map(str.strip, synonyms)[:maxsyn])
+				text = "Synonyms:&nbsp;&nbsp;%s" % ",&nbsp;&nbsp;".join(map(str.strip, synonyms[:maxsyn]))
 				if len(synonyms) > maxsyn:
 					text += " ..."
 				html.XP(self, text, {"class":"synonyms"})
