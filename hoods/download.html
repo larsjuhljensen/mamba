@@ -1,0 +1,27 @@
+<h2>Download HOODS</h2>
+
+<p>
+If you want to use HOODS to perform large-scale analyses, we recommend that you download the command-line version of the program and run it locally on your own computer. HOODS is implemented in Perl and relies on no modules or external programs.
+</p>
+
+<p>
+To run HOODS, execute the following command:
+</p>
+
+<pre>
+./hoods.pl &lt;matrix file&gt; &lt;label file&gt; [alpha]
+</pre>
+
+<p>
+The first argument is the name of file containing a similarity matrix; this file has three columns, namely entity1, entity2, and similarity. The second argument is the name of a label file with two columns, namely entity and association score. The third optional argument is the value for alpha, which defaults to 0.5.
+</p>
+
+<p>
+The script produces a tab-separated file with all the neighborhoods ranked by their neighborhood score. Each line in the file lists the score of a neighborhood, the number of entities in the neighborhood, and a list of all of them. 
+</p>
+
+<h2 style="text-align: center;"><a href="/hoods.pl">Download HOODS</a></h2>
+
+<p style="text-align: center;">
+Released under the <a href="http://opensource.org/licenses/BSD-3-Clause">3-clause BSD license</a>.
+</p>

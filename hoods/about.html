@@ -1,0 +1,25 @@
+<h2>About HOODS</h2>
+
+<p>
+Clustering algorithms are often used to find groups relevant in a specific context; however, they are not informed about this context. We present a simple algorithm, HOODS, which identifies context-specific neighborhoods of entities from a similarity matrix and a list of entities specifying the context.
+</p>
+
+<p>
+To produce context-specific groups of similar entities (neighborhoods), we have implemented HOODS, which is a simple algorithm that only needs 2 input files to run: 1) the similarity matrix among entities; and 2) the association scores between entities and the specific context (label). HOODS first sorts the neighbors for each entity in the matrix (seeds). Secondly, for each seed it goes through all the nearest neighbors calculating a neighborhood score:
+</p>
+
+<p style="text-align: center;">
+<em>Score</em> = <em>Sum</em>/<em>Count<sup>alpha</sup></em>
+</p>
+
+<p>
+A parameter named <em>alpha</em> needs to be set and it ranges from 0 to 1 &emdash; the closer to 1, the more penalized the big neighborhoods. <em>Sum</em> is the running sum of label scores and <em>Count</em> the neighborhood size. HOODS gathers the neighborhoods only in case that it does not exist yet another with the same labeled entities and higher score and, finally, it ranks them by the score considering only the ones that include at least one new entity.
+</p>
+
+<p>
+<img src="/method.png" style="border: 1px solid; display: block; margin-left: auto; margin-right: auto;"></img>
+</p>
+
+<p>
+Although we group related entities as clustering methods do, HOODS does not intend to be a clustering algorithm. The outcome of clustering is distinct clusters, such that entities in one cluster are more related to each other than to entities in different clusters. Our neighborhoods contain related entities that are grouped in a given context, but some of them may be more closely related to other entities in other neighborhoods.
+</p>

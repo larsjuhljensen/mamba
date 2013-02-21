@@ -222,6 +222,10 @@ td{
   width: auto;
 }
 
+table.output{
+  width: $width;
+}
+
 .output td{
   min-width: 0;
   text-align: left;
@@ -631,7 +635,10 @@ class HTML(REST):
 		spacer = []
 		spacer.append('''<table class='output'><tr>''')
 		for width in widths:
-			spacer.append('''<td>%s</td>''' % ("&nbsp;" * width))
+			spaces = '''<td>%s</td>''' % ("&nbsp; " * int(width/2))
+			if width%2 == 1:
+				spaces += "&nbsp;"
+			spacer.append(spaces)
 		spacer.append('''</tr></table>''')
 		spacer = "".join(spacer)
 		html = []
