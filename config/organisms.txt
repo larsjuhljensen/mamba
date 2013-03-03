@@ -14,7 +14,7 @@ http://www.cpr.ku.dk
 /cpr.png
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.hcmr.gr/en/">Institute of Marine Biology, Biotechnology and Aquaculture, Hellenic Centre for Marine Research</a>, and the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research, University of Copenhagen</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.hcmr.gr/en/">Institute of Marine Biology, Biotechnology and Aquaculture, Hellenic Centre for Marine Research</a> and the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research, University of Copenhagen</a>.</p>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-36065925-1']);
