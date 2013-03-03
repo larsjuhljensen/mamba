@@ -18,7 +18,7 @@ class Textmining(xpage.XAjaxTable):
 		qtype1 = int(rest["type1"])
 		qtype2 = int(rest["type2"])
 		qid1 = rest["id1"]
-		if qtype2 == -1 or qtype2 == -2:
+		if qtype2 == -1:
 			return xpage.XAjaxTable.get_rows(self, rest)
 		else:
 			dictionary = database.Connect("dictionary")
