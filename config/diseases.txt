@@ -40,7 +40,7 @@ Search for a human gene or a disease:
 
 [EXAMPLES:SEARCH]
 KLK3
-Prostate cancer
+Diabetes mellitus
 
 [CONTENT:DOWNLOADS]
 <p style="font-weight: bold;">The DISEASES database is also available for download in tab-delimited format:</p>
