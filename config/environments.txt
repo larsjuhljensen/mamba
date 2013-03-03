@@ -35,5 +35,5 @@ http://www.cpr.ku.dk
 Search for an organism or an environment:
 
 [EXAMPLES:SEARCH]
-KLK3
-Prostate cancer
+Elephant
+

@@ -32,4 +32,8 @@ http://www.cpr.ku.dk
 <p class="footer_description">Each tissue&ndash;gene association is based on a text-mining score, which is proportional to 1) the absolute number of comentionings and 2) the ratio of observed to expected comentionings (i.e. the enrichment). These scores are normalized to z-scores by comparing them to a random background. This is represented by stars, each star corresponding to two standard deviations above the mean of the background distribution.</p>
 
 [CONTENT:SEARCH]
-Search for a human gene or tissue:
+Search for a human gene:
+
+[EXAMPLES:SEARCH]
+CYP3A4
+Insulin
