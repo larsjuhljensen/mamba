@@ -7,7 +7,6 @@ import urllib
 
 import database
 import html
-import search
 import visualization
 
 import mamba.setup
@@ -327,6 +326,5 @@ class OpenSearchDescription(mamba.task.Request):
 	
 	def main(self):
 		design = get_design()
-		xml = '''<?xml version="1.0"?><OpenSearchDescription xmlns="http://a9.com/-/spec/ope
-nsearch/1.1/"><ShortName>%s</ShortName><Description>%s</Description><Url type="text/html" method="get" template="http://%s/Search?query={searchTerms}"/></OpenSearchDescription>''' % (design["TITLE"], design["SUBTITLE"], self.http.headers["Host"])
+		xml = '''<?xml version="1.0"?><OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"><ShortName>%s</ShortName><Description>%s</Description><Url type="text/html" method="get" template="http://%s/Search?query={searchTerms}"/></OpenSearchDescription>''' % (design["TITLE"], design["SUBTITLE"], self.http.headers["Host"])
 		mamba.http.HTTPResponse(self, xml, "application/opensearchdescription+xml").send()
