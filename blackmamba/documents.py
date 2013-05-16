@@ -14,7 +14,7 @@ class PopupHeader(mamba.task.Request):
 		rest = mamba.task.RestDecoder(self)
 		qtype = int(rest["type"])
 		qid = rest["id"]
-
+		
 		xroot = html.XNode(None)
 		html.XText(html.XSpan(html.XDiv(xroot, "popup_close"), {"class":"silent_link","onclick":"close_popup();"}), "[close]")
 		xpage.EntityHeader(xroot, qtype, qid)
