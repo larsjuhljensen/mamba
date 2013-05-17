@@ -29,7 +29,7 @@ use strict;
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                    #
 ###################################################################################
 
-my $alpha = 0.5;
+my $alpha = 0.8;
 my $maxcluster;
 my $maxentities;
 if ($#ARGV < 4) {
