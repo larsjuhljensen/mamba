@@ -311,6 +311,7 @@ class XHead(XTag):
 		self.css = []
 		self.scripts = []
 		self.scripts.append("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+		self.scripts.append("/scripts/hammer.min.js")
 		self.scripts.append("/scripts/blackmamba.js")
 		self.scripts.append("/scripts/base64.js")
 		
