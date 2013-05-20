@@ -49,6 +49,7 @@ class XAjaxContainer(html.XDiv):
 		container = md5.hexdigest()
 		html.XDiv.__init__(self, parent, "ajax_table", container)
 		html.XScript(self, "blackmamba_pager('%s', '%s', %d, %d, '%s');" % (url, query, limit, page, container))
+		html.XScript(parent, "Hammer(document.getElementById('%s')).on('swipeleft', function(event) {document.getElementById('%s_next').onclick();}).on('swiperight', function(event) {document.getElementById('%s_prev').onclick();});" % (container, container, container))
 
 
 class XPagesDiv(html.XDiv):
@@ -65,11 +66,11 @@ class XPagesDiv(html.XDiv):
 			query = '&'.join(query)
 			container = rest["container"]
 			if page > 1:
-				html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container)}), "&lt;&nbsp;Prev")
+				html.XText(html.XSpan(self, {"class":"silent_link","id":container+"_prev","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page-1, container)}), "&lt;&nbsp;Prev")
 			if count > page*limit:
 				if page > 1:
 					html.XText(self, "&nbsp;|&nbsp;")
-				html.XText(html.XSpan(self, {"class":"silent_link","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container)}), "Next&nbsp;&gt;")
+				html.XText(html.XSpan(self, {"class":"silent_link","id":container+"_next","onclick":"blackmamba_pager('%s', '%s', %d, %d, '%s')" % (url, query, limit, page+1, container)}), "Next&nbsp;&gt;")
 
 
 class XAjaxTable(mamba.task.Request):
