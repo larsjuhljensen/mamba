@@ -172,6 +172,7 @@ class Documents(mamba.task.Request):
 
 		mamba.http.HTTPResponse(self, xroot.tohtml()).send()
 
+
 class Mentions(Documents):
 
 	def get_documents(self, rest, textmining = None):
@@ -183,6 +184,7 @@ class Mentions(Documents):
 		qtype = int(rest["type"])
 		qid = rest["id"].encode("utf8")
 		return [(qtype, qid, "document_match_type1")]
+
 
 class Comentions(Documents):
 
