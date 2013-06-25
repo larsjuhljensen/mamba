@@ -308,6 +308,7 @@ class XHead(XTag):
 	def __init__(self, parent):
 		XTag.__init__(self, parent, "head")
 		self.title = ""
+		self.search = None
 		self.css = []
 		self.scripts = []
 		self.scripts.append("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
@@ -322,6 +323,8 @@ class XHead(XTag):
 			html.append("  <title>%s</title>" % self.title)
 		html.append("""  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>""")
 		html.append("""  <meta http-equiv="X-UA-Compatible" content="IE=9"></meta>""")
+		if self.search != None:
+			html.append(""" <link rel="search" href="%s" title="%s" type="application/opensearchdescription+xml" />""" % (self.search[1], self.search[1]))
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
 		for java in self.scripts:
