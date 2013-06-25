@@ -162,7 +162,7 @@ class XPage(html.XNakedPage):
 			html.XNakedPage.__init__(self, "%s - %s" % (design["TITLE"], page_name))
 		else:
 			html.XNakedPage.__init__(self, design["TITLE"])
-		self.head.opensearch = (design["TITLE"], "/OpenSearchDescription")
+		self.head.search = (design["TITLE"], "/OpenSearchDescription")
 		self.head.css = map(str.strip, design["CSS"].split("\n"))
 		left = html.XDiv(self.header, "header_left")
 		html.XLink(html.XH1(left), "/", design["TITLE"])
