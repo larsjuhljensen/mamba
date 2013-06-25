@@ -324,7 +324,7 @@ class XHead(XTag):
 		html.append("""  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>""")
 		html.append("""  <meta http-equiv="X-UA-Compatible" content="IE=9"></meta>""")
 		if self.search != None:
-			html.append(""" <link rel="search" href="%s" title="%s" type="application/opensearchdescription+xml" />""" % (self.search[1], self.search[1]))
+			html.append("""  <link rel="search" href="%s" title="%s" type="application/opensearchdescription+xml" />""" % (self.search[1], self.search[0]))
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
 		for java in self.scripts:
