@@ -13,6 +13,10 @@ http://www.cpr.ku.dk
 [LOGO]
 /cpr.png
 
+[MENU]
+Search
+Downloads
+
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script type="text/javascript">
@@ -31,8 +35,57 @@ http://www.cpr.ku.dk
 <p class="footer_description">The subcellular localizations are derived from database annotations, automatic text mining of the biomedical literature, and sequence-based predictions. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
 
 [CONTENT:SEARCH]
-Search for a human, mouse, rat, fly, worm, or yeast protein:
+Search for a human, mouse, rat, fly, worm, yeast, or arabidopsis protein:
 
 [EXAMPLES:SEARCH]
 NR3C1
 COX1
+
+[CONTENT:DOWNLOADS]
+<p style="font-weight: bold;">The COMPARTMENTS database is available for download in tab-delimited format:</p>
+<p>
+<table cellpadding="6">
+<tr>
+<td>Knowledge channel:</td>
+<td><a href="http://download.jensenlab.org/human_compartment_knowledge_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_compartment_knowledge_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_compartment_knowledge_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/fly_compartment_knowledge_full.tsv">fly</a></td>
+<td><a href="http://download.jensenlab.org/worm_compartment_knowledge_full.tsv">worm</a></td>
+<td><a href="http://download.jensenlab.org/yeast_compartment_knowledge_full.tsv">yeast</a></td>
+<td><a href="http://download.jensenlab.org/arabidopsis_compartment_knowledge_full.tsv">arabidopsis</a></td>
+</tr>
+<tr>
+<td>Experiments channel:</td>
+<td><a href="http://download.jensenlab.org/human_compartment_experiments_full.tsv">human</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Text mining channel:</td>
+<td><a href="http://download.jensenlab.org/human_compartment_textmining_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_compartment_textmining_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_compartment_textmining_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/fly_compartment_textmining_full.tsv">fly</a></td>
+<td><a href="http://download.jensenlab.org/worm_compartment_textmining_full.tsv">worm</a></td>
+<td><a href="http://download.jensenlab.org/yeast_compartment_textmining_full.tsv">yeast</a></td>
+<td><a href="http://download.jensenlab.org/arabidopsis_compartment_textmining_full.tsv">arabidopsis</a></td>
+</tr>
+<tr>
+<td>Predictions channel:</td>
+<td><a href="http://download.jensenlab.org/human_compartment_predictions_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_compartment_predictions_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_compartment_predictions_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/fly_compartment_predictions_full.tsv">fly</a></td>
+<td><a href="http://download.jensenlab.org/worm_compartment_predictions_full.tsv">worm</a></td>
+<td><a href="http://download.jensenlab.org/yeast_compartment_predictions_full.tsv">yeast</a></td>
+<td><a href="http://download.jensenlab.org/arabidopsis_compartment_predictions_full.tsv">arabidopsis</a></td>
+</tr>
+</table>
+</p>
+<p>Evidence has been propagated through is_a and part_of relationships to list all applicable ontology terms.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a>.</p>

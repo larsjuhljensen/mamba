@@ -5,7 +5,7 @@
 TISSUES
 
 [SUBTITLE]
-Gene-tissue association database
+Tissue expression database
 
 [LINK]
 http://www.cpr.ku.dk
