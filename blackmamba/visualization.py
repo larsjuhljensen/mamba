@@ -7,6 +7,9 @@ import mamba.task
 def svg(qfigure, qtype, qid, visualization = None):
 	if visualization == None:
 		visualization = database.Connect("visualization")
+	if qtype == None and qid == None:
+		q = "SELECT svg FROM figures where figure = '%s';" % pg.escape_string(qfigure)
+		return visualization.query(q).getresult()[0][0]
 	q = "SELECT DISTINCT figure FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
 	figure = visualization.query(q).getresult()[0][0]
 	q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(figure))
@@ -46,11 +49,31 @@ class Visualization(mamba.task.Request):
 		rest = mamba.task.RestDecoder(self)
 		
 		qfigure = rest["figure"]
-		qtype = int(rest["type"])
-		qid = rest["id"].encode("utf8")
+		qtype = None
+		if "type" in rest:
+			qtype = int(rest["type"])
+		qid = None
+		if "id" in rest:
+			qid = rest["id"].encode("utf8")
 		
 		xsvg = SVG(None, svg(qfigure, qtype, qid))
 		mamba.http.HTTPResponse(self, xsvg.tohtml()).send()
+
+class VisualizationJSON(mamba.task.Request):
+
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+
+		qfigure = rest["figure"]
+		qtype = int(rest["type"])
+		qid = rest["id"].encode("utf8")
+		
+		visualization = database.Connect("visualization")
+		q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
+		json = []
+		for r in visualization.query(q).getresult():
+			json.append('''"%s":"%s"''' % (r[0], r[1]))
+		mamba.http.HTTPResponse(self, "{"+",".join(json)+"}\n", "application/json").send()
 
 class AjaxSVG(html.XDiv):
 	
