@@ -144,13 +144,11 @@ class GetSynonyms(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		
 		qtype = int(rest["type"])
 		qid = rest["id"]
 		limit = 1000
 		if "limit" in rest:
 			limit = int(rest["limit"])
-		
 		text = "\n".join(map(str.strip, synonyms(qtype, qid)[:limit]))+"\n"
 		mamba.http.HTTPResponse(self, text, "text/plain").send()
 
@@ -159,9 +157,16 @@ class GetDescription(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		
 		qtype = int(rest["type"])
 		qid = rest["id"]
-		
-		text = description(qtype, qid)+"\n"
-		mamba.http.HTTPResponse(self, text, "text/plain").send()
+		mamba.http.HTTPResponse(self, description(qtype, qid)+"\n", "text/plain").send()
+
+
+class GetSequence(mamba.task.Request):
+
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		qtype = int(rest["type"])
+		qid = rest["id"]
+                mamba.http.HTTPResponse(self, sequence(qtype, qid)+"\n", "text/plain").send()
+
