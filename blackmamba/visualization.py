@@ -69,10 +69,10 @@ class VisualizationJSON(mamba.task.Request):
 		qid = rest["id"].encode("utf8")
 		
 		visualization = database.Connect("visualization")
-		q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
+		q = "SELECT label, score FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
 		json = []
 		for r in visualization.query(q).getresult():
-			json.append('''"%s":"%s"''' % (r[0], r[1]))
+			json.append('''"%s":%d''' % (r[0], r[1]))
 		mamba.http.HTTPResponse(self, "{"+",".join(json)+"}\n", "application/json").send()
 
 class AjaxSVG(html.XDiv):
