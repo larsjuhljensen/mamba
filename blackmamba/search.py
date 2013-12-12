@@ -21,7 +21,7 @@ class Table(html.XNode):
 			xpages = html.XDiv(self, "table_pages")
 			xtable = html.XDataTable(self)
 			xtable["width"] = "100%"
-			xtable.addhead("Matched name", "Primary name", "Identifier")
+			xtable.addhead("Matched name", "Primary name", "Type", "Identifier")
 			seen = set()
 			count = 0
 			for qtype, qid, name in entities:
@@ -29,8 +29,9 @@ class Table(html.XNode):
 					seen.add((qtype,qid))
 					if count >= limit*(page-1) and count < page*limit:
 						preferred = database.preferred_name(qtype, qid, dictionary)
+						type = database.preferred_type_name(qtype, dictionary)
 						link = '<a class="silent_link" href="%s%s">%%s</a>' % (qtypes[str(qtype)], qid)
-						xtable.addrow(link % html.xcase(name), link % html.xcase(preferred), link % qid)
+						xtable.addrow(link % html.xcase(name), link % html.xcase(preferred), type, link % qid)
 					count += 1
 					if count > page*limit:
 						break
