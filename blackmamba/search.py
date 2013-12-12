@@ -31,7 +31,7 @@ class Table(html.XNode):
 						preferred = database.preferred_name(qtype, qid, dictionary)
 						type = database.preferred_type_name(qtype, dictionary)
 						link = '<a class="silent_link" href="%s%s">%%s</a>' % (qtypes[str(qtype)], qid)
-						xtable.addrow(link % html.xcase(name), link % html.xcase(preferred), type, link % qid)
+						xtable.addrow(link % html.xcase(name), link % html.xcase(preferred), link % type, link % qid)
 					count += 1
 					if count > page*limit:
 						break
