@@ -27,6 +27,28 @@ def find_entities(qtypes, name, dictionary=None, exact=False):
 	return result
 
 
+def preferred_type_name(qtype, dictionary=None):
+	type_preferred = {
+		-2 : "Organism",
+		-21 : "Biological process",
+		-22 : "Cellular component",
+		-23 : "Molecular function",
+		-25 : "Tissue",
+		-26 : "Disease"
+	}
+	if dictionary == None:
+		dictionary = Connect("dictionary")
+	if qtype in type_preferred:
+		return type_preferred[qtype]
+	elif qtype >= 0:
+		rows = dictionary.query("SELECT name FROM preferred WHERE type=-2 AND id='%d';" % qtype).getresult()
+		if len(rows) >= 1:
+			return "%s protein" % rows[0][0]
+		else:
+			return "Protein"
+	else:
+		return ""
+
 def preferred_name(qtype, qid, dictionary=None):
 	if dictionary == None:
 		dictionary = Connect("dictionary")
