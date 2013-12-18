@@ -1,6 +1,12 @@
 [CSS]
 /css/blackmamba.css
 
+[CSS:ENTITY]
+/css/compartments.css
+
+[SCRIPTS:ENTITY]
+/scripts/compartments.js
+
 [TITLE]
 COMPARTMENTS
 
@@ -16,9 +22,10 @@ http://www.cpr.ku.dk
 [MENU]
 Search
 Downloads
+About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>,  <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:sean.o'donoghue@csiro.au">Sean O'Donoghue</a>, <a href="reinhard.schneider@uni.lu">Reinhard Schneider</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research (CPR)</a>, the <a href="http://wwwen.uni.lu/lcsb">Luxembourg Centre for Systems Biomedicine (LCSB)</a>, and the <a href="www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-36065925-1']);
@@ -106,3 +113,18 @@ Evidence has been propagated through is_a and part_of relationships to list all 
 <p>
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>.
 </p>
+
+[CONTENT:ABOUT]
+<div style="width: 50em;">
+<p>
+COMPARTMENTS is a frequently updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.
+</p>
+<p>
+For further details please refer to the Open Access article:
+</p>
+<p>
+<em>"COMPARTMENTS: unification and visualization of protein subcellular localization evidence"</em><br />
+(Link will be added as soon as article appears online)
+</p>
+</div>
+
