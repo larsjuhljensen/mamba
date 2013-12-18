@@ -1,5 +1,8 @@
 /* css for interactive diagrams */
-h1 span.small { font-size: 50%; }
+
+svg[id=animals] { margin-left: -34px; }
+svg[id=plants] { margin-left: -18px; }
+svg[id=fungi] { margin-left: -20px; }
 	
 div#evidence { 
 	position: absolute; 
