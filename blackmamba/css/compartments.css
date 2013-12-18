@@ -1,0 +1,22 @@
+/* css for interactive diagrams */
+h1 span.small { font-size: 50%; }
+	
+div#evidence { 
+	position: absolute; 
+	top:530px; left: 690px; 
+	border-left:1px solid #000; 
+	padding-left: 10px;
+	display: none;
+	}
+
+span.square { 
+	display: inline-block;
+	width: 20px;
+	height: 16px;
+	margin-right: 10px;
+	border: 1px solid #999;
+	}
+div.ruler { position: absolute; background: #000; height: 1px; display: none;}
+.interactive:hover, .interactive path:hover { cursor:crosshair; }
+
+.instructive text { display: block; }
