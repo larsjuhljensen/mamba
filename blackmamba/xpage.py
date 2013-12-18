@@ -163,7 +163,18 @@ class XPage(html.XNakedPage):
 		else:
 			html.XNakedPage.__init__(self, design["TITLE"])
 		self.head.search = (design["TITLE"], "/OpenSearchDescription")
-		self.head.css = map(str.strip, design["CSS"].split("\n"))
+		if "CSS" in design:
+			self.head.css += map(str.strip, design["CSS"].split("\n"))
+		if page_class != None:
+			key = "CSS:"+page_class.upper()
+			if key in design:
+				self.head.css += map(str.strip, design[key].split("\n"))
+		if "SCRIPTS" in design:
+			self.head.scripts += map(str.strip, design["SCRIPTS"].split("\n"))
+		if page_class != None:
+			key = "SCRIPTS:"+page_class.upper()
+			if key in design:
+				self.head.scripts += map(str.strip, design[key].split("\n"))
 		left = html.XDiv(self.header, "header_left")
 		html.XLink(html.XH1(left), "/", design["TITLE"])
 		html.XLink(html.XP(left), "/", design["SUBTITLE"])
@@ -247,6 +258,12 @@ class EntityHeader(html.XNode):
 				html.XP(self, text, {"class":"synonyms"})
 
 
+class About(mamba.task.Request):
+	
+	def main(self):
+		page = XPage("About", "About")
+		mamba.http.HTMLResponse(self, page.tohtml()).send()
+
 class Downloads(mamba.task.Request):
 	
 	def main(self):
@@ -305,7 +322,8 @@ class Entity(mamba.task.Request):
 			EntityHeader(documents.body, qtype1, qid1, dictionary)
 		
 		for n, qfigure in enumerate(qfigures):
-			visualization.AjaxSVG(associations.body, "visualization%d" % n, qfigure, qtype1, qid1)
+			container = html.XDiv(associations.body, "blackmamba_visualization%d_div" % n)
+			visualization.SVG(container, qfigure, qtype1, qid1)
 		if nnetwork:
 			network_link = html.XLink(associations.body, "StringNetworkLink?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
 			html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
