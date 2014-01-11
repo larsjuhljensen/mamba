@@ -277,6 +277,7 @@ class Entity(mamba.task.Request):
 		rest = mamba.task.RestDecoder(self)
 		dictionary = database.Connect("dictionary")
 		
+		order = []
 		qfigures = []
 		nnetwork     = 0
 		nknowledge   = 0
@@ -285,20 +286,36 @@ class Entity(mamba.task.Request):
 		npredictions = 0
 		ndocuments   = 0
 		
+		if "order" in rest:
+			order = rest["order"].split(",")
 		if "figures" in rest:
 			qfigures = rest["figures"].split(",")
+			if "figures" not in order:
+				order.append("figures")
 		if "network" in rest:
 			nnetwork = int(rest["network"])
+			if "network" not in order:
+				order.append("network")
 		if "knowledge" in rest:
 			nknowledge = int(rest["knowledge"])
+			if "knowledge" not in order:
+				order.append("knowledge")
 		if "experiments" in rest:
 			nexperiments = int(rest["experiments"])
+			if "experiments" not in order:
+				order.append("experiments")
 		if "textmining" in rest:
 			ntextmining = int(rest["textmining"])
+			if "textmining" not in order:
+				order.append("textmining")
 		if "predictions" in rest:
 			npredictions = int(rest["predictions"])
+			if "predictions" not in order:
+				order.append("predictions")
 		if "documents" in rest:
 			ndocuments = int(rest["documents"])
+			if "documents" not in order:
+				order.append("documents")
 		
 		qtype1 = int(rest["type1"])
 		qid1 = rest["id1"]
@@ -321,24 +338,26 @@ class Entity(mamba.task.Request):
 		elif documents:
 			EntityHeader(documents.body, qtype1, qid1, dictionary)
 		
-		for n, qfigure in enumerate(qfigures):
-			container = html.XDiv(associations.body, "blackmamba_visualization%d_div" % n)
-			visualization.SVG(container, qfigure, qtype1, qid1)
-		if nnetwork:
-			network_link = html.XLink(associations.body, "StringNetworkLink?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
-			html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
-		if nknowledge:
-			XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nknowledge)
-		if nexperiments:
-			XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nexperiments)
-		if ntextmining:
-			XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&title=Text+mining" % (qtype1, qid1, qtype2), ntextmining)
-		if npredictions:
-			XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), npredictions)
+		for section in order:
+			if section == "figures":
+				for n, qfigure in enumerate(qfigures):
+					container = html.XDiv(associations.body, "blackmamba_visualization%d_div" % n)
+					visualization.SVG(container, qfigure, qtype1, qid1)
+			elif section == "network":
+				network_link = html.XLink(associations.body, "StringNetworkLink?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
+				html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
+			elif section == "knowledge":
+				XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nknowledge)
+			elif section == "experiments":
+				XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nexperiments)
+			elif section == "textmining":
+				XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&title=Text+mining" % (qtype1, qid1, qtype2), ntextmining)
+			elif section == "predictions":
+				XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), npredictions)
+			elif section == "documents":
+				XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
 		
-		if ndocuments:
-			XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
-		
+		print order
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
 
 
