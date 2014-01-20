@@ -16,6 +16,7 @@ http://www.cpr.ku.dk
 [MENU]
 Search
 Downloads
+About
 
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
@@ -39,10 +40,33 @@ Downloads
 Search for a human gene or a disease:
 
 [EXAMPLES:SEARCH]
-KLK3
+LRRK2
 Diabetes mellitus
 
 [CONTENT:DOWNLOADS]
-<p style="font-weight: bold;">The DISEASES database is also available for download in tab-delimited format:</p>
-<p><a href="http://download.jensenlab.org/human_disease_textmining_filtered.tsv">Download filtered set of gene-disease associations</a></p>
-<p><a href="http://download.jensenlab.org/human_disease_textmining_full.tsv">Download full set of gene-disease associations</a></p><p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>.</p>
+<p style="font-weight: bold;">The DISEASES resource is available for download:</p>
+<p>
+<table cellpadding="6">
+<tr>
+<td>Text mining channel:</td>
+<td><a href="http://download.jensenlab.org/human_disease_textmining_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_disease_textmining_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td>Knowledge</td>
+<td><a href="http://download.jensenlab.org/human_disease_knowledge_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_disease_knowledge_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="http://download.jensenlab.org/human_disease_experiments_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_disease_experiments_filtered.tsv">filtered</a></td>
+</tr>
+</table>
+</p>
+<p style="width: 50em;">The <em>full</em> files contain all links in the DISEASES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene.</p>
+<p style="width: 50em;">The <a href="http://download.jensenlab.org/diseases_tagger.tar.gz">DISEASES tagger</a> of human gene and disease names can also be downloaded for local installation on Unix platforms.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>.</p>
+
+[CONTENT:ABOUT]
+<p style="width: 50em;">DISEASES is a frequently updated web resource that integrates evidence on disease-gene associations from automatic text mining, manually curated literature, cancer mutation data, and genome-wide association studies. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence.</p>
