@@ -7,7 +7,7 @@ import mamba.task
 class SVG(html.XNode):
 	__svg = ''
 	
-	def __init__(self, parent, qfigure, qtype, qid, visualization = None):
+	def __init__(self, parent, qfigure, qtype, qid, qpaint = False, visualization = None):
 		html.XNode.__init__(self, parent)
 		svg = None
 		if visualization == None:
@@ -20,7 +20,7 @@ class SVG(html.XNode):
 			figure = visualization.query(q).getresult()[0][0]
 			q = "SELECT svg, paint FROM figures WHERE figure = '%s';" % pg.escape_string(figure)
 			svg, paint = visualization.query(q).getresult()[0]
-			if paint == "t":
+			if qpaint or paint == "t":
 				q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(figure))
 				label_color_map = {}
 				for r in visualization.query(q).getresult():
@@ -57,9 +57,12 @@ class Visualization(mamba.task.Request):
 		qid = None
 		if "id" in rest:
 			qid = rest["id"].encode("utf8")
+		qpaint = False
+		if "paint" in rest:
+			qpaint = True
 		
-		xsvg = SVG(None, qfigure, qtype, qid)
-		mamba.http.HTTPResponse(self, xsvg.tohtml()).send()
+		xsvg = SVG(None, qfigure, qtype, qid, qpaint)
+		mamba.http.HTTPResponse(self, xsvg.tohtml(), "image/svg+xml").send()
 
 class VisualizationJSON(mamba.task.Request):
 
@@ -83,6 +86,6 @@ class VisualizationJSON(mamba.task.Request):
 			"YLoc" : 4.2
 		}
 		json = []
-		for r in sorted(visualization.query(q).getresult(), key=lambda x: order[x[0].split()[0]]):
+		for r in sorted(visualization.query(q).getresult(), key=lambda x: order.get(x[0].split()[0], 5)):
 			json.append('''"%s":%d''' % (r[0], r[1]))
 		mamba.http.HTTPResponse(self, "{"+",".join(json)+"}\n", "application/json").send()
