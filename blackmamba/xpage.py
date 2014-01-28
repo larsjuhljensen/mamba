@@ -357,7 +357,6 @@ class Entity(mamba.task.Request):
 			elif section == "documents":
 				XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
 		
-		print order
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
 
 
