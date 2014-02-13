@@ -75,15 +75,23 @@ class XPagesDiv(html.XDiv):
 
 class XAjaxTable(mamba.task.Request):
 	
-	def create_table(self, parent, rest):
+	def create_table(self, rest, parent=None):
 		dictionary = database.Connect("dictionary")
-		self.xtable = html.XDataTable(parent)
-		self.xtable["width"] = "100%"
-		self.add_head()
+		format = "html"
+		if "format" in rest:
+			format = rest["format"]
+		filter = False
+		if format == "html":
+			filter = True
+			self.xtable = html.XDataTable(parent)
+			self.xtable["width"] = "100%"
+			self.add_head()
+		elif format == "json":
+			self.json = []
 		limit = int(rest["limit"])
 		page = int(rest["page"])
 		count = 0
-		for r in self.get_rows(rest):
+		for r in self.get_rows(rest, filter):
 			count += 1
 			if count > page*limit:
 				break
@@ -91,27 +99,36 @@ class XAjaxTable(mamba.task.Request):
 				name = html.xcase(database.preferred_name(int(rest["type2"]), r["id2"], dictionary))
 				stars = int(math.ceil(r['score']))
 				stars = '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
-				self.add_row(r, name, stars)
+				self.add_row(r, name, stars, format)
 		return count
 	
-	def get_rows(self, rest):
+	def get_rows(self, rest, filter):
 		evidence = database.Connect(self.action.lower())
-		return evidence.query(self.get_sql(rest)+" LIMIT %d;" % (int(rest["limit"])*int(rest["page"])+1)).dictresult()
+		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (int(rest["limit"])*int(rest["page"])+1)).dictresult()
 		
 	def main(self):
 		self.action = self.http.get_action()
 		rest = mamba.task.RestDecoder(self)
-		if "title" in rest:
-			title = rest["title"]
-		else:
+		format = "html"
+		if "format" in rest:
+			format = rest["format"]
+		if format == "html":
 			title = self.action
-
-		xroot = html.XNode(None)
-		html.XDiv(xroot, "table_title").text = title
-		xpages = html.XNode(xroot)
-		XPagesDiv(xpages, self.action, rest, self.create_table(xroot, rest))
-		
-		mamba.http.HTTPResponse(self, xroot.tohtml()).send()
+			if "title" in rest:
+				title = rest["title"]
+			xroot = html.XNode(None)
+			html.XDiv(xroot, "table_title").text = title
+			xpages = html.XNode(xroot)
+			XPagesDiv(xpages, self.action, rest, self.create_table(rest, xroot))
+			mamba.http.HTTPResponse(self, xroot.tohtml()).send()
+		elif format == "json":
+			limit = int(rest["limit"])
+			page = int(rest["page"])
+			count = self.create_table(rest)
+			more = "false"
+			if count > page*limit:
+				more = "true"
+			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(self.json), more), "application/json").send()
 
 
 class Knowledge(XAjaxTable):
@@ -119,13 +136,25 @@ class Knowledge(XAjaxTable):
 	def add_head(self):
 		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
 	
-	def add_row(self, row, name, stars):
-		if 'url' in row and row['url'] != "":
-			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
-		self.xtable.addrow(name, row['source'], row['evidence'], stars)
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			if 'url' in row and row['url'] != "":
+				name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
+			self.xtable.addrow(name, row["source"], row["evidence"], stars)
+		elif format == "json":
+			visible = "false"
+			if row["explicit"] == "t":
+				visible = "true"
+			if "url" in row and row["url"] != "":
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s,"url":"%s"}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible, row["url"]))
+			else:
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
 	
-	def get_sql(self, rest):
-		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+	def get_sql(self, rest, filter):
+		if filter:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		else:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Experiments(XAjaxTable):
@@ -133,13 +162,25 @@ class Experiments(XAjaxTable):
 	def add_head(self):
 		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
 	
-	def add_row(self, row, name, stars):
-		if 'url' in row and row['url'] != "":
-			name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
-		self.xtable.addrow(name, row['source'], row['evidence'], stars)
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			if "url" in row and row["url"] != "":
+				name = html.XLink(None, row['url'], name, '_blank', {"class":"silent_link"})
+			self.xtable.addrow(name, row["source"], row["evidence"], stars)
+		elif format == "json":
+			visible = "false"
+			if row["explicit"] == "t":
+				visible = "true"
+			if "url" in row and row["url"] != "":
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s,"url":"%s"}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible, row["url"]))
+			else:
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
 	
-	def get_sql(self, rest):
-		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+	def get_sql(self, rest, filter):
+		if filter:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		else:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Predictions(XAjaxTable):
@@ -147,11 +188,20 @@ class Predictions(XAjaxTable):
 	def add_head(self):
 		self.xtable.addhead("Name", "Source", "Evidence", "Confidence")
 	
-	def add_row(self, row, name, stars):
-		self.xtable.addrow(name, row['source'], row['evidence'], stars)
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			self.xtable.addrow(name, row["source"], row["evidence"], stars)
+		elif format == "json":
+			visible = "false"
+			if row["explicit"] == "t":
+				visible = "true"
+			self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
 		
-	def get_sql(self, rest):
-		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+	def get_sql(self, rest, filter):
+		if filter:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		else:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class XPage(html.XNakedPage):
@@ -319,11 +369,18 @@ class Entity(mamba.task.Request):
 		
 		qtype1 = int(rest["type1"])
 		qid1 = rest["id1"]
+		qtype2 = None
 		if "type2" in rest:
 			qtype2 = int(rest["type2"])
+		qid2 = None
+		if "id2" in rest:
+			qid2 = rest["id2"]
 		
-		name = database.preferred_name(qtype1, qid1, dictionary)
-		page = XPage("Entity", name)
+		name1 = database.preferred_name(qtype1, qid1, dictionary)
+		name2 = None
+		if qtype2 != None and qid2 != None:
+			name2 = database.preferred_name(qtype2, qid2, dictionary)
+		page = XPage("Entity", name1)
 		
 		associations = None
 		if len(qfigures) or nknowledge or ntextmining or npredictions:
@@ -331,7 +388,10 @@ class Entity(mamba.task.Request):
 		
 		documents = None
 		if ndocuments:
-			documents = html.XSection(page.content, html.xcase("Literature on %s" % name))
+			if name2 == None:
+				documents = html.XSection(page.content, html.xcase("Literature on %s" % name1))
+			else:
+				documents = html.XSection(page.content, html.xcase("Literature associating %s and %s" % (name1, name2)))
 		
 		if associations:
 			EntityHeader(associations.body, qtype1, qid1, dictionary)
@@ -355,7 +415,10 @@ class Entity(mamba.task.Request):
 			elif section == "predictions":
 				XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), npredictions)
 			elif section == "documents":
-				XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
+				if qtype2 == None or qid2 == None:
+					XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
+				else:
+					XAjaxContainer(documents.body, "Comentions", "type1=%d&id1=%s&type2=%d&id2=%s" % (qtype1, qid1, qtype2, qid2), ndocuments)
 		
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
 
