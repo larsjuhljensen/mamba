@@ -383,7 +383,7 @@ class Entity(mamba.task.Request):
 		page = XPage("Entity", name1)
 		
 		associations = None
-		if len(qfigures) or nknowledge or ntextmining or npredictions:
+		if len(qfigures) or nknowledge or nexperiments or ntextmining or npredictions:
 			associations = AssociationsSection(page.content, qtype1, qid1, qtype2, dictionary)
 		
 		documents = None
