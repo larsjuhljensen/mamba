@@ -95,7 +95,7 @@ class StringPayloadEdges(mamba.task.Request):
 					sql = "SELECT id2, score FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND score >= 0.5" % (int(qtype), pg.escape_string(qid), int(qtype))
 					for row in connection.query(sql).getresult():
 						entity2 = "%s.%s" % (qtype, row[0])
-						if validate_edge(entity1, entity2) and entity2 in entities or not only_internal:
+						if self.validate_edge(entity1, entity2) and entity2 in entities or not only_internal:
 							score = 0.9*row[1]/5
 							tsv.append("%s\t%s\t%s\t%f\n" % (entity1, entity2, evidence, score))
 		mamba.http.HTTPResponse(self, "".join(tsv), "text/plain").send()
@@ -126,7 +126,7 @@ class StringPayloadNodes(mamba.task.Request):
 			colors = self.get_colors(entities)
 			links = self.get_links(entities)
 			for entity in entities:
-				if validate_node(entity):
+				if self.validate_node(entity):
 					color = ""
 					if entity in colors:
 						color = colors[entity]
