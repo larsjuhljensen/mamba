@@ -17,23 +17,31 @@ class SVG(html.XNode):
 			svg = visualization.query(q).getresult()[0][0]
 		else:
 			q = "SELECT DISTINCT figure FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
-			figure = visualization.query(q).getresult()[0][0]
+			figures = visualization.query(q).getresult()
+			if len(figures):
+				figure = figures[0][0]
+			else:
+				figure = qfigure
 			q = "SELECT svg, paint FROM figures WHERE figure = '%s';" % pg.escape_string(figure)
-			svg, paint = visualization.query(q).getresult()[0]
-			if qpaint or paint == "t":
-				q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(figure))
-				label_color_map = {}
-				for r in visualization.query(q).getresult():
-					label_color_map[r[0]] = r[1]
-				lines = []
-				for line in svg.split("\n"):
-					m = re.search('<.* title="([^"]+)".*>', line)
-					if m:
-						label = m.group(1)
-						if label in label_color_map:
-							line = re.sub('(?<=fill:|ill=")#.{6}', '%s' % label_color_map[label], line)
-					lines.append(line)
-				svg = "\n".join(lines)
+			figures = visualization.query(q).getresult()
+			if len(figures) == 1:
+				svg, paint = figures[0]
+				if qpaint or paint == "t":
+					q = "SELECT label, color FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(figure))
+					label_color_map = {}
+					for r in visualization.query(q).getresult():
+						label_color_map[r[0]] = r[1]
+					lines = []
+					for line in svg.split("\n"):
+						m = re.search('<.* title="([^"]+)".*>', line)
+						if m:
+							label = m.group(1)
+							if label in label_color_map:
+								line = re.sub('(?<=fill:|ill=")#.{6}', '%s' % label_color_map[label], line)
+						lines.append(line)
+					svg = "\n".join(lines)
+			else:
+				svg = '''<svg x="0px" y="0px" width="0px" height="0px" />'''
 		# get rid of XML comments and XML header, and whitespace on the beginning of the document
 		svg = re.sub("<\?xml.*?\?>\n?", '', svg)		
 		svg = re.sub("<!--.*?-->\n?", '', svg)
