@@ -1,6 +1,12 @@
 [CSS]
 /css/blackmamba.css
 
+[CSS:ENTITY]
+/css/tissues.css
+
+[SCRIPTS:ENTITY]
+/scripts/tissues.js
+
 [TITLE]
 TISSUES
 
@@ -37,3 +43,9 @@ Search for a human gene:
 [EXAMPLES:SEARCH]
 CYP3A4
 Insulin
+
+[CONTENT:DOWNLOAD]
+Links to download files to be added.
+
+[CONTENT:ABOUT]
+Description of resource to be added.

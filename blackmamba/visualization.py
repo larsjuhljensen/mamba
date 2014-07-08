@@ -87,13 +87,19 @@ class VisualizationJSON(mamba.task.Request):
 		order = {
 			"knowledge" : 1,
 			"experiments" : 2,
-			"HPA" : 2.1,
+			"HPM" : 2.1,
+			"HPA-IHC" : 2.2,
+			"HPA-RNA" : 2.3,
+			"RNA-seq" : 2.4,
+			"Exon array" : 2.5,
+			"GNF" : 2.6,
+			"UniGene" : 2.7,
 			"textmining" : 3,
 			"predictions" : 4,
 			"PSORT" : 4.1,
 			"YLoc" : 4.2
 		}
 		json = []
-		for r in sorted(visualization.query(q).getresult(), key=lambda x: order.get(x[0].split()[0], 5)):
+		for r in sorted(visualization.query(q).getresult(), key=lambda x: order.get(x[0].split(":")[0], 5)):
 			json.append('''"%s":%d''' % (r[0], r[1]))
 		mamba.http.HTTPResponse(self, "{"+",".join(json)+"}\n", "application/json").send()

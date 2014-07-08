@@ -4,8 +4,7 @@ var issues = {
 	"Extracellular":"Extracellular space",
 	"textmining":"Text mining",
 	"ER":"Endoplasmic reticulum",
-	"knowledge":"Knowledge",
-	"HPA":"Experiments"
+	"knowledge":"Knowledge"
 	};
 	
 // white + five colors for confidence values
@@ -37,20 +36,6 @@ var QueryString = function () {
 } (); 
 
 
-// retrieve IDs from URL parameters
-var orgId = QueryString.type1; //console.log("orgId: "+orgId);
-var protId = QueryString.id1; //console.log("protId: "+protId);
-
-// build URL for data request
-var jsonURL = "/VisualizationJSON?figure=subcell_overview_%&type="+orgId+"&id="+protId;
-
-// get data for protein/organism
-$.getJSON( jsonURL )
-    .done(function( data ) {
-    	fillCellData(data);
-	loadColors(maxValues);
-    });
-	
 var t; // used for timeout on mouseover
 
 function compartment(nom,val,src) {
@@ -70,13 +55,13 @@ function fillCellData(response) {
 		//capitalize first letter of compartment name
 		var Name = comp.charAt(0).toUpperCase() + comp.substr(1);
 		var conf = new compartment(Name,response[r],srce);
-		cell.push(conf); //console.log(conf);
+		cell.push(conf); ////console.log(conf);
 		if (!maxValues[comp] || maxValues[comp] < response[r]) { maxValues[comp] = response[r]; }	
-	}
+	} //console.log(maxValues);
 }
     
 function spellChk(word) {
-	//console.log("word "+ word +" is "+ words[word]);
+	////console.log("word "+ word +" is "+ issues[word]);
 	if (issues[word]) { 
 		var chkdWord = issues[word];
 		return chkdWord;
@@ -88,10 +73,10 @@ function spellChk(word) {
 
 function loadColors(info) {
 	//load color values into drawing
-	for (f in info) { 
+	for (f in info) { 		 //console.log($(".interactive [title ='"+f+"']"));
 		$(".interactive [title ='"+f+"']").attr("fill", datacolors[info[f]]);
 	}
-	
+		
 	//colorize legend
 	$("#Legend rect").each( function(index) {
 		$(this).attr("fill", datacolors[parseInt(index)]);
@@ -99,6 +84,22 @@ function loadColors(info) {
 }
 
 $(document).ready( function() {
+
+// retrieve IDs from URL parameters
+var orgId = QueryString.type1; //console.log("orgId: "+orgId);
+var protId = QueryString.id1; //console.log("protId: "+protId);
+
+// build URL for data request
+var jsonURL = "/VisualizationJSON?figure=tissues_overview_human&type="+orgId+"&id="+protId;
+
+// get data for protein/organism
+  $.getJSON( jsonURL )
+    .done(function( data ) {
+    	fillCellData(data);
+	loadColors(maxValues);
+    });
+	
+
 	// set up interactivity
 	$(".interactive").hover( function(event) {
 		var myElmt = $(this);
@@ -111,7 +112,7 @@ $(document).ready( function() {
 
 function onMoOver(el, evt) {
 	$("div#evidence, div.ruler").remove(); //just in case someone moves too fast
-	var ttl = el.attr("title"); //console.log("ttl: "+ttl);
+	var ttl = el.attr("title"); ////console.log("ttl: "+ttl);
 	//blink once	
 	el.animate({
 		opacity: 0.75
@@ -125,13 +126,18 @@ function onMoOver(el, evt) {
 	//show Labels
 	$("#Labels text[title='"+ttl+"']").attr("fill","#000").show();
 	//show evidence off to side, parallel to where your mouse entered a compartment
-	$("<div id='evidence'><h3></h3></div><div class='ruler'></div>").appendTo(".content");
-	$("div#evidence, div.ruler").css("top", evt.pageY+"px");
-	$("div.ruler").css({"left":evt.pageX+"px", "width":690-evt.pageX +"px"});
-	for (n=0; n<cell.length; n++) {
-		if (cell[n].name.toLowerCase() == ttl) {
-			$("#evidence h3").text(spellChk(cell[n].name)); //check against "issues" at top
-			$("<p><span class='square' style='background:"+datacolors[cell[n].value]+"'>&nbsp;</span>"+spellChk(cell[n].source)+"</p>").appendTo("#evidence"); //check against "issues" at top
+	var leftend = 360;
+	if (evt.pageX < 360) { leftend = evt.pageX; }
+	var rulewidth = 360-evt.pageX;
+	if (evt.pageX > 360) { rulewidth = evt.pageX-360; }
+		$("<div id='evidence'><h3></h3></div><div class='ruler'></div>").appendTo(".content");
+		$("div#evidence, div.ruler").css("top", evt.pageY+"px");
+		$("div.ruler").css({"left":leftend+"px", "width":rulewidth +"px"});
+		for (n=0; n<cell.length; n++) {
+			if (cell[n].name.toLowerCase() == ttl) {
+				$("#evidence h3").text(cell[n].name);
+				//$("#evidence h3").text(spellChk(cell[n].name)); //check against "issues" at top
+				$("<p><span class='square' style='background:"+datacolors[cell[n].value]+"'>&nbsp;</span>"+spellChk(cell[n].source)+"</p>").appendTo("#evidence"); //check against "issues" at top
 			$("div#evidence, div.ruler").show();
 		}
 	}	
