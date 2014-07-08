@@ -19,6 +19,11 @@ http://www.cpr.ku.dk
 [LOGO]
 /cpr.png
 
+[MENU]
+Search
+Downloads
+About
+
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:alb.santosdel@gmail.com">Alberto Santos</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:janos.binder@embl.de">Janos Binder</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script type="text/javascript">
@@ -44,7 +49,7 @@ Search for a human gene:
 CYP3A4
 Insulin
 
-[CONTENT:DOWNLOAD]
+[CONTENT:DOWNLOADS]
 Links to download files to be added.
 
 [CONTENT:ABOUT]
