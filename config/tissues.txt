@@ -60,8 +60,8 @@ Insulin
 </tr>
 <tr>
 <td>Experiments channel:</td>
-<td><a href="http://download.jensenlab.org/human_disease_experiments_full.tsv">full</a></td>
-<td><a href="http://download.jensenlab.org/human_disease_experiments_filtered.tsv">filtered</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_experiments_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_experiments_filtered.tsv">filtered</a></td>
 </tr>
 <tr>
 <td>Text mining channel:</td>
