@@ -19,7 +19,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-36065925-1']);
