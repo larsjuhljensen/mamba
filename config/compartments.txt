@@ -117,7 +117,7 @@ Evidence has been propagated through is_a and part_of relationships to list all 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
 <p>
-COMPARTMENTS is a frequently updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.
+COMPARTMENTS is a frequently updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We map all evidence to common protein identifiers and Gene Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.
 </p>
 <p>
 For further details please refer to following the Open Access article about the database:

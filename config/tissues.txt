@@ -50,7 +50,30 @@ CYP3A4
 Insulin
 
 [CONTENT:DOWNLOADS]
-Links to download files to be added.
+<p style="font-weight: bold;">The TISSUES resource is available for download:</p>
+<p>
+<table cellpadding="6">
+<tr>
+<td>Knowledge channel:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_knowledge_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_knowledge_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td>Experiments channel:</td>
+<td><a href="http://download.jensenlab.org/human_disease_experiments_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_disease_experiments_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td>Text mining channel:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_textmining_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_textmining_filtered.tsv">filtered</a></td>
+</tr>
+</table>
+</p>
+<p style="width: 50em;">The <em>full</em> files contain all links in the DISEASES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>.</p>
 
 [CONTENT:ABOUT]
-Description of resource to be added.
+<div style="width: 50em;">
+TISSUES is a frequently updated web resource that integrates evidence on tissue expression from manually curated literature, proteomics and transcriptomics screens, and automatic text mining. We map all evidence to common protein identifiers and Brenda Tissue Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence. We finally visualize these scores on a schematic human body to provide a convenient overview.
+</div>
