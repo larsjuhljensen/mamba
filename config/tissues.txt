@@ -70,7 +70,7 @@ Insulin
 </tr>
 </table>
 </p>
-<p style="width: 50em;">The <em>full</em> files contain all links in the DISEASES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene.</p>
+<p style="width: 50em;">The <em>full</em> files contain all links in the TISSUES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>.</p>
 
 [CONTENT:ABOUT]
