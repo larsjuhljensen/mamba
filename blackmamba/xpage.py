@@ -297,7 +297,9 @@ class EntityHeader(html.XNode):
 			pass
 		name = database.preferred_name(qtype, qid, dictionary)
 		html.XP(self, "%s [%s]" % (html.xcase(name), qid), {"class":"name"})
-		html.XP(self, html.xcase(database.description(qtype, qid, dictionary, userdata)), {"class":"description"})
+		description = database.description(qtype, qid, dictionary, userdata)
+		if description != "":
+			html.XP(self, html.xcase(description), {"class":"description"})
 		maxsyn = 5
 		synonyms = database.synonyms(qtype, qid, dictionary, userdata)
 		if len(synonyms):
@@ -306,6 +308,30 @@ class EntityHeader(html.XNode):
 				if len(synonyms) > maxsyn:
 					text += " ..."
 				html.XP(self, text, {"class":"synonyms"})
+		linkouts = database.linkouts(qtype, qid, dictionary)
+		if len(linkouts):
+			source_urls = {}
+			sources = []
+			for linkout in linkouts:
+				source = linkout[0]
+				url = linkout[1]
+				if source in source_urls:
+					source_urls[source].append(url)
+				else:
+					source_urls[source] = [url]
+					sources.append(source)
+			text = ["Linkouts:"]
+			for source in sources:
+				text.append("&nbsp;&nbsp;")
+				if len(source_urls[source]) == 1:
+					text.append('''<a class="silent_link" href="%s">%s</a>''' % (source_urls[source][0], source))
+				else:
+					text.append(source)
+					i = 1
+					for url in source_urls[source]:
+						text.append('''&nbsp;<a class="silent_link" href="%s">#%d</a>''' % (url, i))
+						i += 1
+			html.XP(self, "".join(text), {"class":"linkouts"})
 
 
 class About(mamba.task.Request):

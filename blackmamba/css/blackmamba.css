@@ -61,10 +61,14 @@ img {
 }
 
 .description {
-	font-size: 0.9em;
+	font-size: 0.8em;
 }
 
 .synonyms {
+	font-size: 0.8em;
+}
+
+.linkouts {
 	font-size: 0.8em;
 }
 
