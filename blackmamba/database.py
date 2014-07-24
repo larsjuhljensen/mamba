@@ -77,6 +77,17 @@ def description(qtype, qid, dictionary=None, userdata=None):
 	return text
 
 
+def linkouts(qtype, qid, dictionary=None):
+	links = []
+	try:
+		if dictionary == None:
+			dictionary = Connect("dictionary")
+		links = dictionary.query("SELECT source, url FROM linkouts WHERE type=%d AND id='%s' ORDER BY priority ASC;" % (qtype, pg.escape_string(qid))).getresult()
+	except:
+		print "FAILED!"
+		pass
+	return links
+
 def names(name, entity_types, dictionary=None):
 	if dictionary == None:
 		dictionary = Connect("dictionary")
@@ -100,6 +111,7 @@ def sequence(qtype, qid, dictionary=None):
 	except:
 		pass
 	return sequence
+
 
 def synonyms(qtype, qid, dictionary=None, userdata=None):
 	names = []
