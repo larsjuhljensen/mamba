@@ -73,6 +73,6 @@ DISEASES is a frequently updated web resource that integrates evidence on diseas
 For further details please refer to the following Open Access preprint about the database:
 </p>
 <p>
-<a href="http://biorxiv.org/content/early/2014/08/25/008425">DISEASES: Text mining and data integration of disease-gene associations</a><br />
+<a href="http://biorxiv.org/content/early/2014/08/25/008425">DISEASES: Text mining and data integration of disease-gene associations</a>
 </p>
 </div>
