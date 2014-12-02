@@ -68,12 +68,13 @@ class TaggingRequest(mamba.task.Request):
 				self.entity_types.add(int(type))
 		else:
 			self.entity_types = set()
-			if mamba.setup.config_is_true(self.user_settings["proteins"]):
-				self.entity_types.add(9606)
-			if mamba.setup.config_is_true(self.user_settings["chemicals"]):
-				self.entity_types.add(-1)
-			if mamba.setup.config_is_true(self.user_settings["wikipedia"]):
-				self.entity_types.add(-11)
+			if hasattr(self, "user_settings"):
+				if "proteins" in self.user_settings and mamba.setup.config_is_true(self.user_settings["proteins"]):
+					self.entity_types.add(9606)
+				if "chemicals" in self.user_settings and mamba.setup.config_is_true(self.user_settings["chemicals"]):
+					self.entity_types.add(-1)
+				if "wikipedia" in self.user_settings and mamba.setup.config_is_true(self.user_settings["wikipedia"]):
+					self.entity_types.add(-11)
 	
 	def convert(self):
 		md5 = hashlib.md5()
