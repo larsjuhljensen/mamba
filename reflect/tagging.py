@@ -158,7 +158,7 @@ class GetEntities(TaggingRequest):
 			raise mamba.task.SyntaxError, 'In action: %s unknown format: "%s". Supports only: %s' % (self.action, format, ', '.join(supported_formats))		
 	
 	def tagging(self):
-		data = mamba.setup.config().tagger.GetEntities(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, format=self.format)
+		data = mamba.setup.config().tagger.get_entities(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, format=self.format)
 		if format == "xml":
 			mamba.http.HTTPResponse(self, data, "text/xml").send()
 		else:
@@ -198,7 +198,7 @@ class GetHTML(TaggingRequest):
 		for key in self.user_settings:
 			footer.append('  <span name="%s">%s</span>' % (key, self.user_settings[key]))
 		footer.append('</div>\n')
-		self.document = mamba.setup.config().tagger.GetHTML(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer="\n".join(footer))
+		self.document = mamba.setup.config().tagger.get_html(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, html_footer="\n".join(footer))
 		self.respond()
 
 
