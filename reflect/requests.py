@@ -20,16 +20,16 @@ class Setup(mamba.setup.Configuration):
 				types[int(priority)] = self.sections["TYPES"][priority]
 		print '[INIT]  Loading tagger ...'
 		self.tagger = tagger.tagger.Tagger()
-		self.tagger.SetStyles(styles, types)
+		self.tagger.set_styles(styles, types)
 		if "java_scripts" in self.globals:
-			self.tagger.LoadHeaders(self.globals["java_scripts"])
-		self.tagger.LoadNames(self.globals["entities_file"], self.globals["names_file"])
+			self.tagger.load_headers(self.globals["java_scripts"])
+		self.tagger.load_names(self.globals["entities_file"], self.globals["names_file"])
 		if "global_file" in self.globals:
-			self.tagger.LoadGlobal(self.globals["global_file"])
+			self.tagger.load_global(self.globals["global_file"])
 		if "local_file" in self.globals:
-			self.tagger.LoadLocal(self.globals["local_file"])
+			self.tagger.load_local(self.globals["local_file"])
 		if "changelog_file" in self.globals:
-			self.tagger.LoadChangelog(self.globals["changelog_file"])
+			self.tagger.load_changelog(self.globals["changelog_file"])
 
 
 class AddName(mamba.task.Request):
@@ -39,7 +39,7 @@ class AddName(mamba.task.Request):
 		for check in ("name", "document_id", "entity_type", "entity_identifier"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.AddName(mamba.util.string_to_bytes(rest["name"], "utf-8"), int(rest["entity_type"]), mamba.util.string_to_bytes(rest["entity_identifier"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
+		mamba.setup.config().tagger.add_name(mamba.util.string_to_bytes(rest["name"], "utf-8"), int(rest["entity_type"]), mamba.util.string_to_bytes(rest["entity_identifier"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, "AddName succeeded.").send()
 
 
@@ -50,7 +50,7 @@ class AllowName(mamba.task.Request):
 		for check in ("name", "document_id"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.AllowName(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
+		mamba.setup.config().tagger.allow_name(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, 'AllowName succeeded.').send()
 
 
@@ -61,7 +61,7 @@ class BlockName(mamba.task.Request):
 		for check in ("name", "document_id"):
 			if check not in rest:
 				raise mamba.task.SyntaxError, 'Required parameter "%s" missing.' % check
-		mamba.setup.config().tagger.BlockName(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
+		mamba.setup.config().tagger.block_name(mamba.util.string_to_bytes(rest["name"], "utf-8"), mamba.util.string_to_bytes(rest["document_id"], "utf-8"))
 		mamba.http.HTTPResponse(self, 'BlockName succeeded.').send()
 
 
@@ -79,7 +79,7 @@ class GetPopup(mamba.task.Request):
 	 
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		entities = mamba.setup.config().tagger.ResolveName(mamba.util.string_to_bytes(rest["name"], self.http.charset))
+		entities = mamba.setup.config().tagger.resolve_name(mamba.util.string_to_bytes(rest["name"], self.http.charset))
 		if len(entities):
 			url_params = []
 			show_first = ["9606", "10090"]
@@ -120,7 +120,7 @@ class ResolveName(mamba.task.Request):
 			xml.append("""<items>""")
 			for name in names:
 				xml.append("""<item><name xsi:type="xsd:string">%s</name><entities>""" % name)
-				for entity in mamba.setup.config().tagger.ResolveName(name):
+				for entity in mamba.setup.config().tagger.resolve_name(name):
 					xml.append("""<entity><type xsi:type="xsd:int">%d</type><identifier xsi:type="xsd:string">%s</identifier></entity>""" % (entity[0], entity[1]))
 				xml.append("""</entities></item>""")
 			xml.append("</items>")
@@ -130,7 +130,7 @@ class ResolveName(mamba.task.Request):
 		else:
 			tsv = []
 			for name in names:
-				for entity in mamba.setup.config().tagger.ResolveName(name):
+				for entity in mamba.setup.config().tagger.resolve_name(name):
 					tsv.append("%s\t%d\t%s\n" % (name, entity[0], entity[1]))
 			result = "".join(tsv)
 			content_type = "text/plain"
