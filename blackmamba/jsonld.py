@@ -10,19 +10,19 @@ class annotations(mamba.task.Request):
 	
 	def entity_dict(self, qtype, qid):
 		if qtype >= 0:
-			return {"@id" : "http://string-db.org/interactions/%d.%s" % (qtype, qid)}
+			return {"@id" : "stringdb:%d.%s" % (qtype, qid)}
 		elif qtype == -1:
-			return {"@id" : "http://stitch-db.org/interactions/%s" % qid}
+			return {"@id" : "stitchdb:%s" % qid}
 		elif qtype == -2:
-			return {"@id" : "http://identifiers.org/taxonomy/%s" % qid}
+			return {"@id" : "taxonomy:%s" % qid}
 		elif qtype <= -21 and qtype >= -24:
-			return {"@id" : "http://identifiers.org/go/%s" % qid}
+			return {"@id" : "%s" % qid}
 		elif qtype == -25:
-			return {"@id" : "http://identifiers.org/bto/%s" % qid}
+			return {"@id" : "%s" % qid}
 		elif qtype == -26:
-			return {"@id" : "http://disease-ontology.org/term/%s/" % qid}
+			return {"@id" : "%s" % qid}
 		elif qtype == -27:
-			return {"@id" : "http://www.ebi.ac.uk/ontology-lookup/?termId=%s" % qid}
+			return {"@id" : "%s" % qid}
 		else:
 			return {"@id" : qid}
 	
