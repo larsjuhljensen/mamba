@@ -3,10 +3,10 @@ import re
 import sys
 import hashlib
 
-import mamba.util
-import mamba.task
 import mamba.http
 import mamba.setup
+import mamba.task
+import mamba.util
 
 
 _taggable_types = ["text/html", "text/plain", "text/xml", "text/tab-separated-values", 'application/msword', 'application/pdf', 'application/vnd.ms-excel']
