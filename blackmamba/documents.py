@@ -1,6 +1,7 @@
 import httplib
 import urllib
 import xml.etree.ElementTree as etree
+
 import database
 import html
 import xpage
@@ -155,10 +156,10 @@ class Documents(mamba.task.Request):
 					else:
 						tmp.append(" (and %d more)" % (len(authors) - 3))
 						break
- 				html.XText(author_wrapper, '%s ; &nbsp; <span style="text-decoration: underline">%s</span> (%s); &nbsp; PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed?term=%s[pmid]" target="pubmed">%s</a>' % (",".join(tmp), journal, year, document, document))
+				html.XText(author_wrapper, '%s ; &nbsp; <span style="text-decoration: underline">%s</span> (%s); &nbsp; PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed?term=%s[pmid]" target="pubmed">%s</a>' % (",".join(tmp), journal, year, document, document))
 				document_abstract = html.XDiv(document_wrapper, "document_abstract")
 				if len(abstract) == 0:
- 					abstract_text = html.XDiv(document_abstract)
+					abstract_text = html.XDiv(document_abstract)
 					abstract_text["style"] = "display:block; cursor: auto;"
 					abstract_text.text = ""
 				else:
