@@ -96,7 +96,7 @@ class document(mamba.task.Request):
 			sql = "SELECT * FROM documents WHERE document=%d;" % document
 			records = textmining.query(sql).dictresult()
 			if len(records):
-				text = "\n\n".join(mamba.util.string_to_bytes(records[0]["text"]).split("\t"))
+				text = "\n".join(mamba.util.string_to_bytes(records[0]["text"]).split("\t"))
 				mamba.http.HTTPResponse(self, text, "text/plain").send()
 			else:
 				mamba.http.HTTPErrorResponse(self, 404, "Not Found").send()
