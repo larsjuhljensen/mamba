@@ -63,7 +63,7 @@ class annotations(mamba.task.Request):
 							data["@graph"][index]["body"] = self.entity_dict(qtype, qid)
 							prev_start = start
 							used = set()
-						elif qtype > -20 or qtype not in used:
+						elif qtype >= -1 or qtype not in used:
 							if type(data["@graph"][index]["body"]) is dict:
 								data["@graph"][index]["body"] = [data["@graph"][index]["body"]]
 							data["@graph"][index]["body"].append(self.entity_dict(qtype, qid))
