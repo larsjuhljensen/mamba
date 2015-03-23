@@ -34,7 +34,6 @@ class annotations(mamba.task.Request):
 			if match.group(3) != None and match.group(3) != "":
 				annotation = int(match.group(3))
 			settings = mamba.setup.config().sections["JSON-LD"]
-			host = settings["host"]
 			types = [float(i) for i in settings["types"].split(" ")]
 			textmining = database.Connect("textmining")
 			sql = "SELECT * FROM documents WHERE document=%d;" % document
@@ -45,7 +44,7 @@ class annotations(mamba.task.Request):
 				data["@context"] = "http://nlplab.org/ns/restoa-context-20150307.json"
 				sql = "SELECT * FROM matches WHERE document=%d;" % document
 				records = textmining.query(sql).dictresult()
-				data["@id"] = "http://%s/document/%d/annotations" % (host, document)
+				data["@id"] = "/document/%d/annotations" % document
 				data["@graph"] = []
 				index = -1
 				prev_start = None
@@ -58,8 +57,8 @@ class annotations(mamba.task.Request):
 						if start != prev_start:
 							index += 1
 							data["@graph"].append({})
-							data["@graph"][index]["@id"] = "http://%s/document/%d/annotations/%d" % (host, document, index)
-							data["@graph"][index]["target"] = "http://%s/document/%d#char=%d,%d" % (host, document, start, stop)
+							data["@graph"][index]["@id"] = "/document/%d/annotations/%d" % (document, index)
+							data["@graph"][index]["target"] = "/document/%d#char=%d,%d" % (document, start, stop)
 							data["@graph"][index]["body"] = self.entity_dict(qtype, qid)
 							prev_start = start
 							used = set()
