@@ -45,6 +45,8 @@ class annotations(mamba.task.Request):
 				sql = "SELECT * FROM matches WHERE document=%d;" % document
 				records = textmining.query(sql).dictresult()
 				data["@id"] = "/document/%d/annotations" % document
+				if "license" in settings:
+					data["dctypes:license"] = settings["license"]
 				data["@graph"] = []
 				index = -1
 				prev_start = None
