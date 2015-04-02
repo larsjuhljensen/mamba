@@ -219,27 +219,27 @@ class HTTPResponse:
 		
 	def __str__(self):
 		headers = self.headers.copy()
+		headers.add("Access-Control-Allow-Origin", "*")
 		headers.add("Connection", "close")
+		headers.add("Date", datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S UTC"))
+		if self.request.http.uuid:
+			expires = (datetime.datetime.now()+datetime.timedelta(weeks=52*10)).strftime("%a, %d-%b-%Y %H:%M:%S UTC")
+			headers.add("Set-Cookie", "%s=%s; expires=%s" % (mamba.setup.config().server.user_cookie, self.request.http.uuid, expires))
+		if mamba.setup.config().other_servers.servers:
+			headers.add("Servers", ", ".join([mamba.setup.config().server.host] + mamba.setup.config().other_servers.servers))
+		if mamba.setup.config().server.version:
+			headers.add("Version", "Mamba server (%s)" % mamba.setup.config().server.version)
 		content = self.body
 		if content and isinstance(content, unicode):
 			content = mamba.util.string_to_bytes(content, self.encoding)
-		content_class = None
 		if self.content_type:
 			content_class = self.content_type.split("/")[0].strip().lower()
-		if self.request.http.uuid:
-			cookie = mamba.setup.config().server.user_cookie + "=" + self.request.http.uuid
-			cookie += "; expires=" + (datetime.datetime.now()+datetime.timedelta(weeks=52*10)).strftime("%a, %d-%b-%Y %H:%M:%S UTC")
-			headers.add("Set-Cookie", cookie)
-		headers.add("Date", datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S UTC"))
-		if mamba.setup.config():
-			headers.add("Servers", ", ".join([mamba.setup.config().server.host] + mamba.setup.config().other_servers.servers))
-		headers.add("Version", "Mamba server (%s)" % mamba.setup.config().server.version)
-		if content_class == "text":
-			if self.body and self.request.http.accept_encoding_gzip():
-				headers.add("Content-Encoding", "gzip")
-				content = easy_zip(content)
-		elif content_class == "image" or self.encoding == "binary":
-			headers.add("Accept-Ranges", "bytes")
+			if content_class == "text":
+				if self.body and self.request.http.accept_encoding_gzip():
+					headers.add("Content-Encoding", "gzip")
+					content = easy_zip(content)
+			elif content_class == "image" or self.encoding == "binary":
+				headers.add("Accept-Ranges", "bytes")
 		if content:
 			headers.add("Content-Length", str(len(content)))
 		http = []
