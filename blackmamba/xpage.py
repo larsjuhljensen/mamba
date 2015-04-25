@@ -49,7 +49,6 @@ class XAjaxContainer(html.XDiv):
 		container = md5.hexdigest()
 		html.XDiv.__init__(self, parent, "ajax_table", container)
 		html.XScript(self, "blackmamba_pager('%s', '%s', %d, %d, '%s');" % (url, query, limit, page, container))
-		html.XScript(parent, "Hammer(document.getElementById('%s')).on('swipeleft', function(event) {document.getElementById('%s_next').onclick();}).on('swiperight', function(event) {document.getElementById('%s_prev').onclick();});" % (container, container, container))
 
 
 class XPagesDiv(html.XDiv):
