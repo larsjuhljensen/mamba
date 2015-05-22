@@ -219,6 +219,7 @@ class HTTPResponse:
 		
 	def __str__(self):
 		headers = self.headers.copy()
+		headers.add("Access-Control-Allow-Headers", "'Accept,Cache-Control,Content-Type,Depth,If-Modified-Since,NCBI-PHID,Origin,User-Agent,X-File-Name,X-File-Size,X-Prototype-Version,X-Requested-With")
 		headers.add("Access-Control-Allow-Origin", "*")
 		headers.add("Connection", "close")
 		headers.add("Date", datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S UTC"))
