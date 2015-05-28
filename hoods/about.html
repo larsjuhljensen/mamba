@@ -8,12 +8,16 @@ Clustering algorithms are often used to find groups relevant in a specific conte
 To produce context-specific groups of similar entities (neighborhoods), we have implemented HOODS, which is a simple algorithm that only needs 2 input files to run: 1) the similarity matrix among entities; and 2) the association scores between entities and the specific context (label). HOODS first sorts the neighbors for each entity in the matrix (seeds). Secondly, for each seed it goes through all the nearest neighbors calculating a neighborhood score:
 </p>
 
-<p style="text-align: center;">
-<em>Score</em> = <em>Sum</em>/<em>Count<sup>alpha</sup></em>
+<p>
+<img src="/formula.png" style="display: block; margin-left: auto; margin-right: auto;"></img>
 </p>
 
 <p>
-A parameter named <em>alpha</em> needs to be set and it ranges from 0 to 1 &emdash; the closer to 1, the more penalized the big neighborhoods. <em>Sum</em> is the running sum of label scores and <em>Count</em> the neighborhood size. HOODS gathers the neighborhoods only in case that it does not exist yet another with the same labeled entities and higher score and, finally, it ranks them by the score considering only the ones that include at least one new entity.
+The parameter <em>&alpha;</em> is needed to set how much the user wants to penalize big neighborhoods and it ranges from 0 to 1. In this equation we take into account the label score density in our neighborhoods and the total label score of them. The score is a weighted geometric average from these two components; ideally a neighborhood should have both a high density of labels and a large number of labeled entities.
+</p>
+
+<p>
+The algorithm sorts all neighborhoods obtained from all seeds by the neighborhood score and filters out neighborhoods that contain the same set of labeled entities as a higher scoring neighborhood. It also removes neighborhoods that contain no entities that are not already included in any of the higher scoring neighborhoods. 
 </p>
 
 <p>
