@@ -36,9 +36,7 @@ ga('send', 'pageview');
 </script>
 
 [FOOTER:ENTITY]
-<p class="footer_description">
-The subcellular localizations are derived from database annotations, automatic text mining of the biomedical literature, and sequence-based predictions. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.
-</p>
+<p class="footer_description">The subcellular localizations are derived from database annotations, automatic text mining of the biomedical literature, and sequence-based predictions. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
 
 [CONTENT:SEARCH]
 Search for a protein:
@@ -48,9 +46,8 @@ NR3C1
 COX1
 
 [CONTENT:DOWNLOADS]
-<p style="font-weight: bold;">
-The COMPARTMENTS database is available for download in tab-delimited format:
-</p>
+<div style="width: 50em;">
+<p style="font-weight: bold;">The COMPARTMENTS database is available for download in tab-delimited format:</p>
 <p>
 <table cellpadding="6">
 <tr>
@@ -104,23 +101,13 @@ The COMPARTMENTS database is available for download in tab-delimited format:
 </tr>
 </table>
 </p>
-<p>
-Evidence has been propagated through is_a and part_of relationships to list all applicable ontology terms.
-</p>
-<p>
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
-</p>
+<p>Evidence has been propagated through is_a and part_of relationships to list all applicable ontology terms. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+</div>
 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
-<p>
-COMPARTMENTS is a frequently updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We map all evidence to common protein identifiers and Gene Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.
-</p>
-<p>
-For further details please refer to the following Open Access article about the database:
-</p>
-<p>
-<a href="http://database.oxfordjournals.org/content/2014/bau012.full">COMPARTMENTS: unification and visualization of protein subcellular localization evidence</a><br />
-</p>
+<p>COMPARTMENTS is a frequently updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We map all evidence to common protein identifiers and Gene Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.</p>
+<p>For further details please refer to the following Open Access article about the database:</p><p>
+<a href="http://database.oxfordjournals.org/content/2014/bau012.full">COMPARTMENTS: unification and visualization of protein subcellular localization evidence</a><br /></p>
 </div>
-
