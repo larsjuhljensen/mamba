@@ -225,8 +225,17 @@ class XPage(html.XNakedPage):
 			if key in design:
 				self.head.scripts += map(str.strip, design[key].split("\n"))
 		left = html.XDiv(self.header, "header_left")
-		html.XLink(html.XH1(left), "/", design["TITLE"])
-		html.XLink(html.XP(left), "/", design["SUBTITLE"])
+		title = design["TITLE"]
+		subtitle = design["SUBTITLE"]
+		if page_class != None:
+			key = "TITLE:"+page_class.upper()
+			if key in design:
+				title = design[key]
+			key = "SUBTITLE:"+page_class.upper()
+			if key in design:
+				subtitle = design[key]
+		html.XLink(html.XH1(left), "/", title)
+		html.XLink(html.XP(left), "/", subtitle)
 		if "LOGO" in design:
 			if "LINK" in design:
 				html.XImg(html.XLink(html.XDiv(self.header, "header_right"), design["LINK"]), design["LOGO"])

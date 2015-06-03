@@ -18,8 +18,8 @@ _taggable_types = ["text/html", "text/plain", "text/xml", "text/tab-separated-va
 
 class Extract(reflect.tagging.TaggingRequest):
 	
-	def __init__(self, http):
-		reflect.tagging.TaggingRequest.__init__(self, http, "GetHTML")
+	def __init__(self, http, action = "Extract"):
+		reflect.tagging.TaggingRequest.__init__(self, http, action)
 	
 	def tagging(self):
 		dictionary = blackmamba.database.Connect("dictionary")
@@ -30,7 +30,7 @@ class Extract(reflect.tagging.TaggingRequest):
 			document = '''%s<span style="background-color: #ff6633;">%s</span>%s''' % (document[0:match[0]], document[match[0]:match[1]+1], document[match[1]+1:])
 			for entity in match[2]:
 				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[1]))
-		page = blackmamba.xpage.XPage("Extract")
+		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
 		blackmamba.html.XH2(selection, "table_title").text = "Selected text"
 		blackmamba.html.XP(selection).text = document
@@ -48,3 +48,9 @@ class Extract(reflect.tagging.TaggingRequest):
 		blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "var clipboard = document.getElementById('clipboard'); clipboard.style.display = 'block'; clipboard.select(); document.execCommand('copy'); clipboard.style.display = 'none';"})
 		blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "var data = encodeURIComponent(document.getElementById('clipboard').innerHTML); this.setAttribute('href', 'data:text/plain;charset=ascii,'+data)"})
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
+
+
+class ExtractPopup(Extract):
+
+	def __init__(self, http, action = "ExtractPopup"):
+		Extract.__init__(self, http, action)

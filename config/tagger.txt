@@ -1,11 +1,20 @@
-[CSS]
+[CSS:EXTRACT]
+/css/blackmamba.css
+
+[CSS:EXTRACTPOPUP]
 /css/popup.css
 
 [TITLE]
 TAGGER
 
+[TITLE:EXTRACT]
+EXTRACT
+
 [SUBTITLE]
 Real-time named entity recognition
+
+[SUBTITLE:EXTRACT]
+Text-mining-assisted extraction of terms
 
 [LINK]
 http://www.cpr.ku.dk
