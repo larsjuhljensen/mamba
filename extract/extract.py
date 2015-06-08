@@ -44,7 +44,6 @@ class Extract(reflect.tagging.TaggingRequest):
 			for row in sorted(rows):
 				tsv.append("%s\t%s\t%s\t%s\t%s\n" % (row[0], row[1], row[2], self.document_url or "", self.document))
 				xtable.addrow(row[0], row[1], row[2])
-		else:
 			blackmamba.html.XP(table).text = "No terms were identified in the selected text."
 			form = blackmamba.html.XForm(blackmamba.html.XP(table))
 			blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
