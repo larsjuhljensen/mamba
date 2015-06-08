@@ -46,10 +46,12 @@ class Extract(reflect.tagging.TaggingRequest):
 				xtable.addrow(row[0], row[1], row[2])
 		else:
 			blackmamba.html.XP(table).text = "No terms were identified in the selected text."
-		form = blackmamba.html.XForm(blackmamba.html.XP(table))
-		blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
-		blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "var clipboard = document.getElementById('clipboard'); clipboard.style.display = 'block'; clipboard.select(); document.execCommand('copy'); clipboard.style.display = 'none';"})
-		blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "var data = encodeURIComponent(document.getElementById('clipboard').innerHTML); this.setAttribute('href', 'data:text/plain;charset=ascii,'+data)"})
+			form = blackmamba.html.XForm(blackmamba.html.XP(table))
+			blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
+			blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "var clipboard = document.getElementById('clipboard'); clipboard.style.display = 'block'; clipboard.select(); document.execCommand('copy'); clipboard.style.display = 'none';"})
+			blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "var data = encodeURIComponent(document.getElementById('clipboard').innerHTML); this.setAttribute('href', 'data:text/plain;charset=ascii,'+data)"})
+		else:
+			blackmamba.html.XP(table).text = "No terms were identified in the selected text."
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
 
 
