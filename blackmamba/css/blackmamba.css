@@ -53,6 +53,14 @@ img {
 	margin-bottom: 0.6em;
 }
 
+.extract_match {
+	background-color: #DFDFDF;
+}
+
+.extract_highlight {
+	background-color: #FF6633
+}
+
 .popup_header {
 	width: 48em;
 }
@@ -104,7 +112,7 @@ img {
 }
 
 .document_even {
-	background: #DFDFDF;
+	background-color: #DFDFDF;
 	border-bottom: solid 1px #4F4F4F;
 }
 
@@ -145,7 +153,7 @@ img {
 /* ------------------------------------------- */
 
 .popup {
-	background: #FFFFFF;
+	background-color: #FFFFFF;
 	border: solid 2px #4F4F4F;
 	border-radius: 0.4em;
 	box-shadow: 5px 5px 15px #BFBFBF;
@@ -269,12 +277,12 @@ img {
 .data th {
 	text-align: left;
 	width: auto;
-	background: #DFDFDF;
+	background-color: #DFDFDF;
 	border-bottom: solid 1px #4F4F4F;
 }
 
 .data tr.even {
-	background: #DFDFDF;
+	background-color: #DFDFDF;
 }
 
 .data tr.odd {
@@ -288,7 +296,7 @@ img {
 .data .evidence {
 	width: 10em;
 }
-i
+
 .data .identifier {
 	text-align: right;
 }
