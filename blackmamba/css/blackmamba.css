@@ -58,7 +58,7 @@ img {
 }
 
 .extract_highlight {
-	background-color: #FF6633
+	background-color: #FF6633 !important;
 }
 
 .popup_header {

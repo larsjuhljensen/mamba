@@ -31,7 +31,7 @@ class Extract(reflect.tagging.TaggingRequest):
 			for entity in match[2]:
 				classes.append(entity[1])
 				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[1]))
-			document = '''%s<span class="%s"">%s</span>%s''' % (" ".join(classes), document[0:match[0]], document[match[0]:match[1]+1], document[match[1]+1:])
+			document = '''%s<span class="%s"">%s</span>%s''' % (document[0:match[0]], " ".join(classes), document[match[0]:match[1]+1], document[match[1]+1:])
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
 		blackmamba.html.XH2(selection, "table_title").text = "Selected text"
@@ -48,8 +48,8 @@ class Extract(reflect.tagging.TaggingRequest):
 				xtable.addrow(row[0], row[1], row[2])
 			form = blackmamba.html.XForm(blackmamba.html.XP(table))
 			blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
-			blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "var clipboard = document.getElementById('clipboard'); clipboard.style.display = 'block'; clipboard.select(); document.execCommand('copy'); clipboard.style.display = 'none';"})
-			blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "var data = encodeURIComponent(document.getElementById('clipboard').innerHTML); this.setAttribute('href', 'data:text/plain;charset=ascii,'+data)"})
+			blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "extract_copy_to_clipboard('clipboard');"})
+			blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "extract_save_to_file(this);"})
 		else:
 			blackmamba.html.XP(table).text = "No terms were identified in the selected text."
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
