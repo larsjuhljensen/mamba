@@ -27,9 +27,11 @@ class Extract(reflect.tagging.TaggingRequest):
 		matches = mamba.setup.config().tagger.get_matches(document=document, document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
 		rows = set()
 		for match in reversed(matches):
-			document = '''%s<span style="background-color: #ff6633;">%s</span>%s''' % (document[0:match[0]], document[match[0]:match[1]+1], document[match[1]+1:])
+			classes = ["extract_match"]
 			for entity in match[2]:
+				classes.append(entity[1])
 				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[1]))
+			document = '''%s<span class="%s"">%s</span>%s''' % (" ".join(classes), document[0:match[0]], document[match[0]:match[1]+1], document[match[1]+1:])
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
 		blackmamba.html.XH2(selection, "table_title").text = "Selected text"
