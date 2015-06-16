@@ -30,7 +30,7 @@ class Extract(reflect.tagging.TaggingRequest):
 			classes = ["extract_match"]
 			for entity in match[2]:
 				classes.append(entity[1])
-				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[1]))
+				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[0], entity[1]))
 			document = '''%s<span class="%s"">%s</span>%s''' % (document[0:match[0]], " ".join(classes), document[match[0]:match[1]+1], document[match[1]+1:])
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
@@ -44,8 +44,12 @@ class Extract(reflect.tagging.TaggingRequest):
 			xtable["width"] = "100%"
 			xtable.addhead("Type", "Name", "Identifier")
 			for row in sorted(rows):
-				tsv.append("%s\t%s\t%s\t%s\t%s\n" % (row[0], row[1], row[2], self.document_url or "", self.document))
-				xtable.addrow(row[0], row[1], row[2])
+				tsv.append("%s\t%s\t%s\t%s\t%s\n" % (row[0], row[1], row[3], self.document_url or "", self.document))
+				url = blackmamba.database.url(row[2], row[3])
+				if url:
+					xtable.addrow(row[0], row[1], blackmamba.html.XLink(None, url, row[3], '_blank'))
+				else:
+					xtable.addrow(row[0], row[1], row[3])
 			form = blackmamba.html.XForm(blackmamba.html.XP(table))
 			blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
 			blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "extract_copy_to_clipboard('clipboard');"})
