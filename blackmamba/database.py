@@ -146,6 +146,20 @@ def synonyms(qtype, qid, dictionary=None, userdata=None):
 	return names
 
 
+def url(qtype, qid, dictionary=None):
+	if qtype == -2:
+		return "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s" % qid
+	elif qtype <= -21 and qtype >= -24:
+		return "http://www.ebi.ac.uk/QuickGO/GTerm?id=%s" % qid
+	elif qtype == -25:
+		return "http://purl.obolibrary.org/obo/%s" % qid.replace(":", "_")
+	elif qtype == -26:
+		return "http://purl.obolibrary.org/obo/%s" % qid.replace(":", "_")
+	elif qtype == -27:
+		return "http://purl.obolibrary.org/obo/%s" % qid.replace(":", "_")
+	else:
+		return None
+
 def mentions(qtype, qid, textmining=None):
 	if textmining == None:
 		textmining = Connect("textmining")

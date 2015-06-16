@@ -54,6 +54,15 @@ img {
 	margin-bottom: 0.6em;
 }
 
+.extract_match {
+	background-color: #DFDFDF;
+}
+
+.extract_highlight {
+	background-color: #FF6633 !important;
+}
+
+
 /* ------------------------------------------- */
 
 .header, .menu, .footer {
