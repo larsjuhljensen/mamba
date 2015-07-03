@@ -69,6 +69,6 @@ Diabetes mellitus
 [CONTENT:ABOUT]
 <div style="width: 50em;">
 <p>DISEASES is a frequently updated web resource that integrates evidence on disease-gene associations from automatic text mining, manually curated literature, cancer mutation data, and genome-wide association studies. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence.</p>
-<p>For further details please refer to the following Open Access preprint about the database:</p>
-<p><a href="http://biorxiv.org/content/early/2014/08/25/008425">DISEASES: Text mining and data integration of disease-gene associations</a></p>
+<p>For further details please refer to the following Open Access article about the database:</p>
+<p><a href="http://www.sciencedirect.com/science/article/pii/S1046202314003831">DISEASES: Text mining and data integration of disease-gene associations</a></p>
 </div>
