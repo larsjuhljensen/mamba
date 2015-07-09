@@ -39,6 +39,9 @@
                         finished the  higlight-on-hover by injecting and removing the extract_highlight css style
                         argument in method invocation added: extract_copy_to_clipboard( hidden_text_container_id )
                         -->
+<!-- v004: 15.06.15:    fixed the ctrl/meta-c capturing so that it does not affect default
+                        browser copy behaviour if text has been selected
+                        -->
 
 */
 
@@ -72,12 +75,13 @@ $(document).ready ( function () {
                    //extract_add_hyperlinks_to_identitiers(); //16.June.2015: functionality moved on the server side
                    extract_enable_higlight_on_hover();
                    extract_enable_ctrl_c_meta_c_event_listener();
+                   
                 });
 
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-
+       
 // auxiliary methods 
 ///////////////////////////////////////////////////////////////
 function extract_add_hyperlinks_to_identitiers() {
@@ -261,13 +265,30 @@ function extract_enable_ctrl_c_meta_c_event_listener(){
 }
 
 function extract_handle_ctrl_c_meta_c_event( event ){
-    if (( event.metaKey || event.ctrlKey) &&  event.which == "67" ){//67 => "c"
-        if (debug) { console.log ("Keyboard Copy (ctrl-c / meta-c) captured"); }
-        if (is_chrome) {
-            extract_copy_to_clipboard( hidden_text_container_area_identifier );
-        }
-        else {
-            display_manual_copy_message();
+
+    
+    var extract_override_ctrl_meta_c = true;
+    var extract_user_selected_text = extract_page_getSelectionText();
+    
+    if ( extract_user_selected_text || extract_user_selected_text.length > 0 ) {
+        //text was selected by the user, you may not overide ctrl/meta-c
+        extract_override_ctrl_meta_c = false
+    }
+    
+    if (debug) { console.log ( "Selected text is: *" + extract_user_selected_text+ "*"); }
+    if (debug) { console.log ( "Allowed to override ctrl/meta-c ?: " + extract_override_ctrl_meta_c ); }
+    
+    
+    
+    if ( extract_override_ctrl_meta_c ) { //process only when no text selected by the user ie do not overide the standard copy
+        if (( event.metaKey || event.ctrlKey) &&  event.which == "67" ){//67 => "c"
+            if (debug) { console.log ("Keyboard Copy (ctrl-c / meta-c) captured"); }
+            if (is_chrome) {
+                extract_copy_to_clipboard( hidden_text_container_area_identifier );
+            }
+            else {
+                display_manual_copy_message();
+            }
         }
     }
 }
@@ -309,5 +330,18 @@ function extract_save_to_file( anchor_tag ){
     anchor_tag.setAttribute('href', 'data:text/plain;charset=ascii,'+data)
 }
 
+
+/*
+ * method taken from: http://stackoverflow.com/questions/5379120/get-the-highlighted-selected-text
+ */
+function extract_page_getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
 
 
