@@ -45,6 +45,8 @@
 <!-- v005: 14.07.15:    fixed the download entities tsv for Safari and enabled the alternative
                         copy to clipboard message for Safari too. Now Safari, Chrome, and Firefox are supported
                         -->
+<!-- v005: 14.07.15:    the download button is hidden on IE as it is not working
+                        -->
 
 */
 
@@ -57,6 +59,9 @@ var hidden_text_container_area_identifier = "clipboard"; //NB: needs by in sync 
 var is_chrome = extract_browser.toLowerCase().indexOf('chrome') > -1;
 var is_firefox = extract_browser.toLowerCase().indexOf('firefox') > -1;
 var is_safari = extract_browser.toLowerCase().indexOf('safari') > -1;
+var is_internet_explorer = extract_browser.toLowerCase().indexOf('msie') > -1 || extract_browser.toLowerCase().indexOf('trident') > -1;
+
+
 
 var copy_control_key = "\u2303"; //control key
 if (extract_browser.toLowerCase().indexOf('macintosh') > -1) {
@@ -76,10 +81,14 @@ if (debug) { console.log( "version: 001, browser: " + extract_browser ); }
 ///////////////////////////////////////////////////////////////
 
 $(document).ready ( function () {
-                   extract_display_non_supported_browser_warning();
-                   //extract_add_hyperlinks_to_identitiers(); //16.June.2015: functionality moved on the server side
-                   extract_enable_higlight_on_hover();
-                   extract_enable_ctrl_c_meta_c_event_listener();
+                    extract_display_non_supported_browser_warning();
+                    //extract_add_hyperlinks_to_identitiers(); //16.June.2015: functionality moved on the server side
+                    extract_enable_higlight_on_hover();
+                    extract_enable_ctrl_c_meta_c_event_listener();
+                    
+                    if (is_internet_explorer) {
+                        document.getElementById('extract_save_to_file').style.display = 'none';
+                    }
                    
                 });
 
