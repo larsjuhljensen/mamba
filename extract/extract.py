@@ -53,7 +53,7 @@ class Extract(reflect.tagging.TaggingRequest):
 			form = blackmamba.html.XForm(blackmamba.html.XP(table))
 			blackmamba.html.XTextArea(form, attr = {"class" : "hidden", "id" : "clipboard"}).text = "".join(tsv)
 			blackmamba.html.XLink(form, "", "Copy to clipboard", attr = {"class" : "button_link", "onClick" : "extract_copy_to_clipboard('clipboard'); return false;"})
-			blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "extract_save_to_file(this); return false;"})
+			blackmamba.html.XLink(form, "", "Save to file", attr = {"class" : "button_link", "download" : "entities.tsv", "onClick" : "extract_save_to_file(this);"})
 		else:
 			blackmamba.html.XP(table).text = "No terms were identified in the selected text."
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
