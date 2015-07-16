@@ -42,6 +42,9 @@
 <!-- v004: 15.06.15:    fixed the ctrl/meta-c capturing so that it does not affect default
                         browser copy behaviour if text has been selected
                         -->
+<!-- v005: 14.07.15:    fixed the download entities tsv for Safari and enabled the alternative
+                        copy to clipboard message for Safari too. Now Safari, Chrome, and Firefox are supported
+                        -->
 
 */
 
@@ -53,6 +56,8 @@ var hidden_text_container_area_identifier = "clipboard"; //NB: needs by in sync 
                                                         //     onclick="extract_copy_to_clipboard('clipboard');">Copy to clipboard</a>
 var is_chrome = extract_browser.toLowerCase().indexOf('chrome') > -1;
 var is_firefox = extract_browser.toLowerCase().indexOf('firefox') > -1;
+var is_safari = extract_browser.toLowerCase().indexOf('safari') > -1;
+
 var copy_control_key = "\u2303"; //control key
 if (extract_browser.toLowerCase().indexOf('macintosh') > -1) {
     copy_control_key = "\u2318"; //command key
@@ -108,8 +113,8 @@ function extract_add_hyperlinks_to_identitiers() {
 
 
 function extract_display_non_supported_browser_warning() {
-    if (!is_chrome && !is_firefox) {
-        alert ( "This popup is best supported in Google Chrome and Mozzila Firefox");
+    if (!is_chrome && !is_firefox && !is_safari) {
+        alert ( "This popup is best supported in Google Chrome, Mozila Firefox and Safari");
     }
 }
 
@@ -305,8 +310,7 @@ function extract_copy_to_clipboard( hidden_text_container_id ) {
     var copy_to_clipboard_supported = false;
 
     try {
-        document.execCommand('copy');
-        copy_to_clipboard_supported = true;
+        copy_to_clipboard_supported = document.execCommand('copy');
     }
     catch (err) {
         if (debug) { console.log ("copy_to_clipboard not supported"); }
@@ -327,7 +331,7 @@ function extract_copy_to_clipboard( hidden_text_container_id ) {
 
 function extract_save_to_file( anchor_tag ){
     var data = encodeURIComponent(document.getElementById( hidden_text_container_area_identifier ).innerHTML);
-    anchor_tag.setAttribute('href', 'data:text/plain;charset=ascii,'+data)
+    anchor_tag.setAttribute('href', 'data:application/x-download;charset=ascii,'+data);
 }
 
 
