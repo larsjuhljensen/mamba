@@ -108,6 +108,8 @@ class document(mamba.task.Request):
 class network(mamba.task.Request):
 	
 	def main(self):
+		dictionary = database.Connect("dictionary")
+		stringdb = database.Connect("string")
 		rest = mamba.task.RestDecoder(self)
 		qentities = []
 		if "entities" in rest:
@@ -118,9 +120,21 @@ class network(mamba.task.Request):
 		qscore = 0.0;
 		if "score" in rest:
 			qscore = float(rest["score"])
+		qadditional = 0
+		if "additional" in rest:
+			qadditional = int(rest["additional"])
+			qselected = []
+			if "selected" in rest:
+				qselected = rest["selected"].split("\n")
+			else:
+				qselected = qentities+qexisting
+			sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qselected])
+			sql2 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities+qexisting])
+			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, int(1000*qscore), qadditional)
+			for (entity, score) in stringdb.query(sql).getresult():
+				qentities.append(entity)
 		data = {}
 		data["nodes"] = []
-		dictionary = database.Connect("dictionary")
 		for qentity in qentities:
 			qtype, qid = qentity.split(".", 1)
 			qtype = int(qtype)
@@ -132,7 +146,6 @@ class network(mamba.task.Request):
 				node["image"] = image
 			data["nodes"].append(node)
 		data["edges"] = []
-		stringdb = database.Connect("string")
 		entities_sql = ",".join(["'%s'" % pg.escape_string(x) for x in qentities])
 		if len(qexisting):
 			existing_sql = ",".join(["'%s'" % pg.escape_string(x) for x in qexisting])
