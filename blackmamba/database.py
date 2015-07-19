@@ -50,15 +50,6 @@ def preferred_type_name(qtype, dictionary=None):
 	else:
 		return ""
 
-def preferred_name(qtype, qid, dictionary=None):
-	if dictionary == None:
-		dictionary = Connect("dictionary")
-	rows = dictionary.query("SELECT name FROM preferred WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult()
-	if len(rows) >= 1:
-		return rows[0][0]
-	else:
-		return qid
-
 
 def description(qtype, qid, dictionary=None, userdata=None):
 	text = ""
@@ -78,16 +69,29 @@ def description(qtype, qid, dictionary=None, userdata=None):
 	return text
 
 
-def linkouts(qtype, qid, dictionary=None):
-	links = []
+def image(qtype, qid, dictionary=None):
+	image = None
+	sql = "SELECT image FROM images WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))
 	try:
 		if dictionary == None:
 			dictionary = Connect("dictionary")
-		links = dictionary.query("SELECT source, url FROM linkouts WHERE type=%d AND id='%s' ORDER BY priority ASC;" % (qtype, pg.escape_string(qid))).getresult()
+		image = dictionary.query(sql).getresult()[0][0]
 	except:
-		print "FAILED!"
+		pass
+	return image
+	
+	
+def linkouts(qtype, qid, dictionary=None):
+	links = []
+	sql = "SELECT source, url FROM linkouts WHERE type=%d AND id='%s' ORDER BY priority ASC;" % (qtype, pg.escape_string(qid))
+	try:
+		if dictionary == None:
+			dictionary = Connect("dictionary")
+		links = dictionary.query(sql).getresult()
+	except:
 		pass
 	return links
+
 
 def names(name, entity_types, dictionary=None):
 	if dictionary == None:
@@ -100,6 +104,16 @@ def names(name, entity_types, dictionary=None):
 		else:
 			qtypes.append("type="+qtype)
 	return dictionary.query("SELECT type, id, name FROM names WHERE (%s) AND name LIKE '%s%%';" % (" OR ".join(qtypes), name)).getresult()
+
+
+def preferred_name(qtype, qid, dictionary=None):
+	if dictionary == None:
+		dictionary = Connect("dictionary")
+	rows = dictionary.query("SELECT name FROM preferred WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult()
+	if len(rows) >= 1:
+		return rows[0][0]
+	else:
+		return qid
 
 
 def sequence(qtype, qid, dictionary=None):
@@ -217,5 +231,4 @@ class GetSequence(mamba.task.Request):
 		rest = mamba.task.RestDecoder(self)
 		qtype = int(rest["type"])
 		qid = rest["id"]
-                mamba.http.HTTPResponse(self, sequence(qtype, qid)+"\n", "text/plain").send()
-
+		mamba.http.HTTPResponse(self, sequence(qtype, qid)+"\n", "text/plain").send()
