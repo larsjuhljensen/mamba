@@ -7,23 +7,34 @@ import mamba.task
 import mamba.util
 
 
-def entity_dict(qtype, qid):
+def entity_dict(qtype, qid, dictionary=None):
+	if dictionary == None:
+		dictionary = database.Connect("dictionary")
+		data = {}
 	if qtype >= 0:
-		return {"@id" : "stringdb:%d.%s" % (qtype, qid)}
+		data = {"@id" : "stringdb:%d.%s" % (qtype, qid)}
 	elif qtype == -1:
-		return {"@id" : "stitchdb:%s" % qid}
+		data = {"@id" : "stitchdb:%s" % qid}
 	elif qtype == -2:
-		return {"@id" : "taxonomy:%s" % qid}
+		data = {"@id" : "taxonomy:%s" % qid}
 	elif qtype <= -21 and qtype >= -24:
-		return {"@id" : "%s" % qid}
+		data = {"@id" : "%s" % qid}
 	elif qtype == -25:
-		return {"@id" : "%s" % qid}
+		data = {"@id" : "%s" % qid}
 	elif qtype == -26:
-		return {"@id" : "%s" % qid}
+		data = {"@id" : "%s" % qid}
 	elif qtype == -27:
-		return {"@id" : "%s" % qid}
+		data = {"@id" : "%s" % qid}
 	else:
-		return {"@id" : qid}
+		 {"@id" : qid}
+	data["name"] = database.preferred_name(qtype, qid, dictionary)
+	canonical = database.canonical(qtype, qid, dictionary)
+	if canonical != "":
+		data["canonical"] = canonical
+	description = database.description(qtype, qid, dictionary)
+	if description != "":
+		data["description"] = description
+ 	return data
 
 	
 class annotations(mamba.task.Request):
@@ -117,9 +128,12 @@ class network(mamba.task.Request):
 		qexisting = []
 		if "existing" in rest:
 			qexisting = rest["existing"].split("\n")
-		qscore = 0.0;
+		qmaxscore = 1000
+		if "maxscore" in rest:
+			qmaxscore = int(1000*float(rest["maxscore"]))
+		qscore = 0;
 		if "score" in rest:
-			qscore = float(rest["score"])
+			qscore = int(1000*float(rest["score"]))
 		qadditional = 0
 		if "additional" in rest:
 			qadditional = int(rest["additional"])
@@ -130,7 +144,7 @@ class network(mamba.task.Request):
 				qselected = qentities+qexisting
 			sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qselected])
 			sql2 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities+qexisting])
-			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, int(1000*qscore), qadditional)
+			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, qscore, qadditional)
 			for (entity, score) in stringdb.query(sql).getresult():
 				qentities.append(entity)
 		data = {}
@@ -138,20 +152,25 @@ class network(mamba.task.Request):
 		for qentity in qentities:
 			qtype, qid = qentity.split(".", 1)
 			qtype = int(qtype)
-			node = {}
-			node["@id"] = "_:%d.%s" % (qtype, qid)
-			node["name"] = database.preferred_name(qtype, qid, dictionary)
+			node = entity_dict(qtype, qid, dictionary)
 			image = database.image(qtype, qid, dictionary)
 			if image != None:
 				node["image"] = image
+			sequence = database.sequence(qtype, qid, dictionary)
+			if sequence != "":
+				node["sequence"] = sequence
 			data["nodes"].append(node)
 		data["edges"] = []
-		entities_sql = ",".join(["'%s'" % pg.escape_string(x) for x in qentities])
-		if len(qexisting):
-			existing_sql = ",".join(["'%s'" % pg.escape_string(x) for x in qexisting])
-			sql = "SELECT * FROM links WHERE entity1 IN (%s) AND ((entity2 IN (%s) AND entity1 < entity2) OR entity2 IN (%s)) AND score >= %d;" % (entities_sql, entities_sql, existing_sql, int(1000*qscore))
+		sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities])
+		sql2 = ",".join(["'%s'" % pg.escape_string(x) for x in qexisting])
+		if len(qentities):
+			if len(qexisting):
+				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND ((entity2 IN (%s) AND entity1 < entity2) OR (entity2 IN (%s) AND score < %d)) AND score >= %d;" % (sql1, sql1, sql2, qmaxscore, qscore)
+			else:
+				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score >= %d;" % (sql1, sql1, qscore)
 		else:
-			sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score >= %d;" % (entities_sql, entities_sql, int(1000*qscore))
+			if len(qexisting):
+				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score < %d AND score >= %d;" % (sql2, sql2, qmaxscore, qscore) 
 		for (entity1, entity2, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in stringdb.query(sql).getresult():
 			scores = {}
 			if nscore > 0:

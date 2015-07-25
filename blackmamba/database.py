@@ -51,6 +51,18 @@ def preferred_type_name(qtype, dictionary=None):
 		return ""
 
 
+def canonical(qtype, qid, dictionary=None):
+	canonical = ""
+	sql = "SELECT canonical FROM canonical WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))
+	try:
+		if dictionary == None:
+			dictionary = Connect("dictionary")
+		canonical = dictionary.query(sql).getresult()[0][0]
+	except:
+		pass
+	return canonical
+
+
 def description(qtype, qid, dictionary=None, userdata=None):
 	text = ""
 	sql = "SELECT text FROM texts WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))
