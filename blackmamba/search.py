@@ -66,6 +66,26 @@ class EntityQuery(mamba.task.Request):
 		mamba.http.HTMLResponse(self, Table(None, database.Connect("dictionary"), query, section, limit, page, container).tohtml()).send()
 
 
+class Fetch (mamba.task.Request):
+	
+	def main(self):	
+		rest = mamba.task.RestDecoder(self)
+		query = ""
+		if "query" in rest:
+			query = rest["query"]
+		section = "SEARCH"
+		if "section" in rest:
+			section = rest["section"]
+		qtypes = mamba.setup.config().sections[section.upper()]
+		dictionary = database.Connect("dictionary")
+		entities = database.find_entities(map(int, qtypes.keys()), query, dictionary)
+		if len(entities):
+			url = qtypes[str(entities[0][0])]+entities[0][1]
+			mamba.http.HTTPRedirect(self, url).send()
+		else:
+			mamba.http.HTTPErrorResponse(self, 404, "Not Found").send()
+
+
 class SearchPage(xpage.XPage):
 	
 	def __init__(self, page_class, page_name, action, limit, query):
