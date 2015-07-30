@@ -234,8 +234,8 @@ class XPage(html.XNakedPage):
 			key = "SUBTITLE:"+page_class.upper()
 			if key in design:
 				subtitle = design[key]
-		html.XLink(html.XH1(left), "/", title)
-		html.XLink(html.XP(left), "/", subtitle)
+		html.XLink(html.XH1(left), "/", title, attr = {"id" : "title"})
+		html.XLink(html.XP(left), "/", subtitle, attr = {"id" : "subtitle"})
 		if "LOGO" in design:
 			if "LINK" in design:
 				html.XImg(html.XLink(html.XDiv(self.header, "header_right"), design["LINK"]), design["LOGO"])
