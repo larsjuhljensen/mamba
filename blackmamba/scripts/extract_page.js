@@ -45,7 +45,9 @@
 <!-- v005: 14.07.15:    fixed the download entities tsv for Safari and enabled the alternative
                         copy to clipboard message for Safari too. Now Safari, Chrome, and Firefox are supported
                         -->
-<!-- v005: 14.07.15:    the download button is hidden on IE as it is not working
+<!-- v006: 14.07.15:    the download button is hidden on IE as it is not working
+                        -->
+<!-- v007: 10.08.15:    Added column labels for the data that are "saved-to-file"
                         -->
 
 */
@@ -81,7 +83,9 @@ if (debug) { console.log( "version: 001, browser: " + extract_browser ); }
 ///////////////////////////////////////////////////////////////
 
 $(document).ready ( function () {
-                    extract_display_non_supported_browser_warning();
+                    //extract_display_non_supported_browser_warning(); //17.July.2015: now Opera, Google Chrome, Safari, Firefox are fully supported
+                                                                       //              and in IE everything but the download works fine
+                                                                       //              (in IE12 it will work) -  not needed any more
                     //extract_add_hyperlinks_to_identitiers(); //16.June.2015: functionality moved on the server side
                     extract_enable_higlight_on_hover();
                     extract_enable_ctrl_c_meta_c_event_listener();
@@ -340,7 +344,10 @@ function extract_copy_to_clipboard( hidden_text_container_id ) {
 
 function extract_save_to_file( anchor_tag ){
     var data = encodeURIComponent(document.getElementById( hidden_text_container_area_identifier ).innerHTML);
-    anchor_tag.setAttribute('href', 'data:application/x-download;charset=ascii,'+data);
+    
+    //var column_headers = encodeURIComponent( "Type\tName\tIdentifier\tMatch\tSource URL\tText\n" );
+    var column_headers = encodeURIComponent( "Type\tName\tIdentifier\tSource URL\tText\n" );
+    anchor_tag.setAttribute('href', 'data:application/x-download;charset=ascii,'+ column_headers +data);
 }
 
 
