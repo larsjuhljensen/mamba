@@ -25,12 +25,15 @@ class Extract(reflect.tagging.TaggingRequest):
 		dictionary = blackmamba.database.Connect("dictionary")
 		document = mamba.util.string_to_bytes(self.document, self.http.charset)
 		matches = mamba.setup.config().tagger.get_matches(document=document, document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
-		rows = set()
+		rows = {}
 		for match in reversed(matches):
 			classes = ["extract_match"]
 			for entity in match[2]:
 				classes.append(entity[1])
-				rows.add((blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[0], entity[1]))
+				row = (blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[0], entity[1])
+				if not row in rows:
+					rows[row] = set()
+				rows[row].add(document[match[0]:match[1]+1])
 			document = '''%s<span class="%s"">%s</span>%s''' % (document[0:match[0]], " ".join(classes), document[match[0]:match[1]+1], document[match[1]+1:])
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
@@ -44,7 +47,7 @@ class Extract(reflect.tagging.TaggingRequest):
 			xtable["width"] = "100%"
 			xtable.addhead("Type", "Name", "Identifier")
 			for row in sorted(rows):
-				tsv.append("%s\t%s\t%s\t%s\t%s\n" % (row[0], row[1], row[3], self.document_url or "", self.document))
+				tsv.append("%s\t%s\t%s\t%s\t%s\t%s\n" % (row[0], row[1], row[3], ";".join(sorted(rows[row])), self.document_url or "", self.document))
 				url = blackmamba.database.url(row[2], row[3])
 				if url:
 					xtable.addrow(row[0], row[1], blackmamba.html.XLink(None, url, row[3], '_blank'))
