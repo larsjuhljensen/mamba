@@ -198,7 +198,7 @@ class GetHTML(TaggingRequest):
 		for key in self.user_settings:
 			footer.append('  <span name="%s">%s</span>' % (key, self.user_settings[key]))
 		footer.append('</div>\n')
-		self.document = mamba.setup.config().tagger.get_html(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, add_events=True, force_important=True, html_footer="\n".join(footer))
+		self.document = mamba.setup.config().tagger.get_html(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist, basename='reflect', add_events=True, extra_classes=False, force_important=True, html_footer="\n".join(footer))
 		self.respond()
 
 
