@@ -24,7 +24,8 @@ class Extract(reflect.tagging.TaggingRequest):
 	def tagging(self):
 		dictionary = blackmamba.database.Connect("dictionary")
 		document = mamba.util.string_to_bytes(self.document, self.http.charset)
-		matches = mamba.setup.config().tagger.get_matches(document=document, document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
+		tagger = mamba.setup.config().tagger
+		matches = tagger.get_matches(document=document, document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
 		rows = {}
 		for match in reversed(matches):
 			classes = ["extract_match"]
@@ -34,7 +35,7 @@ class Extract(reflect.tagging.TaggingRequest):
 				if not row in rows:
 					rows[row] = set()
 				rows[row].add(document[match[0]:match[1]+1])
-			document = '''%s<span class="%s"">%s</span>%s''' % (document[0:match[0]], " ".join(classes), document[match[0]:match[1]+1], document[match[1]+1:])
+		document = tagger.create_html(document=document, document_id=self.document_id, matches=matches, add_events=False, force_important=False, html_footer="")
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
 		blackmamba.html.XH2(selection, "table_title").text = "Selected text"
