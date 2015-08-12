@@ -1,3 +1,22 @@
+/*
+<!--                                            -->
+<!--    Script created by Lars Juhl Jensen      -->
+<!--     as part of the EXTRACT project         -->
+<!--              June 2015                     -->
+<!--                                            -->
+<!--    Modified by pafilis@hcmr.gr             -->
+<!--                                            -->
+
+<!------------------------------------------------>
+<!--                 History                    -->
+<!------------------------------------------------>
+
+<!-- v001: 06.06.15:	finalized popup css style
+<!-- v002: 12.08.15:	updated the background and font colours for the
+			highlight-on-hover functionality, apple extra rules
+			for the entity hyperlink font color-->
+*/
+
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: 14px;
@@ -54,16 +73,20 @@ img {
 	margin-bottom: 0.6em;
 }
 
+/* ------------------------------------------- */
+
 .extract_match {
 	background-color: #DFDFDF;
 }
 
 .extract_highlight {
-	background-color: #FF6633 !important;
+	background-color: #4B607F !important;
+	color: #fff !important;
 }
 
-
-/* ------------------------------------------- */
+.extract_highlight a:link, .extract_highlight a:active, .extract_highlight a:visited {
+	color: #fff;
+}
 
 .header, .menu, .footer {
 	display: none;

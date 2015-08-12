@@ -345,8 +345,7 @@ function extract_copy_to_clipboard( hidden_text_container_id ) {
 function extract_save_to_file( anchor_tag ){
     var data = encodeURIComponent(document.getElementById( hidden_text_container_area_identifier ).innerHTML);
     
-    //var column_headers = encodeURIComponent( "Type\tName\tIdentifier\tMatch\tSource URL\tText\n" );
-    var column_headers = encodeURIComponent( "Type\tName\tIdentifier\tSource URL\tText\n" );
+    var column_headers = encodeURIComponent( "Type\tName\tIdentifier\tMatch\tSource URL\tText\n" );
     anchor_tag.setAttribute('href', 'data:application/x-download;charset=ascii,'+ column_headers +data);
 }
 
