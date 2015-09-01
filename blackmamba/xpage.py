@@ -82,23 +82,29 @@ class XAjaxTable(mamba.task.Request):
 		filter = False
 		if format == "html":
 			filter = True
-			self.xtable = html.XDataTable(parent)
-			self.xtable["width"] = "100%"
-			self.add_head()
+		rows = self.get_rows(rest, filter)
+		if format == "html":
+			if len(rows):
+				self.xtable = html.XDataTable(parent)
+				self.xtable["width"] = "100%"
+				self.add_head()
+			else:
+				html.XP(parent, "No evidence of this type.", attr = {"class" : "clear"})
 		elif format == "json":
 			self.json = []
 		limit = int(rest["limit"])
 		page = int(rest["page"])
 		count = 0
-		for r in self.get_rows(rest, filter):
-			count += 1
-			if count > page*limit:
-				break
-			if count > limit*(page-1):
-				name = html.xcase(database.preferred_name(int(rest["type2"]), r["id2"], dictionary))
-				stars = int(math.ceil(r['score']))
-				stars = '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
-				self.add_row(r, name, stars, format)
+		if len(rows):
+			for row in rows:
+				count += 1
+				if count > page*limit:
+					break
+				if count > limit*(page-1):
+					name = html.xcase(database.preferred_name(int(rest["type2"]), row["id2"], dictionary))
+					stars = int(math.ceil(row["score"]))
+					stars = '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
+					self.add_row(row, name, stars, format)
 		return count
 	
 	def get_rows(self, rest, filter):
