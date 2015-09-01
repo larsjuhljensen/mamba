@@ -24,6 +24,10 @@ img {
 	border: 0;
 }
 
+.clear {
+	clear: both;
+}
+
 .hidden {
 	display: none;
 }
