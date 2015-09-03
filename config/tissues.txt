@@ -1,11 +1,11 @@
 [CSS]
-/css/blackmamba.css
+css/blackmamba.css
 
 [CSS:ENTITY]
-/css/tissues.css
+css/tissues.css
 
 [SCRIPTS:ENTITY]
-/scripts/tissues.js
+scripts/tissues.js
 
 [TITLE]
 TISSUES
@@ -17,7 +17,7 @@ Tissue expression database
 http://www.cpr.ku.dk
 
 [LOGO]
-/cpr.png
+cpr.png
 
 [MENU]
 Search

@@ -1,5 +1,5 @@
 [CSS]
-/css/blackmamba.css
+css/blackmamba.css
 
 [TITLE]
 DISEASES
@@ -11,7 +11,7 @@ Disease-gene associations mined from literature
 http://www.cpr.ku.dk
 
 [LOGO]
-/cpr.png
+cpr.png
 
 [MENU]
 Search
