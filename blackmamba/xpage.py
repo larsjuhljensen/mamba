@@ -253,7 +253,7 @@ class XPage(html.XNakedPage):
 				if item.upper() == page_class.upper():
 					html.XText(html.XSpan(menu), item)
 				else:
-					html.XLink(menu, "/"+item, item, None, {"class":"silent_link"})
+					html.XLink(menu, item, item, None, {"class":"silent_link"})
 		if "CONTENT" in design:
 			html.XText(self.content, design["CONTENT"])
 		if page_class != None:
