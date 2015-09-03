@@ -1,8 +1,8 @@
 [CSS:EXTRACT]
-/css/blackmamba.css
+css/blackmamba.css
 
 [CSS:EXTRACTPOPUP]
-/css/popup.css
+css/popup.css
 
 [TITLE]
 TAGGER
@@ -20,7 +20,7 @@ Text-mining-assisted extraction of terms
 http://www.cpr.ku.dk
 
 [LOGO]
-/cpr.png
+cpr.png
 
 [FOOTER]
 <p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a> from the <a href="http://www.lifewatchgreece.eu/">LifeWatchGreece Research Infrastructure</a>, <a href="http://www.hcmr.gr/en/">Institute of Marine Biology, Biotechnology and Aquaculture, Hellenic Centre for Marine Research</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research, University of Copenhagen</a>.</p>
@@ -34,7 +34,7 @@ ga('send', 'pageview');
 </script>
 
 [FOOTER:EXTRACT]
-<script src="/scripts/extract_page.js"></script>
+<script src="scripts/extract_page.js"></script>
 
 [FOOTER:EXTRACTPOPUP]
-<script src="/scripts/extract_page.js"></script>
+<script src="scripts/extract_page.js"></script>
