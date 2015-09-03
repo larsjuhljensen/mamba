@@ -1,11 +1,11 @@
 [CSS]
-/css/blackmamba.css
+css/blackmamba.css
 
 [CSS:ENTITY]
-/css/compartments.css
+css/compartments.css
 
 [SCRIPTS:ENTITY]
-/scripts/compartments.js
+scripts/compartments.js
 
 [TITLE]
 COMPARTMENTS
@@ -17,7 +17,7 @@ Subcellular localization database
 http://www.cpr.ku.dk
 
 [LOGO]
-/cpr.png
+cpr.png
 
 [MENU]
 Search
