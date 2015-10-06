@@ -4,6 +4,15 @@ import database
 import html
 import mamba.task
 
+
+def scores_dict(qfigure, qtype, qid, visualization = None):
+	if visualization == None:
+		visualization = database.Connect("visualization")
+	data = {}
+	sql = "SELECT label, score FROM colors WHERE type = %d AND id = '%s' AND figure LIKE '%s';" % (qtype, pg.escape_string(qid), pg.escape_string(qfigure))
+	return dict(visualization.query(sql).getresult())
+
+
 class SVG(html.XNode):
 	__svg = ''
 	
