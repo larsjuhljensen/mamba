@@ -2,6 +2,7 @@ import json
 import pg
 
 import database
+import visualization
 import mamba.task
 import mamba.util
 
@@ -9,8 +10,9 @@ import mamba.util
 class network(mamba.task.Request):
 	
 	def main(self):
-		dictionary = database.Connect("dictionary")
+		dictionarydb = database.Connect("dictionary")
 		stringdb = database.Connect("string")
+		visualizationdb = database.Connect("visualization")
 		rest = mamba.task.RestDecoder(self)
 		qentities = []
 		if "entities" in rest:
@@ -42,13 +44,17 @@ class network(mamba.task.Request):
 		for qentity in qentities:
 			qtype, qid = qentity.split(".", 1)
 			qtype = int(qtype)
-			node = database.entity_dict(qtype, qid, dictionary)
-			image = database.image(qtype, qid, dictionary)
+			node = database.entity_dict(qtype, qid, dictionarydb)
+			image = database.image(qtype, qid, dictionarydb)
 			if image != None:
 				node["image"] = image
-			sequence = database.sequence(qtype, qid, dictionary)
+			sequence = database.sequence(qtype, qid, dictionarydb)
 			if sequence != "":
 				node["sequence"] = sequence
+			if qtype in (3702, 4896, 4932, 6239, 7227, 9606, 10090, 10116):
+				node["compartments"] = visualization.scores_dict("subcell_cell_%%", qtype, qid, visualizationdb)
+			if qtype == 9606:
+				node["tissues"] = visualization.scores_dict("tissues_body_%%", qtype, qid, visualizationdb)
 			data["nodes"].append(node)
 		data["edges"] = []
 		sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities])
