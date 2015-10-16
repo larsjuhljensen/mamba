@@ -15,6 +15,8 @@
 <!-- v002: 12.08.15:	updated the background and font colours for the
 			highlight-on-hover functionality, apple extra rules
 			for the entity hyperlink font color-->
+<!-- v003: 12.08.15:	body: removed height/width 100% as they were causing a
+			scrollbar to appear-->
 */
 
 body {
