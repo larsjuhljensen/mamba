@@ -35,7 +35,7 @@ class Extract(reflect.tagging.TaggingRequest):
 				if not row in rows:
 					rows[row] = set()
 				rows[row].add(document[match[0]:match[1]+1])
-		document = tagger.create_html(document=document, matches=matches, basename='extract', add_events=False, extra_classes=True, force_important=False, html_footer="")
+		document = tagger.create_html(document=document, document_id=None, matches=matches, basename='extract', add_events=False, extra_classes=True, force_important=False, html_footer="")
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
 		blackmamba.html.XH2(selection, "table_title").text = "Selected text"
