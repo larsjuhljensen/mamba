@@ -132,7 +132,9 @@ class TaggingRequest(mamba.task.Request):
 	def main(self):
 		if not hasattr(self, "document"):
 			self.parse(mamba.task.RestDecoder(self))
-		if isinstance(self.document, unicode):
+		if self.http.method == "OPTIONS":
+			mamba.http.HTTPResponse(self, "").send()
+		elif isinstance(self.document, unicode):
 			self.queue("tagging")
 		elif self.document != None:
 			self.queue("convert")
