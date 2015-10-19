@@ -220,6 +220,7 @@ class HTTPResponse:
 	def __str__(self):
 		headers = self.headers.copy()
 		headers.add("Access-Control-Allow-Headers", "'Accept,Cache-Control,Content-Type,Depth,If-Modified-Since,NCBI-PHID,Origin,User-Agent,X-File-Name,X-File-Size,X-Prototype-Version,X-Requested-With")
+		headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
 		headers.add("Access-Control-Allow-Origin", "*")
 		headers.add("Connection", "close")
 		headers.add("Date", datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S UTC"))
@@ -427,6 +428,9 @@ class HTTPRequest:
 		elif self.method == "GET":
 			if len(self.body):
 				raise mamba.http.HTTPErrorResponse(mamba.task.ErrorRequest(self), 400, "GET request was malformed. Contained an unexpected body.")
+		elif self.method == "OPTIONS":
+			if len(self.body):
+				raise mamba.http.HTTPErrorResponse(mamba.task.ErrorRequest(self), 400, "OPTIONS request was malformed. Contained an unexpected body.")
 		
 	def size(self):
 		return self.header_size + self.content_length   
@@ -439,7 +443,7 @@ class HTTPRequest:
 		if self.got_null_byte:
 			return True
 		if self.method:
-			if self.method == "GET":
+			if self.method == "GET" or self.method == "OPTIONS":
 				return True
 			elif self.method == "POST":
 				current_body_size = self.bytes_received - self.header_size
@@ -474,7 +478,7 @@ class HTTPRequest:
 				if not self.parse(http_header):
 					raise RuntimeError, "Client data is not a HTTP request."
 				self._assign_uuid()
-				if self.method == "GET":
+				if self.method == "GET" or self.method == "OPTIONS":
 					self.content_length = 0  # Ensures header is analyzed just once.
 				elif self.method != "POST":
 					return -1
