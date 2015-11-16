@@ -29,12 +29,14 @@ class Extract(reflect.tagging.TaggingRequest):
 		rows = {}
 		for match in reversed(matches):
 			classes = ["extract_match"]
-			for entity in match[2]:
-				classes.append(entity[1])
-				row = (blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[0], entity[1])
-				if not row in rows:
-					rows[row] = set()
-				rows[row].add(document[match[0]:match[1]+1])
+			entities = match[2]
+			if entities != None:
+				for entity in entities:
+					classes.append(entity[1])
+					row = (blackmamba.database.preferred_type_name(entity[0], dictionary), blackmamba.html.xcase(blackmamba.database.preferred_name(entity[0], entity[1], dictionary)), entity[0], entity[1])
+					if not row in rows:
+						rows[row] = set()
+					rows[row].add(document[match[0]:match[1]+1])
 		document = tagger.create_html(document=document, document_id=None, matches=matches, basename='extract', add_events=False, extra_classes=True, force_important=False, html_footer="")
 		page = blackmamba.xpage.XPage(self.action)
 		selection = blackmamba.html.XDiv(page.content, "ajax_table")
