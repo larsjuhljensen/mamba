@@ -146,6 +146,16 @@ class TaggingRequest(mamba.task.Request):
 			mamba.http.HTTPErrorResponse(self, 400, "Request is missing a document and has no uri, doi or pmid either.").send()
 
 
+class OpenAnnotation(TaggingRequest):
+	
+	def __init__(self, http, action = "OpenAnnotation"):
+		TaggingRequest.__init__(self, http, action)
+	
+	def tagging(self):
+		data = mamba.setup.config().tagger.get_jsonld(document=mamba.util.string_to_bytes(self.document, self.http.charset), document_id=self.document_id, entity_types=self.entity_types, auto_detect=self.auto_detect, ignore_blacklist=self.ignore_blacklist)
+		mamba.http.HTTPResponse(self, data, "application/ld+json").send()
+
+
 class GetEntities(TaggingRequest):
 	
 	def __init__(self, http, action = "GetEntities"):
