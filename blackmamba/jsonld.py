@@ -23,7 +23,7 @@ class annotations(mamba.task.Request):
 			used = set()
 			if len(records):
 				data = {}
-				data["@context"] = "http://nlplab.org/ns/restoa-context-20150307.json"
+				data["@context"] = ["http://nlplab.org/ns/restoa-context-20150307.json",  "http://nlplab.org/ns/bio-20151118.jsonld"]
 				sql = "SELECT * FROM matches WHERE document=%d;" % document
 				records = textmining.query(sql).dictresult()
 				data["@id"] = "/document/%d/annotations" % document
