@@ -209,23 +209,17 @@ def count(qtype, qid, textmining=None):
 def entity_dict(qtype, qid, dictionary=None):
 	if dictionary == None:
 		dictionary = Connect("dictionary")
-		data = {}
+	data = {}
 	if qtype >= 0:
 		data = {"@id" : "stringdb:%d.%s" % (qtype, qid)}
 	elif qtype == -1:
 		data = {"@id" : "stitchdb:%s" % qid}
 	elif qtype == -2:
 		data = {"@id" : "taxonomy:%s" % qid}
-	elif qtype <= -21 and qtype >= -24:
-		data = {"@id" : "%s" % qid}
-	elif qtype == -25:
-		data = {"@id" : "%s" % qid}
-	elif qtype == -26:
-		data = {"@id" : "%s" % qid}
-	elif qtype == -27:
-		data = {"@id" : "%s" % qid}
+	elif ":" in qid:
+		data = {"@id" : qid}
 	else:
-		{"@id" : qid}
+		data = {"@id" : "_:%s" % qid}
 	data["name"] = preferred_name(qtype, qid, dictionary)
 	name = canonical(qtype, qid, dictionary)
 	if name != "":
