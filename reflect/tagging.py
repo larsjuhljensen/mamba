@@ -24,9 +24,10 @@ class TaggingRequest(mamba.task.Request):
 		self.document = None
 		if "document" in rest:
 			self.document = rest["document"]
-			if "content_type" in rest and rest["content_type"].lower() == "text/html" or isinstance(self.document, str):
-				self.document = unicode(self.document, self.http.charset, errors="replace")
-		
+		elif "text" in rest:
+			self.document = rest["text"]
+		if self.document != None and "content_type" in rest and rest["content_type"].lower() == "text/html" or isinstance(self.document, str):
+			self.document = unicode(self.document, self.http.charset, errors="replace")
 		self.document_id = None
 		self.document_url = None
 		doi = None
@@ -46,6 +47,13 @@ class TaggingRequest(mamba.task.Request):
 			else:
 				self.document_id = "http://"+rest["uri"]
 				self.document_url = "http://"+rest["uri"]
+		elif "url" in rest:
+			if rest["url"].startswith("http"):
+				self.document_id = rest["url"]
+				self.document_url = rest["url"]
+			else:
+				self.document_id = "http://"+rest["url"]
+				self.document_url = "http://"+rest["url"]
 		elif "pmid" in rest:
 			self.document_id = rest["pmid"]
 			self.document_url = "http://www.ncbi.nlm.nih.gov/pubmed/"+rest["pmid"]
