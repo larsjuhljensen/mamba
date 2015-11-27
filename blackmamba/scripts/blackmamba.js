@@ -31,6 +31,69 @@ function blackmamba_request(xmlhttp, url, query, container)
 	}
 }
 
+function blackmamba_timecourses_request(xmlhttp, url, query, container,name,visible,async)
+{
+	xmlhttp.open(query == "" ? "GET" : "POST", url, async);
+	xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4) {
+			draw_timecourses(xmlhttp.responseText, container,name, visible);
+			div.style.visibility = 'visible';
+		}
+	}
+	xmlhttp.send(query);
+	try {
+		_gaq.push(['_trackPageview', url]);
+	}
+	catch (err) {
+	}
+}
+
+function blackmamba_cyclebase_cycle_request(xmlhttp, url, query, container)
+{
+	xmlhttp.open(query == "" ? "GET" : "POST", url, true);
+	xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4){
+			var response = xmlhttp.responseText;
+			draw_cycle(response ,container);
+			
+		}
+	}
+	xmlhttp.send(query);
+	try {
+		_gaq.push(['_trackPageview', url]);
+	}
+	catch (err) {
+	}
+}
+
+function blackmamba_cyclebase_timecourse_request(xmlhttp, url, query, container)
+{
+	xmlhttp.open(query == "" ? "GET" : "POST", url, true);
+	xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4){
+			var response = xmlhttp.responseText;
+			var cycle = get_cycle_data(response);
+			var queries = build_time_course_queries(response,container);
+			visible = true;
+			queries.forEach(function(d){
+				var name = d.split("=")[1].split("&")[0]
+				blackmamba_timecourses(d,container,name,visible,false);
+				visible = false;
+				add_cyle_axis(cycle.cycle_info,cycle.peaktime,name,container);
+				})
+		}
+	}
+	xmlhttp.send(query);
+	try {
+		_gaq.push(['_trackPageview', url]);
+	}
+	catch (err) {
+	}
+}
+
 
 // =============================================================================
 // Black mamba stuff.
@@ -46,6 +109,24 @@ function blackmamba_search(url, section, limit, page, container)
 		query += "&section="+section
 	}
 	query += "&limit="+limit+"&page="+page+"&container="+container
+	blackmamba_request(blackmamba_xmlhttp(), url, query, container);
+}
+
+function blackmamba_advanced_search(url, section, limit, page, container)
+{
+	div = document.getElementById(container)
+	div.innerHTML = "<H3>Searching</H3><p>Fetching results for page "+page+". Please wait ...</p>"
+	form = document.blackmamba_advanced_search_form;
+	query = ""
+	id = "id="+escape(form.id.value)
+	type  = "type="+escape(form.organisms.value)
+	phase  = "phase="+escape(form.phase.value)
+	rank  = "rank="+escape(form.rank.value)
+	phenotype = "phenotype="+escape(form.phenotype.value)
+	query += id+"&"+type+"&"+phase+"&"+phenotype+"&"+rank+"&limit="+limit+"&page="+page+"&container="+container
+	if (section != "") {
+		query += "&section="+section
+	}
 	blackmamba_request(blackmamba_xmlhttp(), url, query, container);
 }
 
@@ -67,6 +148,26 @@ function blackmamba_pager(url, query, limit, page, container)
 	blackmamba_request(blackmamba_xmlhttp(), url, query+"&limit="+limit+"&page="+page+"&container="+escape(container), container);
 }
 
+function blackmamba_timecourses(query, container,name,visible,async)
+{
+	div = document.getElementById(container);
+	div.style.visibility = 'visible';
+	blackmamba_timecourses_request(blackmamba_xmlhttp(), "TimeCourses", query, container,name,visible,async);
+}
+
+function blackmamba_cyclebase_cycle(query, container)
+{
+	div = document.getElementById(container);
+	div.style.visibility = 'visible';
+	blackmamba_cyclebase_cycle_request(blackmamba_xmlhttp(), "Cyclebase", query, container);
+}
+
+function blackmamba_cyclebase_timecourse(query, container)
+{
+	div = document.getElementById(container);
+	div.style.visibility = 'visible';
+	blackmamba_cyclebase_timecourse_request(blackmamba_xmlhttp(), "Cyclebase", query, container);
+}
 
 // =============================================================================
 // Textmining-table: Expand, collapse teaser vs. whole abstract text.
