@@ -1,6 +1,4 @@
 #!/bin/csh -f
-foreach i (stringdocuments stitchdocuments hoods)
+foreach i (stringdocuments stitchdocuments)
 ./mambasrv config/$i.ini >& log/$i.log &
 end
-./mambasrv miRPD/miRPD.ini >& miRPD/miRPD.log &
-./mambasrv miRPD/miRPC.ini >& miRPD/miRPC.log &
