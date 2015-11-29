@@ -38,14 +38,15 @@ function blackmamba_request(xmlhttp, url, query, container)
 
 function blackmamba_search(url, section, limit, page, container)
 {
-	div = document.getElementById(container)
-	div.innerHTML = "<H3>Searching</H3><p>Fetching results for page "+page+". Please wait ...</p>"
+	div = document.getElementById(container);
+	div.innerHTML = "<H3>Searching</H3><p>Fetching results for page "+page+". Please wait ...</p>";
 	form = document.blackmamba_search_form;
-	query = "query="+escape(form.query.value)
+	query = "query="+escape(form.query.value);
+	window.history.pushState(null, null, window.location.href.split("?")[0]+"?"+query);
 	if (section != "") {
 		query += "&section="+section
 	}
-	query += "&limit="+limit+"&page="+page+"&container="+container
+	query += "&limit="+limit+"&page="+page+"&container="+container;
 	blackmamba_request(blackmamba_xmlhttp(), url, query, container);
 }
 
