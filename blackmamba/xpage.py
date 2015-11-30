@@ -135,6 +135,99 @@ class XAjaxTable(mamba.task.Request):
 				more = "true"
 			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(self.json), more), "application/json").send()
 
+class Combined(XAjaxTable):
+	
+	def add_head(self):
+		self.xtable.addhead("Name", "Source", "Evidence")
+	
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			if 'url' in row and row['url'] != "":
+				link = '<a class="silent_link" target = _blank href="%s">%%s</a>' % (row["url"])
+				self.xtable.addrow(link % name, link % row["source"], link % row["evidence"])
+			else:
+				self.xtable.addrow(name,row["source"],row["evidence"])
+		elif format == "json":
+			visible = "false"
+			if row["explicit"] == "t":
+				visible = "true"
+			if "url" in row and row["url"] != "":
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","visible":%s,"url":"%s"}'''% (row["id2"], name, row["source"], row["evidence"], visible, row["url"]))
+			else:
+				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], visible))
+	
+	def get_rows(self, rest, filter):
+		db_list = rest["dbs"].split(',')
+		evidences = []
+		limit = int(rest["limit"])*int(rest["page"])+1
+		for db in db_list:
+			evidence = database.Connect(db)
+			print (self.get_sql(rest, filter))
+			evidences.extend(evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (limit)).dictresult())
+		return evidences
+						
+	def get_sql(self, rest, filter):
+		if filter:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' AND score>=2 ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		else:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND score>=2 ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+
+class Groups(XAjaxTable):
+	def create_table(self, rest, parent=None):
+		dictionary = database.Connect("dictionary")
+		format = "html"
+		if "format" in rest:
+			format = rest["format"]
+		filter = False
+		if format == "html":
+			filter = True
+			self.xtable = html.XDataTable(parent)
+			self.xtable["width"] = "100%"
+		elif format == "json":
+			self.json = []
+		limit = int(rest["limit"])
+		page = int(rest["page"])
+		count = 0
+		rows = self.get_rows(rest, filter)
+		if len(rows):
+			self.add_head()
+			for r in rows:
+				count += 1
+				if count > page*limit:
+					break
+				if count > limit*(page-1):
+	
+					name = html.xcase(database.preferred_name(int(r["type1"]), r["id1"], dictionary))
+					organism = html.xcase(database.preferred_type_name(int(r["type1"]), dictionary))
+					self.add_row(r, name, organism, format)
+		else:
+			html.XText(parent,"No evidences in this channel")
+		return count
+	
+	def add_head(self):
+		self.xtable.addhead("Name", "Organism")
+	
+	def add_row(self, row, name, organism, format):
+		if format == "html":
+			if 'url' in row and row['url'] != "":
+				link = '<a class="silent_link" href="%s">%%s</a>' % (row["url"])
+				self.xtable.addrow(link % name, link % organism)
+			else:
+				self.xtable.addrow(name,organism)
+		elif format == "json":
+			visible = "true"
+			if "url" in row and row["url"] != "":
+				self.json.append('''"%s":{"name":"%s","organism":"%s","visible":%s,"url":%s}'''% (row["id1"], name,organism, visible,row["url"]))
+			else:	
+				self.json.append('''"%s":{"name":"%s","organism":"%s","visible":%s}'''% (row["id1"], name,organism, visible))
+			
+	def get_rows(self, rest, filter):
+		db = rest["db"]
+		evidence = database.Connect(db)
+		return evidence.query(self.get_sql(rest, filter)).dictresult()
+		
+	def get_sql(self, rest, filter):
+		return "SELECT id1,type1 FROM groups where type2 = %d and id1!='%s' and id2 IN (SELECT id2 FROM groups WHERE type1=%d AND id1='%s' AND type2=%d)" % (int(rest["type2"]),pg.escape_string(rest["id1"]),int(rest["type1"]),pg.escape_string(rest["id1"]),int(rest["type2"]))
 
 class Knowledge(XAjaxTable):
 	
@@ -161,6 +254,78 @@ class Knowledge(XAjaxTable):
 		else:
 			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
+class KnowledgeIndirect(XAjaxTable):
+	def create_table(self, rest, parent=None):
+		dictionary = database.Connect("dictionary")
+		format = "html"
+		if "format" in rest:
+			format = rest["format"]
+		filter = False
+		if format == "html":
+			filter = True
+			self.xtable = html.XDataTable(parent)
+			self.xtable["width"] = "100%"
+		elif format == "json":
+			self.json = []
+		limit = int(rest["limit"])
+		page = int(rest["page"])
+		count = 0
+		rows = self.get_rows(rest, filter)
+		if len(rows):
+			self.add_head()
+			for r in rows:
+				count += 1
+				if count > page*limit:
+					break
+				if count > limit*(page-1):
+					connection = html.xcase(database.preferred_name(int(rest["type2"]), r["id2"], dictionary))
+					name = html.xcase(database.preferred_name(int(rest["type1"]), r["id1"], dictionary))
+					#self.add_row(r, connection, name, format)
+					table_rows[connection].append((r,name))
+			
+			for c in table_rows:
+				span = len(table_rows[c])
+				for r,name in table_rows[c]:
+					self.add_row(r, c, name, format, span)
+					span = 0
+		else:
+			html.XText(parent,"No evidences in this channel")
+		return count
+	
+	def add_head(self):
+		self.xtable.addhead("Connected by","Name", "Source", "Evidence", "Confidence")
+	
+	def get_rows(self, rest, filter):
+		db = rest["db"]
+		evidence = database.Connect(db)
+		return evidence.query(self.get_sql(rest, filter)).dictresult()
+	
+	def add_row(self, row, connection, name, stars, format, span):
+		if format == "html":
+			source = link % row['source']
+			evidence = link % row['evidence']
+			if 'url' in row and row['url'] !="":
+				link = '<a class="silent_link" target = _blank href="%s">%%s</a>' % (row["url"])
+				name = link % name
+				source = link % source
+				evidence = link % evidence
+				stars = link % stars
+			if span > 0:
+				c = (connection, {'rowspan': str(span)})
+				self.xtable.addrow(c, name, source, evidence, stars)
+			else:
+				self.xtable.addrow(name, source, evidence, stars)
+		elif format == "json":
+			visible = "false"
+			if row["explicit"] == "t":
+				visible = "true"
+			if "url" in row and row["url"] != "":
+				self.json.append('''"%s":{"connection":"%s", "name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s,"url":"%s"}'''% (row["id2"], connection, name, row["source"], row["evidence"], row["score"], visible, row["url"]))
+			else:
+				self.json.append('''"%s":{"connection":"%s", "name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], connection, name, row["source"], row["evidence"], row["score"], visible))
+	
+	def get_sql(self, rest, filter):
+		return "SELECT type2 as type1, id2 as id1, id1 as id2, type1 as type2, evidence, score, explicit, url FROM pairs WHERE type1=%d AND type2 = %d AND id2!='%s' AND source = '%s' AND id1 IN (SELECT id2 FROM pairs WHERE type1=%d AND id1= '%s' AND type2=%d AND source = '%s' AND explicit='t');" % (int(rest["type2"]), int(rest["type1"]), pg.escape_string(rest["id1"]), pg.escape_string(rest["source"]),int(rest["type1"]),pg.escape_string(rest["id1"]), int(rest["type2"]),pg.escape_string(rest["source"]))
 
 class Experiments(XAjaxTable):
 	
@@ -250,7 +415,7 @@ class XPage(html.XNakedPage):
 		menu = html.XDiv(self.header, "menu")
 		if "MENU" in design:
 			for item in design["MENU"].split("\n"):
-				if item.upper() == page_class.upper():
+				if item.replace(" ", "").upper() == page_class.upper():
 					html.XText(html.XSpan(menu), item)
 				else:
 					html.XLink(menu, item, item, None, {"class":"silent_link"})
@@ -277,6 +442,8 @@ class AssociationsSection(html.XSection):
 		maptype[-25]   = "%s tissues"
 		maptype[-26]   = "%s disease associations"
 		maptype[-27]   = "%s environments"
+		maptype[-33]   = "%s Phenotypes"
+		maptype[-35]   = "%s PTMs"
 		maptype[-1]    = "Chemical compounds associated with %s"
 		maptype[0]     = "Genes for %s"
 		maptype[6239]  = "C. elegans genes for %s"
@@ -369,6 +536,7 @@ class Entity(mamba.task.Request):
 		
 		order = []
 		qfigures = []
+		qtimecourses = []
 		nnetwork     = 0
 		nknowledge   = 0
 		nexperiments = 0
@@ -382,6 +550,10 @@ class Entity(mamba.task.Request):
 			qfigures = rest["figures"].split(",")
 			if "figures" not in order:
 				order.append("figures")
+		if "timecourses" in rest:
+			qtimecourses = rest["timecourses"].split(",")
+			if "timecourses" not in order:
+				order.append("timecourses")
 		if "network" in rest:
 			nnetwork = int(rest["network"])
 			if "network" not in order:
@@ -423,7 +595,7 @@ class Entity(mamba.task.Request):
 		page = XPage("Entity", name1)
 		
 		associations = None
-		if len(qfigures) or nknowledge or nexperiments or ntextmining or npredictions:
+		if len(qfigures) or len(qtimecourses) or nknowledge or nexperiments or ntextmining or npredictions:
 			associations = AssociationsSection(page.content, qtype1, qid1, qtype2, dictionary)
 		
 		documents = None
@@ -443,6 +615,9 @@ class Entity(mamba.task.Request):
 				for n, qfigure in enumerate(qfigures):
 					container = html.XDiv(associations.body, "blackmamba_visualization%d_div" % n)
 					visualization.SVG(container, qfigure, qtype1, qid1)
+			elif section == "timecourses":
+				container = html.XDiv(associations.body,"ajax_timecourses", "blackmamba_timecourses_div")
+				html.XScript(container, "blackmamba_timecourses('id=%s&sources=%s', '%s');" % (qid1, ",".join(qtimecourses), "blackmamba_timecourses_div",true))
 			elif section == "network":
 				network_link = html.XLink(associations.body, "StringNetworkLink?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
 				html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))

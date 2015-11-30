@@ -17,14 +17,23 @@ def find_entities(qtypes, name, dictionary=None, exact=False):
 		type_sql = "type IN (%s)" % pg.escape_string(",".join(map(str, qtypes)))
 	else:
 		type_sql = "type=%d" % qtypes[0]
-	if exact:
-		name_sql = "upper(name) LIKE '%s'"  % pg.escape_string(name.upper())
-	else:
-		name_sql = "upper(name) LIKE '%s%%'" % pg.escape_string(name.upper())
-	sql = "SELECT type, id, name FROM names WHERE %s AND %s LIMIT 100000;" % (type_sql, name_sql)
-	result = dictionary.query(sql).getresult()
-	result.sort(key = lambda r: r[2].lower())
-	return result
+	name_queries = []
+	name_queries.append("upper(name) LIKE '%s'"  % pg.escape_string(name.upper()))
+	if not exact:
+		name_queries.append("upper(name) LIKE '%s%%'" % pg.escape_string(name.upper()))
+		
+	entities = []
+	used = set()
+	for name_sql in name_queries:
+		for table in "preferred", "names":
+			sql = "SELECT type, id, name FROM %s WHERE %s AND %s LIMIT 100000;" % (table, type_sql, name_sql)
+			result = dictionary.query(sql).getresult()
+			result.sort(key = lambda r: r[2].lower())
+			for entity in result:
+				if (entity[0], entity[1]) not in used:
+					entities.append(entity)
+					used.add((entity[0], entity[1]))
+	return entities
 
 
 def preferred_type_name(qtype, dictionary=None):
