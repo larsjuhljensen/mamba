@@ -282,6 +282,9 @@ class XTable(XTag):
 				row.add(arg)
 			elif isinstance(arg, XNode):
 				XTd(row).add(arg)
+			elif isinstance(arg,tuple): #added to handle rowspan
+				text, attrib = arg
+				XTd(row,attrib).text = text
 			else:
 				XTd(row).text = str(arg)
 		if len(row.nodes) == len(self.thead.nodes[0].nodes):
@@ -419,6 +422,3 @@ class XOption(XTag):
 		self.text = text
 		if value:
 			self['value'] = value
-
-	
-
