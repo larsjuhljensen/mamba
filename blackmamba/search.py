@@ -111,7 +111,7 @@ class EntityQuery(mamba.task.Request):
 		mamba.http.HTMLResponse(self, Table(None, database.Connect("dictionary"), query, section, limit, page, container).tohtml()).send()
 
 
-class Fetch (mamba.task.Request):
+class Fetch(mamba.task.Request):
 	
 	def main(self):	
 		rest = mamba.task.RestDecoder(self)
@@ -160,14 +160,15 @@ class SearchPage(xpage.XPage):
 		content = "Browse by:"
 		if links_content_key in design:
 			content = design[links_content_key]
-		links = mamba.setup.config().sections[links_key]
-		if len(links):
-			quicklinks = html.XSpan(self.content, {"class":"quicklinks"})
-			html.XText(quicklinks, content)
-			html.XDiv(quicklinks, "spacer")
-			for key in sorted(links.keys()):
-				html.XLink(quicklinks, links[key],key.split('_')[1].capitalize())
+		if links_key in mamba.setup.config().sections:
+			links = mamba.setup.config().sections[links_key]
+			if len(links):
+				quicklinks = html.XSpan(self.content, {"class":"quicklinks"})
+				html.XText(quicklinks, content)
 				html.XDiv(quicklinks, "spacer")
+				for key in sorted(links.keys()):
+					html.XLink(quicklinks, links[key],key.split('_')[1].capitalize())
+					html.XDiv(quicklinks, "spacer")
 		if query != "":
 			html.XScript(self.content, "document.blackmamba_search_form.submit();")
 

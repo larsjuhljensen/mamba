@@ -40,7 +40,7 @@ def get_combined_results(id1,type1):
     return ("SELECT  id as id1,type as type1,rank,peak_time FROM combinedresults WHERE id='%s' and type=%d")% (id1,int(type1))
 
 def get_icons(id1,type1):
-    return ("SELECT label FROM colors WHERE id ='%s' AND label LIKE '%%phenotype%%' AND type =%s AND score >= 2;"% (id1, type1))
+    return ("SELECT label FROM colors WHERE id ='%s' AND figure LIKE 'cyclebase_%%' AND label LIKE '%%phenotype%%' AND type=%s AND score >= 2;"% (id1, type1))
 
 def get_cycleinfo(organisms):
 	formated_organisms = []
@@ -133,20 +133,16 @@ class Cyclebase(mamba.task.Request):
 		#Get Cyclebase data - Cycle, Time-course data
 		conn_cyclebase = database.Connect("cyclebase")
 		#Individual results ids-y_values
-		print ("SELECT * FROM individualresults WHERE %s AND %s;"% (org_sql, id_sql))
 		individual_results = conn_cyclebase.query("SELECT * FROM individualresults WHERE %s AND %s;"% (org_sql, id_sql)).dictresult()
 		#Combined results source-x_values
-		print ("SELECT * FROM combinedresults WHERE %s AND %s;"% (org_sql,id_sql))
 		combined_results = conn_cyclebase.query("SELECT * FROM combinedresults WHERE %s AND %s;"% (org_sql,id_sql)).dictresult()
 		#Cycle information percent each phase takes 
-		print ("SELECT phase, start_phase, end_phase FROM organismcycles WHERE %s ORDER BY start_phase ASC;"% (org_sql))
 		cycle_info = conn_cyclebase.query("SELECT phase, start_phase, end_phase FROM organismcycles WHERE %s ORDER BY start_phase ASC;"% (org_sql)).dictresult()
 		
 		#Icons
 		conn_visualization = database.Connect("visualization")
 		#Icons to draw
-		print ("SELECT figure, label FROM colors WHERE %s AND %s AND score >=2;"% (org_sql, id_sql))
-		colors = conn_visualization.query("SELECT figure, label FROM colors WHERE %s AND %s AND score >= 2;"% (org_sql, id_sql)).getresult()
+		colors = conn_visualization.query("SELECT figure, label FROM colors WHERE figure LIKE 'cyclebase_%%' AND %s AND %s AND score >= 2;"% (org_sql, id_sql)).getresult()
 		if(len(combined_results) > 0 and len(individual_results) > 0 and len(cycle_info) > 0):
 			combined_results = combined_results.pop(0)
 			average_expression = combined_results['average_expression'].replace("{","[").replace("}","]").replace('NaN','null')
