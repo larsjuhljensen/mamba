@@ -137,6 +137,18 @@ def preferred_name(qtype, qid, dictionary=None):
 		return qid
 
 
+def pharos(qtype, qid, dictionary=None):
+	if dictionary == None:
+		dictionary = Connect("dictionary")
+	pharos = ()
+	try:
+		rows = dictionary.query("SELECT family, level FROM pharos WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult()
+		pharos = rows[0]
+	except:
+		pass
+	return pharos
+
+
 def sequence(qtype, qid, dictionary=None):
 	if dictionary == None:
 		dictionary = Connect("dictionary")
@@ -230,12 +242,16 @@ def entity_dict(qtype, qid, dictionary=None):
 	else:
 		data = {"@id" : "_:%s" % qid}
 	data["name"] = preferred_name(qtype, qid, dictionary)
-	name = canonical(qtype, qid, dictionary)
-	if name != "":
-		data["canonical"] = name
-	text = description(qtype, qid, dictionary)
-	if text != "":
-		data["description"] = text
+	value = canonical(qtype, qid, dictionary)
+	if value != "":
+		data["canonical"] = value
+	value = description(qtype, qid, dictionary)
+	if value != "":
+		data["description"] = value
+	value = pharos(qtype, qid, dictionary)
+	if value != ():
+		data["pharos family"] = value[0]
+		data["pharos level"] = value[1]
 	return data
 
 
