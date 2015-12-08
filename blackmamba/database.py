@@ -248,10 +248,6 @@ def entity_dict(qtype, qid, dictionary=None):
 	value = description(qtype, qid, dictionary)
 	if value != "":
 		data["description"] = value
-	value = pharos(qtype, qid, dictionary)
-	if value != ():
-		data["pharos family"] = value[0]
-		data["pharos level"] = value[1]
 	return data
 
 
