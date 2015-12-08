@@ -45,12 +45,16 @@ class network(mamba.task.Request):
 			qtype, qid = qentity.split(".", 1)
 			qtype = int(qtype)
 			node = database.entity_dict(qtype, qid, dictionarydb)
-			image = database.image(qtype, qid, dictionarydb)
-			if image != None:
-				node["image"] = image
-			sequence = database.sequence(qtype, qid, dictionarydb)
-			if sequence != "":
-				node["sequence"] = sequence
+			value = database.image(qtype, qid, dictionarydb)
+			if value != None:
+				node["image"] = value
+			value = database.pharos(qtype, qid, dictionarydb)
+			if value != ():
+				node["pharos family"] = value[0]
+				node["pharos level"] = value[1]
+			value = database.sequence(qtype, qid, dictionarydb)
+			if value != "":
+				node["sequence"] = value
 			for label, score in visualization.scores_dict("subcell_cell_%%", qtype, qid, visualizationdb).iteritems():
 				node["compartment "+label] = score
 			for label, score in visualization.scores_dict("tissues_body_%%", qtype, qid, visualizationdb).iteritems():
