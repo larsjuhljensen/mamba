@@ -14,6 +14,10 @@ class network(mamba.task.Request):
 		stringdb = database.Connect("string")
 		visualizationdb = database.Connect("visualization")
 		rest = mamba.task.RestDecoder(self)
+		if "database" in rest:
+			networkdb = database.Connect(rest["database"])
+		else:
+			networkdb = database.Connect("string")
 		qentities = []
 		if "entities" in rest:
 			qentities = rest["entities"].split("\n")
@@ -37,7 +41,7 @@ class network(mamba.task.Request):
 			sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qselected])
 			sql2 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities+qexisting])
 			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, qscore, qadditional)
-			for (entity, score) in stringdb.query(sql).getresult():
+			for (entity, score) in networkdb.query(sql).getresult():
 				qentities.append(entity)
 		data = {}
 		data["nodes"] = []
@@ -71,7 +75,7 @@ class network(mamba.task.Request):
 		else:
 			if len(qexisting):
 				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score < %d AND score >= %d;" % (sql2, sql2, qmaxscore, qscore) 
-		for (entity1, entity2, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in stringdb.query(sql).getresult():
+		for (entity1, entity2, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in networkdb.query(sql).getresult():
 			scores = {}
 			if nscore > 0:
 				scores["neighborhood"] = float(nscore)/1000
