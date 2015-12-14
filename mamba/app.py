@@ -194,6 +194,7 @@ class HTTPServer(mamba.util.Logger):
 		actions = http.path.lower().split("/")
 		actions.reverse()
 		for action in actions:
+			action = action.replace("%20", "")
 			if action in self._app._plugins:
 				return self._app._plugins[action](http)
 		return None
