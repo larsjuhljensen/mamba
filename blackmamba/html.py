@@ -420,5 +420,5 @@ class XOption(XTag):
 	def __init__(self, parent, text, value = None, attr = {}):
 		XTag.__init__(self, parent, "option", attr)
 		self.text = text
-		if value:
+		if value is not None:
 			self['value'] = value

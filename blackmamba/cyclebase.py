@@ -176,7 +176,6 @@ class Cyclebase(mamba.task.Request):
 			if len(colors):
 				json.append(",\"icons\":[{")
 				for figure,label in colors:
-					print ("SELECT svg,paint FROM figures WHERE figure = '%s'" % figure)
 					figure_data = conn_visualization.query("SELECT svg,paint FROM figures WHERE figure = '%s'" % figure).getresult()
 					for svg,paint in figure_data:
 						if paint:
@@ -479,7 +478,6 @@ class AdvancedTable(html.XNode):
 				vis_query = phenotype_query.replace("TYPE",organism).replace("PHASE",phenotype)
 				if qids != "":
 					vis_query += " AND "+qids
-				print vis_query
 				phenotype_results.extend(vis_database.query(vis_query).getresult())
 			if qids !="":
 				qconditions.pop()
@@ -497,7 +495,6 @@ class AdvancedTable(html.XNode):
 					transition = end + (end-start)/5
 					qphase = " CAST(coalesce(peak_time, '-1') AS integer)>= %d AND CAST(coalesce(peak_time, '200') AS integer) <%d" %(start,transition)
 					qconditions.append("type = %d  AND %s " % (int(organism),qphase))
-					print query+" AND ".join(qconditions)
 					results.extend(cyb_database.query(query+" AND ".join(qconditions)).getresult())
 					qconditions.pop()
 			else:
@@ -579,7 +576,6 @@ class AdvancedCyclebaseQuery(mamba.task.Request):
 				phenotype = rest["phenotype"]
 		elif("type" in rest and rest["type"] != ""):
 			organism = rest["type"]
-			print organism
 		section = ""
 		if "section" in rest:
 			section = rest["section"]
