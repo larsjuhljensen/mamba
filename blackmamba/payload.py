@@ -33,16 +33,11 @@ class StringNetwork(mamba.task.Request):
 		qtype2 = int(rest["type2"])
 		limit = int(rest["limit"])
 		
-		scores = {}
-		sql = "SELECT id2, score FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC LIMIT %d;" % (qtype1, pg.escape_string(qid1), qtype2, limit)
-		for evidence in ["knowledge", "textmining", "predictions"]:
-			connection = database.Connect(evidence)
-			for row in connection.query(sql).getresult():
-				entity = "%d.%s" % (qtype2, row[0])
-				score = row[1]
-				if entity not in scores or score > scores[entity]:
-					scores[entity] = score
-		entities = sorted(scores.iterkeys(), key=scores.get, reverse=True)[0:limit]
+		integration = database.Connect("integration")
+		entities = []
+		sql = "SELECT id2 FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC LIMIT %d;" % (qtype1, pg.escape_string(qid1), qtype2, limit)
+		for row in integration.query(sql).getresult():
+			entities.append("%d.%s" % (qtype2, row[0]))
 		payload = "http://%s/%032x/StringPayload/%d.%s" % (self.http.headers["Host"], random.getrandbits(128), qtype1, pg.escape_string(qid1))
 		url = "%s?caller_identity=blackmamba&identifiers=%s&limit=0&network_flavor=confidence&required_score=700&external_payload=%s" % (self.get_url(), "%0D".join(entities), payload)
 		mamba.http.HTTPRedirect(self, url).send()
@@ -164,19 +159,15 @@ class StringPayloadEntity(StringPayloadNodes):
 		return links
 	
 	def get_scores(self, entities):
-		scores = {}
+		integration = database.Connect("integration")
 		qtype2, qid2 = self.http.get_action().split(".", 1)
-		for evidence in ["knowledge", "experiments", "textmining", "predictions"]:
-			connection = database.Connect(evidence)
-			if connection != None:
-				for entity in entities:
-					qtype1, qid1 = entity.split(".", 1)
-					sql = "SELECT score FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND id2='%s';" % (int(qtype1), pg.escape_string(qid1), int(qtype2), pg.escape_string(qid2))
-					rows = connection.query(sql).getresult()
-					if len(rows):
-						score = float(rows[0][0])
-						if entity not in scores or score > scores[entity]:
-							scores[entity] = score
+		scores = {}
+		for entity in entities:
+			qtype1, qid1 = entity.split(".", 1)
+			sql = "SELECT score FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND id2='%s';" % (int(qtype1), pg.escape_string(qid1), int(qtype2), pg.escape_string(qid2))
+			rows = integration.query(sql).getresult()
+			if len(rows):
+				scores[entity] = float(rows[0][0])
 		return scores
 
 
