@@ -1,9 +1,40 @@
 import math
 import pg
+import urllib
+import xml.etree.ElementTree as etree
+
 import database
 import html
 import mamba.task
 import xpage
+
+
+class AdhocTextmining(xpage.XAjaxTable):
+	
+	def add_head(self):
+		self.xtable.addhead("Name", "Foreground", "Background", "Score")
+	
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			self.xtable.addrow(name, "%d" % row["foreground"], "%d" % row["background"], "%.6f" % score)
+		elif format == "json":
+			self.json.append('''"%s":{"name":"%s","foreground":%d,"background":%d,"score"=%f}''' % (row["id2"], name, row["foreground"], row["background"], row["score"]))
+	
+	def get_documents(self, rest):
+		documents = []
+		if "documents" in rest:
+			documents = rest["documents"].split()
+		elif "query" in rest:
+			url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?" + urllib.urlencode({"db":"pubmed", "term":rest["query"], "retmax":100000, "rettype":"uilist"})
+			data, status, headers, page_url, charset = mamba.http.Internet().download(url)
+			for document in etree.fromstring(data).getiterator("Id"):
+				documents.append(document.text)
+		return documents
+	
+	def get_rows(self, rest, filter):
+		textmining = database.Connect("textmining")
+		sql = "SELECT id2, foreground, background, foreground/POW(background,0.4) AS score FROM (SELECT matches.id AS id2, COUNT(DISTINCT matches.document) AS foreground, MAX(mentions.count) AS background FROM matches INNER JOIN mentions ON matches.type=mentions.type AND matches.id=mentions.id WHERE document in (%s) AND matches.type=%d GROUP BY matches.id) AS query ORDER BY score DESC LIMIT %d" % (pg.escape_string(",".join(self.get_documents(rest))), int(rest["type2"]), int(rest["limit"]))
+		return textmining.query(sql).dictresult()
 
 
 class Textmining(xpage.XAjaxTable):
@@ -19,7 +50,7 @@ class Textmining(xpage.XAjaxTable):
 			if "visible" in row and not row["visible"]:
 				visible = "false"
 			url = "http://%s/Entity?documents=10&type1=%d&type2=%d&id1=%s&id2=%s" % (self.http.headers["host"], row["type1"], row["type2"], row["id1"], row["id2"])
-			self.json.append('''"%s":{"name":"%s","evidence":"%f","score":%f,"visible":%s,"url":"%s"}'''% (row["id2"], name, row["evidence"], row["score"], visible, url))
+			self.json.append('''"%s":{"name":"%s","evidence":"%f","score":%f,"visible":%s,"url":"%s"}''' % (row["id2"], name, row["evidence"], row["score"], visible, url))
 
 	def get_rows(self, rest, filter):
 		qtype1 = int(rest["type1"])

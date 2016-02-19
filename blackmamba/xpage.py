@@ -92,13 +92,17 @@ class XAjaxTable(mamba.task.Request):
 				html.XP(parent, "No evidence of this type.", attr = {"class" : "clear"})
 		elif format == "json":
 			self.json = []
-		limit = int(rest["limit"])
-		page = int(rest["page"])
+		limit = 10
+		if "limit" in rest:
+			limit = int(rest["limit"])
+		page = 1
+		if "page" in rest:
+			page = int(rest["page"])
 		count = 0
 		if len(rows):
 			for row in rows:
 				count += 1
-				if count > page*limit:
+				if count > limit*page:
 					break
 				if count > limit*(page-1):
 					name = html.xcase(database.preferred_name(int(rest["type2"]), row["id2"], dictionary))
@@ -108,8 +112,14 @@ class XAjaxTable(mamba.task.Request):
 		return count
 	
 	def get_rows(self, rest, filter):
+		limit = 10
+		if "limit" in rest:
+			limit = int(rest["limit"])
+		page = 1
+		if "page" in rest:
+			page = int(rest["page"])
 		evidence = database.Connect(self.action.lower())
-		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (int(rest["limit"])*int(rest["page"])+1)).dictresult()
+		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % limit*(page+1)).dictresult()
 		
 	def main(self):
 		self.action = self.http.get_action()
@@ -127,8 +137,12 @@ class XAjaxTable(mamba.task.Request):
 			XPagesDiv(xpages, self.action, rest, self.create_table(rest, xroot))
 			mamba.http.HTTPResponse(self, xroot.tohtml()).send()
 		elif format == "json":
-			limit = int(rest["limit"])
-			page = int(rest["page"])
+			limit = 10
+			if "limit" in rest:
+				limit = int(rest["limit"])
+			page = 1
+			if "page" in rest:
+				page = int(rest["page"])
 			count = self.create_table(rest)
 			more = "false"
 			if count > page*limit:
@@ -162,7 +176,6 @@ class Combined(XAjaxTable):
 		limit = int(rest["limit"])*int(rest["page"])+1
 		for db in db_list:
 			evidence = database.Connect(db)
-			print (self.get_sql(rest, filter))
 			evidences.extend(evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (limit)).dictresult())
 		return evidences
 						
