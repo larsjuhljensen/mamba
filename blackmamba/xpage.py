@@ -119,7 +119,7 @@ class XAjaxTable(mamba.task.Request):
 		if "page" in rest:
 			page = int(rest["page"])
 		evidence = database.Connect(self.action.lower())
-		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % limit*(page+1)).dictresult()
+		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (limit*page+1)).dictresult()
 		
 	def main(self):
 		self.action = self.http.get_action()
