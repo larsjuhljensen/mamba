@@ -28,7 +28,7 @@ class Textmining(xpage.XAjaxTable):
 				url = "http://%s/Entity?documents=10&type1=%d&type2=%d&id1=%s&id2=%s" % (self.http.headers["host"], row["type1"], row["type2"], row["id1"], row["id2"])
 				self.json.append('''"%s":{"name":"%s","evidence":"%f","score":%f,"visible":%s,"url":"%s"}''' % (row["id2"], name, row["evidence"], row["score"], visible, url))
 			else:
-				self.json.append('''"%s":{"name":"%s","foreground":%d,"background":%d,"score"=%f}''' % (row["id2"], name, row["foreground"], row["background"], row["score"]))
+				self.json.append('''"%s":{"name":"%s","foreground":%d,"background":%d,"score":%f}''' % (row["id2"], name, row["foreground"], row["background"], row["score"]))
 	
 	def get_documents(self, rest):
 		documents = []
