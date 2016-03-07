@@ -402,7 +402,7 @@ class Integration(XAjaxTable):
 		if format == "html":
 			self.xtable.addrow(name, stars)
 		elif format == "json":
-			self.json.append('''"%s:{"name":"%s","score":%s}''' % (row["id2"], name, row["score"]))
+			self.json.append('''"%s":{"name":"%s","score":%s}''' % (row["id2"], name, row["score"]))
 	
 	def get_sql(self, rest, filter):
 		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
