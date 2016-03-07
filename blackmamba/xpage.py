@@ -149,6 +149,7 @@ class XAjaxTable(mamba.task.Request):
 				more = "true"
 			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(self.json), more), "application/json").send()
 
+
 class Combined(XAjaxTable):
 	
 	def add_head(self):
@@ -184,6 +185,7 @@ class Combined(XAjaxTable):
 			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' AND score>=2 ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 		else:
 			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND score>=2 ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+
 
 class Groups(XAjaxTable):
 	def create_table(self, rest, parent=None):
@@ -242,6 +244,7 @@ class Groups(XAjaxTable):
 	def get_sql(self, rest, filter):
 		return "SELECT id1,type1 FROM groups where type2 = %d and id1!='%s' and id2 IN (SELECT id2 FROM groups WHERE type1=%d AND id1='%s' AND type2=%d)" % (int(rest["type2"]),pg.escape_string(rest["id1"]),int(rest["type1"]),pg.escape_string(rest["id1"]),int(rest["type2"]))
 
+
 class Knowledge(XAjaxTable):
 	
 	def add_head(self):
@@ -267,7 +270,9 @@ class Knowledge(XAjaxTable):
 		else:
 			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
+
 class KnowledgeIndirect(XAjaxTable):
+	
 	def create_table(self, rest, parent=None):
 		dictionary = database.Connect("dictionary")
 		format = "html"
@@ -340,6 +345,7 @@ class KnowledgeIndirect(XAjaxTable):
 	def get_sql(self, rest, filter):
 		return "SELECT type2 as type1, id2 as id1, id1 as id2, type1 as type2, evidence, score, explicit, url FROM pairs WHERE type1=%d AND type2 = %d AND id2!='%s' AND source = '%s' AND id1 IN (SELECT id2 FROM pairs WHERE type1=%d AND id1= '%s' AND type2=%d AND source = '%s' AND explicit='t');" % (int(rest["type2"]), int(rest["type1"]), pg.escape_string(rest["id1"]), pg.escape_string(rest["source"]),int(rest["type1"]),pg.escape_string(rest["id1"]), int(rest["type2"]),pg.escape_string(rest["source"]))
 
+
 class Experiments(XAjaxTable):
 	
 	def add_head(self):
@@ -387,6 +393,21 @@ class Predictions(XAjaxTable):
 			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
+class Integration(XAjaxTable):
+	
+	def add_head(self):
+		self.xtable.addhead("Name", "Confidence")
+	
+	def add_row(self, row, name, stars, format):
+		if format == "html":
+			self.xtable.addrow(name, stars)
+		elif format == "json":
+			self.json.append('''"%s:{"name":"%s","score":%s}''' % (row["id2"], name, row["score"])
+	
+	def get_sql(self, rest, filter):
+		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+
+		
 class XPage(html.XNakedPage):
 	
 	def __init__(self, page_class=None, page_name=None):
