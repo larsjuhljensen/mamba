@@ -480,6 +480,8 @@ class AssociationsSection(html.XSection):
 		maptype[-35]   = "%s PTMs"
 		maptype[-1]    = "Chemical compounds associated with %s"
 		maptype[0]     = "Genes for %s"
+		maptype[4896]  = "Fission yeast genes for %s"
+		maptype[4932]  = "Budding yeast genes for %s"
 		maptype[6239]  = "C. elegans genes for %s"
 		maptype[7227]  = "Fly genes for %s"
 		maptype[9606]  = "Human genes for %s"
@@ -554,6 +556,7 @@ class About(mamba.task.Request):
 	def main(self):
 		page = XPage("About", "About")
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
+
 
 class Downloads(mamba.task.Request):
 	
