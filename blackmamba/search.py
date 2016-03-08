@@ -1,12 +1,14 @@
 import pg
 import database
 import hashlib
-import html
-import xpage
-import mamba.setup
-import mamba.task
 import re
 import subprocess
+
+import html
+import xpage
+
+import mamba.setup
+import mamba.task
 
 
 class Table(html.XNode):
@@ -27,8 +29,8 @@ class Table(html.XNode):
 			seen = set()
 			count = 0
 			for qtype, qid, name in entities:
-				if (qtype,qid) not in seen:
-					seen.add((qtype,qid))
+				if (qtype, qid) not in seen:
+					seen.add((qtype, qid))
 					if count >= limit*(page-1) and count < page*limit:
 						preferred = database.preferred_name(qtype, qid, dictionary)
 						type = database.preferred_type_name(qtype, dictionary)
@@ -46,6 +48,7 @@ class Table(html.XNode):
 					html.XText(html.XSpan(xpages, {"class":"silent_link","onclick":"blackmamba_search('EntityQuery', '%s', %d, %d, '%s')" % (section, limit, page+1, container)}), "Next&nbsp;&gt;")
 		else:
 			html.XP(self, "Nothing found for '%s'" % query)
+
 
 class SequenceTable(html.XNode):
 	
@@ -91,6 +94,7 @@ class SequenceTable(html.XNode):
 		else:
 			html.XP(self, "Nothing found for the specified sequence")
 
+
 class EntityQuery(mamba.task.Request):
 	
 	def main(self):
@@ -101,14 +105,41 @@ class EntityQuery(mamba.task.Request):
 		section = ""
 		if "section" in rest:
 			section = rest["section"]
+		types = []
+		if "types" in rest:
+			types = map(int, rest["types"].split())
+		elif section != "":
+			types = map(int, mamba.setup.config().sections[section.upper()].keys())
 		limit = 20
 		if "limit" in rest:
 			limit = int(rest["limit"])
 		page = 1
 		if "page" in rest:
 			page = int(rest["page"])
-		container = rest["container"]
-		mamba.http.HTMLResponse(self, Table(None, database.Connect("dictionary"), query, section, limit, page, container).tohtml()).send()
+		format = "html"
+		if "format" in rest:
+			format = rest["format"]
+		dictionary = database.Connect("dictionary")
+		if format == "html":
+			container = rest["container"]
+			mamba.http.HTMLResponse(self, Table(None, dictionary, query, section, limit, page, container).tohtml()).send()
+		elif format == "json":
+			entities = database.find_entities(types, query, dictionary)
+			seen = set()
+			count = 0
+			more = False
+			json = []
+			for qtype, qid, name in entities:
+				if (qtype, qid) not in seen:
+					seen.add((qtype, qid))
+					count += 1
+					if count <= limit:
+						preferred = database.preferred_name(qtype, qid, dictionary)
+						json.append('"%d.%s":{"matched":"%s","primary":"%s"}' % (qtype, qid, name, preferred))
+					else:
+						more = True
+						break
+			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(json), more), "application/json").send()
 
 
 class Fetch(mamba.task.Request):
@@ -172,6 +203,7 @@ class SearchPage(xpage.XPage):
 		if query != "":
 			html.XScript(self.content, "document.blackmamba_search_form.submit();")
 
+
 class SequenceSearchPage(xpage.XPage):
 	
 	def __init__(self, page_class, page_name, action, limit, query):
@@ -198,6 +230,7 @@ class SequenceSearchPage(xpage.XPage):
 		html.XDiv(self.content, "ajax_table", container)
 		if query != "":
 			html.XScript(self.content, "document.blackmamba_search_form.submit();")
+
 
 class SequenceQuery(mamba.task.Request):
 	
@@ -270,6 +303,7 @@ class Search(mamba.task.Request):
 		if "query" in rest:
 			query = rest["query"]
 		mamba.http.HTMLResponse(self, SearchPage("SEARCH", "Search", action, limit, query).tohtml()).send()
+
 
 class SequenceSearch(mamba.task.Request):
 	
