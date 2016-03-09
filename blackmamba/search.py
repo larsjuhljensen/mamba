@@ -127,7 +127,7 @@ class EntityQuery(mamba.task.Request):
 			entities = database.find_entities(types, query, dictionary)
 			seen = set()
 			count = 0
-			more = False
+			more = "false"
 			json = []
 			for qtype, qid, name in entities:
 				if (qtype, qid) not in seen:
@@ -137,7 +137,7 @@ class EntityQuery(mamba.task.Request):
 						preferred = database.preferred_name(qtype, qid, dictionary)
 						json.append('"%d.%s":{"matched":"%s","primary":"%s"}' % (qtype, qid, name, preferred))
 					else:
-						more = True
+						more = "true"
 						break
 			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(json), more), "application/json").send()
 
