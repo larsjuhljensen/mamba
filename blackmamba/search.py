@@ -135,11 +135,11 @@ class EntityQuery(mamba.task.Request):
 					count += 1
 					if count <= limit:
 						preferred = database.preferred_name(qtype, qid, dictionary)
-						json.append('"%d.%s":{"matched":"%s","primary":"%s"}' % (qtype, qid, name, preferred))
+						json.append('{"type":%d,"id":"%s","matched":"%s","primary":"%s"}' % (qtype, qid, name, preferred))
 					else:
 						more = "true"
 						break
-			mamba.http.HTTPResponse(self, "[{%s},%s]\n" % (",".join(json), more), "application/json").send()
+			mamba.http.HTTPResponse(self, "[[%s],%s]\n" % (",".join(json), more), "application/json").send()
 
 
 class Fetch(mamba.task.Request):
