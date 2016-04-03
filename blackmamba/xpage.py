@@ -80,7 +80,7 @@ class XAjaxTable(mamba.task.Request):
 		if "format" in rest:
 			format = rest["format"]
 		filter = False
-		if format == "html":
+		if format == "html" and "id2" not in rest:
 			filter = True
 		rows = self.get_rows(rest, filter)
 		if format == "html":
@@ -121,6 +121,18 @@ class XAjaxTable(mamba.task.Request):
 		evidence = database.Connect(self.action.lower())
 		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (limit*page+1)).dictresult()
 		
+	def get_sql(self, rest, filter):
+		if "id2" in rest:
+			if filter:
+				return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND id2='%s' AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]), pg.escape_string(rest["id2"]))
+			else:
+				return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND id2='%s' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]), pg.escape_string(rest["id2"]))
+		else:
+			if filter:
+				return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+			else:
+				return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+	
 	def main(self):
 		self.action = self.http.get_action()
 		rest = mamba.task.RestDecoder(self)
@@ -263,12 +275,6 @@ class Knowledge(XAjaxTable):
 				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s,"url":"%s"}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible, row["url"]))
 			else:
 				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
-	
-	def get_sql(self, rest, filter):
-		if filter:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
-		else:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class KnowledgeIndirect(XAjaxTable):
@@ -364,12 +370,6 @@ class Experiments(XAjaxTable):
 				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s,"url":"%s"}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible, row["url"]))
 			else:
 				self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
-	
-	def get_sql(self, rest, filter):
-		if filter:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
-		else:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Predictions(XAjaxTable):
@@ -385,12 +385,6 @@ class Predictions(XAjaxTable):
 			if row["explicit"] == "t":
 				visible = "true"
 			self.json.append('''"%s":{"name":"%s","source":"%s","evidence":"%s","score":%s,"visible":%s}'''% (row["id2"], name, row["source"], row["evidence"], row["score"], visible))
-		
-	def get_sql(self, rest, filter):
-		if filter:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND explicit='t' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
-		else:
-			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 
 class Integration(XAjaxTable):
@@ -405,7 +399,10 @@ class Integration(XAjaxTable):
 			self.json.append('''"%s":{"name":"%s","score":%s}''' % (row["id2"], name, row["score"]))
 	
 	def get_sql(self, rest, filter):
-		return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
+		if "id2" in rest:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d AND id2='%s' ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]), pg.escape_string(rest["id2"]))
+		else:
+			return "SELECT * FROM pairs WHERE type1=%d AND id1='%s' AND type2=%d ORDER BY score DESC" % (int(rest["type1"]), pg.escape_string(rest["id1"]), int(rest["type2"]))
 
 		
 class XPage(html.XNakedPage):
@@ -659,13 +656,25 @@ class Entity(mamba.task.Request):
 				network_link = html.XLink(associations.body, "StringNetworkLink?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
 				html.XImg(network_link, "StringNetworkImage?type1=%d&id1=%s&type2=%d&limit=%d" % (qtype1, qid1, qtype2, nnetwork))
 			elif section == "knowledge":
-				XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nknowledge)
+				if qtype2 == None or qid2 == None:
+					XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nknowledge)
+				else:
+					XAjaxContainer(associations.body, "Knowledge", "type1=%d&id1=%s&type2=%d&id2=%s" % (qtype1, qid1, qtype2, qid2), nknowledge)
 			elif section == "experiments":
-				XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nexperiments)
+				if qtype2 == None or qid2 == None:
+					XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), nexperiments)
+				else:
+					XAjaxContainer(associations.body, "Experiments", "type1=%d&id1=%s&type2=%d&id2=%s" % (qtype1, qid1, qtype2, qid2), nexperiments)
 			elif section == "textmining":
-				XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&title=Text+mining" % (qtype1, qid1, qtype2), ntextmining)
+				if qtype2 == None or qid2 == None:
+					XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&title=Text+mining" % (qtype1, qid1, qtype2), ntextmining)
+				else:
+					XAjaxContainer(associations.body, "Textmining", "type1=%d&id1=%s&type2=%d&id2=%s&title=Text+mining" % (qtype1, qid1, qtype2, qid2), ntextmining)
 			elif section == "predictions":
-				XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), npredictions)
+				if qtype2 == None or qid2 == None:
+					XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d" % (qtype1, qid1, qtype2), npredictions)
+				else:
+					XAjaxContainer(associations.body, "Predictions", "type1=%d&id1=%s&type2=%d&id2=%s" % (qtype1, qid1, qtype2, qid2), npredictions)
 			elif section == "documents":
 				if qtype2 == None or qid2 == None:
 					XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
