@@ -420,6 +420,12 @@ class XPage(html.XNakedPage):
 			key = "CSS:"+page_class.upper()
 			if key in design:
 				self.head.css += map(str.strip, design[key].split("\n"))
+		if "KEYWORDS" in design:
+			self.head.keywords += map(str.strip, design["KEYWORDS"].split("\n"))
+		if page_class != None:
+			key = "KEYWORDS:"+page_class.upper()
+			if key in design:
+				self.head.keywords += map(str.strip, design[key].split("\n"))
 		if "SCRIPTS" in design:
 			self.head.scripts += map(str.strip, design["SCRIPTS"].split("\n"))
 		if page_class != None:

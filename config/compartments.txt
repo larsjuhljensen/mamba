@@ -4,6 +4,11 @@ css/blackmamba.css
 [CSS:ENTITY]
 css/compartments.css
 
+[KEYWORDS]
+cellular compartment
+protein localization
+subcellular localization
+
 [SCRIPTS:ENTITY]
 scripts/compartments.js
 
