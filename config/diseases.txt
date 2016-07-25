@@ -1,6 +1,11 @@
 [CSS]
 css/blackmamba.css
 
+[KEYWORDS]
+disease association
+disease genes
+disease proteins
+
 [TITLE]
 DISEASES
 

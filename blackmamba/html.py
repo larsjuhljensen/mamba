@@ -309,6 +309,7 @@ class XHead(XTag):
 		self.title = ""
 		self.search = None
 		self.css = []
+		self.keywords = []
 		self.scripts = []
 		self.scripts.append("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
 		self.scripts.append("/scripts/blackmamba.js")
@@ -325,6 +326,8 @@ class XHead(XTag):
 			html.append("""  <link rel="search" href="%s" title="%s" type="application/opensearchdescription+xml" />""" % (self.search[1], self.search[0]))
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
+		if self.keywords:
+			html.append("""  <meta name="keywords" content="%s">""" % ",".join(self.keywords))
 		for java in self.scripts:
 			html.append("""  <script type="text/javascript" src="%s"></script>""" % java)
 		return "\r\n".join(html)
