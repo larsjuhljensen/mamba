@@ -77,7 +77,7 @@ class network(mamba.task.Request):
 		else:
 			if len(qexisting):
 				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score < %d AND score >= %d;" % (sql2, sql2, qmaxscore, qscore) 
-		for (entity1, entity2, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in networkdb.query(sql).getresult():
+		for (entity1, entity2, sscore, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in networkdb.query(sql).getresult():
 			scores = {}
 			if nscore > 0:
 				scores["neighborhood"] = float(nscore)/1000
