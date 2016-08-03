@@ -60,9 +60,11 @@ class network(mamba.task.Request):
 			if value != "":
 				node["sequence"] = value
 			for label, score in visualization.scores_dict("subcell_cell_%%", qtype, qid, visualizationdb).iteritems():
-				node["compartment "+label] = score
+				if ":" not in label:
+					node["compartment "+label] = score
 			for label, score in visualization.scores_dict("tissues_body_%%", qtype, qid, visualizationdb).iteritems():
-				node["tissue "+label] = score
+				if ":" not in label:
+					node["tissue "+label] = score
 			data["nodes"].append(node)
 		data["edges"] = []
 		sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities])
