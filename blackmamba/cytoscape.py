@@ -46,8 +46,12 @@ class network(mamba.task.Request):
 		data = {}
 		data["nodes"] = []
 		for qentity in qentities:
-			qtype, qid = qentity.split(".", 1)
-			qtype = int(qtype)
+			if "." in qentity:
+				qtype, qid = qentity.split(".", 1)
+				qtype = int(qtype)
+			else:
+				qtype = -1
+				qid = qentity
 			node = database.entity_dict(qtype, qid, dictionarydb)
 			value = database.image(qtype, qid, dictionarydb)
 			if value != None:
@@ -59,6 +63,9 @@ class network(mamba.task.Request):
 			value = database.sequence(qtype, qid, dictionarydb)
 			if value != "":
 				node["sequence"] = value
+			value = database.smiles(qtype, qid, dictionarydb)
+			if value != "":
+				node["smiles"] = value
 			for label, score in visualization.scores_dict("subcell_cell_%%", qtype, qid, visualizationdb).iteritems():
 				if ":" not in label:
 					node["compartment "+label] = score
@@ -79,6 +86,8 @@ class network(mamba.task.Request):
 				sql = "SELECT * FROM links WHERE entity1 IN (%s) AND entity2 IN (%s) AND entity1 < entity2 AND score < %d AND score >= %d;" % (sql2, sql2, qmaxscore, qscore) 
 		for (entity1, entity2, sscore, nscore, fscore, pscore, ascore, escore, dscore, tscore, score) in networkdb.query(sql).getresult():
 			scores = {}
+			if sscore > 0:
+				scores["similarity"] = float(sscore)/1000
 			if nscore > 0:
 				scores["neighborhood"] = float(nscore)/1000
 			if fscore > 0:

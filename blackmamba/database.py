@@ -155,10 +155,22 @@ def sequence(qtype, qid, dictionary=None):
 	sequence = ""
 	try:
 		rows = dictionary.query("SELECT sequence FROM sequences WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult()
-		sequence =  rows[0][0]
+		sequence = rows[0][0]
 	except:
 		pass
 	return sequence
+
+
+def smiles(qtype, qid, dictionary=None):
+	if dictionary == None:
+		dictionary = Connect("dictionary")
+	smiles = ""
+	try:
+		rows = dictionary.query("SELECT smiles FROM smiles WHERE type=%d AND id='%s';" % (qtype, pg.escape_string(qid))).getresult()
+		smiles = rows[0][0]
+	except:
+		pass
+	return smiles
 
 
 def synonyms(qtype, qid, dictionary=None, userdata=None):
