@@ -152,11 +152,11 @@ class Documents(mamba.task.Request):
 				for idx, author in enumerate(authors):
 					author = mamba.util.string_to_bytes(author)
 					if idx < 3:
-						tmp.append('<a href="http://www.ncbi.nlm.nih.gov/pubmed?term=%s[author]" target="authors_pubmed">%s</a>' % (author, author))
+						tmp.append('<a href="https://www.ncbi.nlm.nih.gov/pubmed?term=%s[author]" target="authors_pubmed">%s</a>' % (author, author))
 					else:
 						tmp.append(" (and %d more)" % (len(authors) - 3))
 						break
-				html.XText(author_wrapper, '%s ; &nbsp; <span style="text-decoration: underline">%s</span> (%s); &nbsp; PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed?term=%s[pmid]" target="pubmed">%s</a>' % (",".join(tmp), journal, year, document, document))
+				html.XText(author_wrapper, '%s ; &nbsp; <span style="text-decoration: underline">%s</span> (%s); &nbsp; PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed?term=%s[pmid]" target="pubmed">%s</a>' % (",".join(tmp), journal, year, document, document))
 				document_abstract = html.XDiv(document_wrapper, "document_abstract")
 				if len(abstract) == 0:
 					abstract_text = html.XDiv(document_abstract)
@@ -228,7 +228,7 @@ class PubmedQuery(Documents):
 	def get_documents(self, rest, textmining):
 		documents = []
 		if "query" in rest:
-			url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?" + urllib.urlencode({"db":"pubmed", "term":rest["query"], "retmax":100000, "rettype":"uilist"})
+			url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?" + urllib.urlencode({"db":"pubmed", "term":rest["query"], "retmax":100000, "rettype":"uilist"})
 			data, status, headers, page_url, charset = mamba.http.Internet().download(url)
 			for document in etree.fromstring(data).getiterator("Id"):
 				documents.append(document.text)
