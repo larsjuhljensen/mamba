@@ -84,7 +84,6 @@ $(document).ready( function() {
 	$.getJSON(jsonURL).done(function(data) {
 		fillCellData(data);
 		loadColors(data);
-		console.log(data);
 	});
 
 	// set up interactivity
