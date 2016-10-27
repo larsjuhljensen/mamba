@@ -1,0 +1,84 @@
+[CSS]
+css/blackmamba.css
+
+[CSS:ENTITY]
+css/tissues.css
+
+[KEYWORDS]
+mammalian phenotypes
+human phenotypes
+mouse phenotypes
+rat phenotypes
+pig phenotypes
+
+[TITLE]
+PHENOTYPES
+
+[SUBTITLE]
+Mammalian phenotype database
+
+[LINK]
+http://www.cpr.ku.dk
+
+[LOGO]
+cpr.png
+
+[MENU]
+Search
+About
+
+[FOOTER]
+<p class="footer_description">Developed by <a href="mailto:rudolfs.berzins.bio@gmail.com">Rudolfs Berzins</a>, <a href="mailto:helen.cook@cpr.ku.dk">Helen Cook</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<script>
+if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
+</script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-36065925-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+[FOOTER:ENTITY]
+<p class="footer_description">The phenotype associations are derived from automatic text mining of the biomedical literature, which has not been manually verified. The confidence of each association is signified by stars, where <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> is the highest confidence and <span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> is the lowest.</p>
+<p class="footer_description">Each tissue&ndash;gene association is based on a text-mining score, which is proportional to 1) the absolute number of comentionings and 2) the ratio of observed to expected comentionings (i.e. the enrichment). These scores are normalized to z-scores by comparing them to a random background. This is represented by stars, each star corresponding to two standard deviations above the mean of the background distribution.</p>
+
+[CONTENT:SEARCH]
+Search for a human, mouse, rat, or pig gene:
+
+[EXAMPLES:SEARCH]
+CYP3A4
+Insulin
+
+[CONTENT:DOWNLOADS]
+<div style="width: 50em;">
+<p style="font-weight: bold;">The TISSUES resource is available for download:</p>
+<p>
+<table cellpadding="6">
+<tr>
+<td>Knowledge channel:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_knowledge_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_knowledge_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td>Experiments channel:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_experiments_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_experiments_filtered.tsv">filtered</a></td>
+</tr>
+<tr>
+<td>Text mining channel:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_textmining_full.tsv">full</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_textmining_filtered.tsv">filtered</a></td>
+</tr>
+</table>
+</p>
+<p style="width: 50em;">The <em>full</em> files contain all links in the TISSUES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+</div>
+
+[CONTENT:ABOUT]
+<div style="width: 50em;">
+<p>PHENOTYPES is a frequently updated web resource with evidence on gene-phenotype associations from automatic text mining. We map all evidence to common protein identifiers and Mammalian Phenotype Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence.</p>
+</div>
