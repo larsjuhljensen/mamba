@@ -44,7 +44,8 @@ def preferred_type_name(qtype, dictionary=None):
 		-23 : "Molecular function",
 		-25 : "Tissue",
 		-26 : "Disease",
-		-27 : "Environment"
+		-27 : "Environment",
+		-36 : "Phenotype"
 	}
 	if dictionary == None:
 		dictionary = Connect("dictionary")
