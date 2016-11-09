@@ -38,6 +38,7 @@ def find_entities(qtypes, name, dictionary=None, exact=False):
 
 def preferred_type_name(qtype, dictionary=None):
 	type_preferred = {
+		-1 : "Chemical compound",
 		-2 : "Organism",
 		-21 : "Biological process",
 		-22 : "Cellular component",
@@ -207,7 +208,12 @@ def synonyms(qtype, qid, dictionary=None, userdata=None):
 
 
 def url(qtype, qid, dictionary=None):
-	if qtype == -2:
+	if qtype >= 0:
+		return "http://string-db.org/cgi/network.pl?identifier=%d.%s" % (qtype, qid)
+	elif qtype == -1:
+		return http://stitch-db.org/cgi/network.pl?identifier=-1%08d" % int(re.sub("^CID[ms]0*", "", qid))
+		#return  "https://pubchem.ncbi.nlm.nih.gov/compound/%s" % re.sub("^CID[ms]0*", "", qid)
+	elif qtype == -2:
 		return "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s" % qid
 	elif qtype <= -21 and qtype >= -24:
 		return "http://www.ebi.ac.uk/QuickGO/GTerm?id=%s" % qid
