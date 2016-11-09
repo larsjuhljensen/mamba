@@ -211,7 +211,7 @@ def url(qtype, qid, dictionary=None):
 	if qtype >= 0:
 		return "http://string-db.org/cgi/network.pl?identifier=%d.%s" % (qtype, qid)
 	elif qtype == -1:
-		return http://stitch-db.org/cgi/network.pl?identifier=-1%08d" % int(re.sub("^CID[ms]0*", "", qid))
+		return "http://stitch-db.org/cgi/network.pl?identifier=-1%08d" % int(re.sub("^CID[ms]0*", "", qid))
 		#return  "https://pubchem.ncbi.nlm.nih.gov/compound/%s" % re.sub("^CID[ms]0*", "", qid)
 	elif qtype == -2:
 		return "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s" % qid
