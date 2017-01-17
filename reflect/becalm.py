@@ -19,7 +19,7 @@ class BeCalm(mamba.task.Request):
 		apiurl = input["custom_parameters"]["apiurl"]
 		method = input["method"]
 		if method == "getState":
-			output = '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.4","version_changes":"Use POST for saveAnnotations","max_analizable_documents":100000}}''' % apikey
+			output = '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.4","version_changes":"Use POST for saveAnnotations","max_analyzable_documents":100000}}''' % apikey
 			mamba.http.HTTPResponse(self, output).send()
 		elif method == "getAnnotations":
 			commid = input["parameters"]["communication_id"]
