@@ -898,7 +898,7 @@ class BaseInternet(mamba.util.Logger):
 		document, status, headers, page_url = self.download_raw(url, client, proxy_mode)
 
 		# ======================================================================
-		# Determin the character-set-code-page either from the HTTP-headers or
+		# Determine the character-set-code-page either from the HTTP-headers or
 		# if that fails, from the document itself via meta-tags in the HTML
 		# header.
 		# ======================================================================
@@ -918,7 +918,7 @@ class BaseInternet(mamba.util.Logger):
 			charset = "iso-8859-1"
 
 		# ======================================================================
-		# Determin if the content was gzip compressed or not.
+		# Determine if the content was gzip compressed or not.
 		# ======================================================================
 		if "Content-Encoding" in headers:
 			content_encoding = headers["Content-Encoding"]
