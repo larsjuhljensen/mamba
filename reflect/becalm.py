@@ -32,13 +32,13 @@ class BeCalm(mamba.task.Request):
 			for line in so.replace("\n     ","").splitlines():
 				linetype = line[0:5]
 				if linetype == "PMID-":
-					pmid = line[5:]
+					pmid = line[6:]
 				elif linetype == "TI  -":
 					if pmid is not None:
-						self.sections.append([pmid, "T", line[5:]])
+						self.sections.append([pmid, "T", line[6:]])
 				elif linetype == "AB  -":
 					if pmid is not None:
-						self.sections.append([pmid, "A", line[5:]])
+						self.sections.append([pmid, "A", line[6:]])
 		for i in xrange(0, len(patents), 1000):
 			cmd = '''curl --silent -H "Content-Type: application/json" --data '{"patents": %s}' http://193.147.85.10:8087/patentserver/tsv''' % json.dumps(patents[i:i+1000])
 			rc, so, se = mamba.util.Command(cmd).run()
@@ -68,8 +68,8 @@ class BeCalm(mamba.task.Request):
 				result["document_id"] = section[0]
 				result["section"] = section[1]
 				result["init"] = init
-				result["end"] = end
-				result["annotated_text"] = section[2][init:end]
+				result["end"] = end+1
+				result["annotated_text"] = section[2][init:end+1]
 				types = set()
 				database_ids = []
 				for entity in entities:
@@ -88,6 +88,8 @@ class BeCalm(mamba.task.Request):
 					result["type"] = "unknown"
 				result["database_id"] = ",".join(database_ids)
 				results.append(result)
+		if self.debug:
+			print "[DEBUG] %s" % results
 		cmd = "curl --silent --data @- '%s/saveAnnotations/JSON?apikey=%s&communicationId=%s'" % (self.apiurl, self.apikey, self.communication_id)
 		devnull = open(os.devnull, "w")
 		pipe = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=devnull, stderr=subprocess.STDOUT)
@@ -102,6 +104,9 @@ class BeCalm(mamba.task.Request):
 		self.cache = True
 		if "cache" in input["custom_parameters"]:
 			self.cache = input["custom_parameters"]["cache"]
+		self.debug = False
+		if "debug" in input["custom_parameters"]:
+			self.debug = input["custom_parameters"]["debug"]
 		self.disambiguate = True
 		if "disambiguate" in input["custom_parameters"]:
 			self.disambiguate = input["custom_parameters"]["disambiguate"]
