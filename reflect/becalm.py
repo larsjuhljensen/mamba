@@ -20,9 +20,9 @@ class BeCalm(mamba.task.Request):
 		for document in self.documents:
 			source = document["source"]
 			if source == "PATENT SERVER":
-				patents.append(document["document_id"])
+				patents.append(document["document_id"].replace("PMID", ""))
 			elif source == "PMC":
-				articles.append(document["document_id"])
+				articles.append(document["document_id"].replace("PMC", ""))
 			elif source == "PUBMED":
 				abstracts.append(document["document_id"])
 		self.sections = []
@@ -30,7 +30,7 @@ class BeCalm(mamba.task.Request):
 			cmd = '''curl --silent --data 'db=pubmed&id=%s&rettype=medline&retmode=text' https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi''' % ",".join(abstracts[i:i+1000])
 			rc, so, se = mamba.util.Command(cmd).run()
 			pmid = None
-			for line in so.replace("\n     ","").splitlines():
+			for line in so.replace("\n     ", "").splitlines():
 				linetype = line[0:5]
 				if linetype == "PMID-":
 					pmid = line[6:]
@@ -50,9 +50,9 @@ class BeCalm(mamba.task.Request):
 					title = article.findtext(".//article-meta//article-title")
 					abstract = "\n".join(article.find(".//article-meta//abstract").itertext())
 					text = "\n".join(article.find(".//body").itertext())
-					self.sections.append([pmcid, "T", mamba.util.string_to_bytes(title)])
-					self.sections.append([pmcid, "A", mamba.util.string_to_bytes(abstract)])
-					self.sections.append([pmcid, "A", mamba.util.string_to_bytes(text)])
+					self.sections.append(["PMC"+pmcid, "T", mamba.util.string_to_bytes(title)])
+					self.sections.append(["PMC"+pmcid, "A", mamba.util.string_to_bytes(abstract)])
+					self.sections.append(["PMC"+pmcid, "A", mamba.util.string_to_bytes(text)])
 		for i in xrange(0, len(patents), 1000):
 			cmd = '''curl --silent -H "Content-Type: application/json" --data '{"patents": %s}' http://193.147.85.10:8087/patentserver/tsv''' % json.dumps(patents[i:i+1000])
 			rc, so, se = mamba.util.Command(cmd).run()
@@ -126,7 +126,7 @@ class BeCalm(mamba.task.Request):
 			self.disambiguate = input["custom_parameters"]["disambiguate"]
 		method = input["method"]
 		if method == "getState":
-			mamba.http.HTTPResponse(self, '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.5","version_changes":"Better use of queue.","max_analyzable_documents":100000}}''' % self.apikey).send()
+			mamba.http.HTTPResponse(self, '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.6","version_changes":"Added PMC support.","max_analyzable_documents":100000}}''' % self.apikey).send()
 		elif method == "getAnnotations":
 			mamba.http.HTTPResponse(self, '''{"status": 200,"success": true,"key":"%s"}''' % self.apikey).send()
 			self.communication_id = input["parameters"]["communication_id"]
