@@ -3,6 +3,7 @@ import re
 import json
 import subprocess
 import sys
+from xml.etree import cElementTree
 
 import mamba.http
 import mamba.setup
@@ -35,10 +36,23 @@ class BeCalm(mamba.task.Request):
 					pmid = line[6:]
 				elif linetype == "TI  -":
 					if pmid is not None:
-						self.sections.append([pmid, "T", line[6:]])
+						self.sections.append([pmid, "T", mamba.util.string_to_bytes(line[6:])])
 				elif linetype == "AB  -":
 					if pmid is not None:
-						self.sections.append([pmid, "A", line[6:]])
+						self.sections.append([pmid, "A", mamba.util.string_to_bytes(line[6:])])
+		for i in xrange(0, len(articles), 10):
+			cmd = '''curl --silent --data 'db=pmc&id=%s' https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi''' % ",".join(articles[i:i+10])
+			rc, so, se = mamba.util.Command(cmd).run()
+			root = cElementTree.fromstring(so)
+			for article in list(root):
+				pmcid = article.findtext(".//article-meta/article-id[@pub-id-type='pmc']")
+				if pmcid is not None:
+					title = article.findtext(".//article-meta//article-title")
+					abstract = "\n".join(article.find(".//article-meta//abstract").itertext())
+					text = "\n".join(article.find(".//body").itertext())
+					self.sections.append([pmcid, "T", mamba.util.string_to_bytes(title)])
+					self.sections.append([pmcid, "A", mamba.util.string_to_bytes(abstract)])
+					self.sections.append([pmcid, "A", mamba.util.string_to_bytes(text)])
 		for i in xrange(0, len(patents), 1000):
 			cmd = '''curl --silent -H "Content-Type: application/json" --data '{"patents": %s}' http://193.147.85.10:8087/patentserver/tsv''' % json.dumps(patents[i:i+1000])
 			rc, so, se = mamba.util.Command(cmd).run()
@@ -46,7 +60,7 @@ class BeCalm(mamba.task.Request):
 				columns = line.split("\t", 2)
 				self.sections.append([columns[0], "T", columns[1]])
 				if len(columns) == 3:
-					 self.sections.append([columns[0], "A", columns[2]])
+					self.sections.append([columns[0], "A", columns[2]])
 		self.queue("tagging")
 	
 	def tagging(self):
