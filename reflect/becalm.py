@@ -16,14 +16,16 @@ class BeCalm(mamba.task.Request):
 	def download(self):
 		abstracts = []
 		articles = []
-		patents = []
+		other = {}
 		for document in self.documents:
-			source = document["source"]
-			if source == "PATENT SERVER":
-				patents.append(document["document_id"].replace("PMID", ""))
-			elif source == "PMC":
+			source = document["source"].lower()
+			if source in self.document_servers:
+				if source not in other:
+					other[source] = []
+				other[source].append(document["document_id"])
+			elif source == "pmc":
 				articles.append(document["document_id"].replace("PMC", ""))
-			elif source == "PUBMED":
+			elif source == "pubmed":
 				abstracts.append(document["document_id"])
 		self.sections = []
 		for i in xrange(0, len(abstracts), 1000):
@@ -53,14 +55,17 @@ class BeCalm(mamba.task.Request):
 					self.sections.append(["PMC"+pmcid, "T", mamba.util.string_to_bytes(title)])
 					self.sections.append(["PMC"+pmcid, "A", mamba.util.string_to_bytes(abstract)])
 					self.sections.append(["PMC"+pmcid, "A", mamba.util.string_to_bytes(text)])
-		for i in xrange(0, len(patents), 1000):
-			cmd = '''curl --silent -H "Content-Type: application/json" --data '{"patents": %s}' http://193.147.85.10:8087/patentserver/tsv''' % json.dumps(patents[i:i+1000])
-			rc, so, se = mamba.util.Command(cmd).run()
-			for line in so.splitlines():
-				columns = line.split("\t", 2)
-				self.sections.append([columns[0], "T", columns[1]])
-				if len(columns) == 3:
-					self.sections.append([columns[0], "A", columns[2]])
+		for source in other:
+			key = self.document_servers[source]["key"]
+			url = self.document_servers[source]["url"]
+			for i in xrange(0, len(other[source]), 1000):
+				cmd = '''curl --silent -H "Content-Type: application/json" --data '{"%s": %s}' %s''' % (key, json.dumps(other[source][i:i+1000]), url)
+				rc, so, se = mamba.util.Command(cmd).run()
+				for line in so.splitlines():
+					columns = line.split("\t", 2)
+					self.sections.append([columns[0], "T", columns[1]])
+					if len(columns) == 3:
+						self.sections.append([columns[0], "A", columns[2]])
 		self.queue("tagging")
 	
 	def tagging(self):
@@ -124,9 +129,12 @@ class BeCalm(mamba.task.Request):
 		self.disambiguate = True
 		if "disambiguate" in input["custom_parameters"]:
 			self.disambiguate = input["custom_parameters"]["disambiguate"]
+		self.document_servers = {}
+		if "servers" in input["custom_parameters"]:
+			self.document_servers = input["custom_parameters"]["servers"]
 		method = input["method"]
 		if method == "getState":
-			mamba.http.HTTPResponse(self, '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.6","version_changes":"Added PMC support.","max_analyzable_documents":100000}}''' % self.apikey).send()
+			mamba.http.HTTPResponse(self, '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.7","version_changes":"Initial support for multiple document servers.","max_analyzable_documents":100000}}''' % self.apikey).send()
 		elif method == "getAnnotations":
 			mamba.http.HTTPResponse(self, '''{"status": 200,"success": true,"key":"%s"}''' % self.apikey).send()
 			self.communication_id = input["parameters"]["communication_id"]
