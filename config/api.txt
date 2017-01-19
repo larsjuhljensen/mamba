@@ -1,0 +1,48 @@
+[CSS]
+css/blackmamba.css
+
+[KEYWORDS]
+database
+api
+rest
+gene
+protein
+tissue
+disease
+
+[TITLE]
+Database API
+
+[SUBTITLE]
+REST interface for accessing databases from the JensenLab
+
+[LINK]
+http://www.cpr.ku.dk
+
+[LOGO]
+cpr.png
+
+[FOOTER]
+Developed by <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<script>
+if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
+</script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-36065925-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+[CONTENT:ABOUT]
+<div style="width: 50em;">
+<p>This API provides RESTful access to data related to the <a href="http://compartments.jensenlab.org/">COMPARTMENTS</a>, <a href="http://tissues.jensenlab.org/">TISSUES</a>, and <a href="http://diseases.jensenlab.org.org/">DISEASES</a> databases as well as the underlying text mining results. Below is a nonexhaustive list of examples of what can be done via the API:</p>
+<ul>
+<li><a href="/Knowledge?type1=-22&id1=GO:0005777&type2=4932&limit=1000&format=json">Retrieve yeast genes annotated as peroxisomal</a></li>
+<li><a href="/Experiments?type1=9606&id1=ENSP00000337915&type2=-25&id2=BTO:0000759&format=json">Get the experimental evidence for CYP3A4 expression in liver</a></li>
+<li><a href="/Textmining?type1=-26&id1=DOID:10652&type2=9606&limit=10&format=json">Get the top-10 human genes associated with Alzheimer's disease</a></li>
+<li><a href="/Textmining?query=jetlag[tiab]%20OR%20jet-lag[tiab]&type2=9606&limit=10&format=json">Find the top-10 human genes co-mentioned with "jetlag" in PubMed</a></li>
+</ul>
+</div>
