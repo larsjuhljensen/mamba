@@ -78,7 +78,7 @@ class BeCalm(mamba.task.Request):
 		}
 		results = []
 		for section in self.sections:
-			matches = mamba.setup.config().tagger.get_matches(document=section[2], document_id=0, entity_types=self.entity_types, auto_detect=self.auto_detect)
+			matches = mamba.setup.config().tagger.get_matches(document=section[2], document_id=0, entity_types=self.entity_types, auto_detect=self.auto_detect, utf8_coordinates=self.utf8_coordinates)
 			for match in matches:
 				init, end, entities = match
 				if self.disambiguate and len(entities) > 1:
@@ -132,6 +132,9 @@ class BeCalm(mamba.task.Request):
 		self.document_servers = {}
 		if "servers" in input["custom_parameters"]:
 			self.document_servers = input["custom_parameters"]["servers"]
+		self.utf8_coordinates = False
+		if "utf8" in input["custom_parameters"]:
+			self.utf8_coordinates = input["custom_parameters"]["utf8"]
 		method = input["method"]
 		if method == "getState":
 			mamba.http.HTTPResponse(self, '''{"status":200,"success":true,"key":"%s","data":{"state":"Running","version":"0.7","version_changes":"Initial support for multiple document servers.","max_analyzable_documents":100000}}''' % self.apikey).send()
