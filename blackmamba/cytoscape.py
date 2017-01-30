@@ -24,6 +24,9 @@ class network(mamba.task.Request):
 		qexisting = []
 		if "existing" in rest:
 			qexisting = rest["existing"].split("\n")
+		qfilter = None
+		if "filter" in rest:
+			qfilter = rest["filter"]
 		qmaxscore = 1000
 		if "maxscore" in rest:
 			qmaxscore = int(1000*float(rest["maxscore"]))
@@ -40,7 +43,10 @@ class network(mamba.task.Request):
 				qselected = qentities+qexisting
 			sql1 = ",".join(["'%s'" % pg.escape_string(x) for x in qselected])
 			sql2 = ",".join(["'%s'" % pg.escape_string(x) for x in qentities+qexisting])
-			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, qscore, qadditional)
+			sql3 = ""
+			if qfilter is not None:
+				sql3 = "AND entity2 LIKE '%s'" % pg.escape_string(qfilter)
+			sql = "SELECT entity2,sum(score) AS sum FROM links WHERE entity1 IN (%s) AND entity2 NOT IN (%s) %s AND score >= %d GROUP BY entity2 ORDER BY sum DESC LIMIT %d;" % (sql1, sql2, sql3, qscore, qadditional)
 			for (entity, score) in networkdb.query(sql).getresult():
 				qentities.append(entity)
 		data = {}
