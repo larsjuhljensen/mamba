@@ -70,6 +70,8 @@ def get_cyclebase_gene_info(data):
 					id2 = row["id2"]
 					type2 = row["type2"]
 					evidence.update({"id2":id2, "type2": type2})
+				if "homology" in row:
+					evidence.update({"homology":row["homology"]})
 				rank = evidence["rank"]
 				evidence.update({"url":url})
 				phenos = ""
@@ -145,10 +147,10 @@ class Cyclebase(mamba.task.Request):
 		colors = conn_visualization.query("SELECT figure, label FROM colors WHERE figure LIKE 'cyclebase_%%' AND %s AND %s AND score >= 2;"% (org_sql, id_sql)).getresult()
 		if(len(combined_results) > 0 and len(individual_results) > 0 and len(cycle_info) > 0):
 			combined_results = combined_results.pop(0)
-			average_expression = combined_results['average_expression'].replace("{","[").replace("}","]").replace('NaN','null')
+			average_expression = str(combined_results['average_expression']) #.replace("{","[").replace("}","]").replace('NaN','null')
 			average_prot = ""
 			if combined_results.has_key('average_protein') and combined_results['average_protein'] is not None:
-				average = combined_results['average_protein']
+				average = str(combined_results['average_protein'])
 				average_prot = ",\"average_protein\":"+average
 			json = ["{\"id\":\""+identifier+"\",\"results\":[{\"combined\":{\"rank\":"+str(combined_results["rank"])+",\"peak\":\""+str(combined_results["peak_time"])+"\",\"p_value\":"+str(combined_results["periodicity_pvalue"])+",\"average_expression\":"+average_expression+average_prot+"}},{\"individual\":["]
 			
@@ -203,9 +205,28 @@ class CyclebaseGroups(xpage.Groups):
 		    visible = "true"
 		    self.json.append('''"%s":{"name":"%s","organism":"%s", "Rank":%d, "Peaktime":%s, "Phenotypes": %s,"visible":%s,"url":%s}'''% (row["id1"], name,organism,row["rank"],row["peak_time"], row["phenotypes"], visible,row["url"]))
 
-	def get_rows(self, rest, filter):
-		ortho_evidences = xpage.Groups.get_rows(self,rest,filter)
+	def get_rows(self, rest, species, filter):
+		ortho_evidences = xpage.Groups.get_rows(self, rest, species, filter)
 		return get_cyclebase_gene_info(ortho_evidences)
+
+class CyclebaseOrthoGroups(xpage.OrthoGroups):
+        def add_head(self):
+                self.xtable.addhead("Name", "Organism", "Rank", "Peaktime","Phenotypes","Homology")
+
+        def add_row(self, row, name, organism, homology, format):
+                if format == "html":
+                        if row.has_key("url") and row["url"] !="":
+                                link = '<a class="silent_link" target = _blank href="%s">%%s</a>' % (row["url"])
+                                self.xtable.addrow(link % name, link % organism,link % row["rank"], link % row["peak_time"],link % row["phenotypes"], link % homology)
+                        else:
+                                self.xtable.addrow(name,organism,row["rank"], row["peak_time"],row["phenotypes"], homology)
+                elif format == "json":
+                    	visible = "true"                    
+			self.json.append('''"%s":{"name":"%s","organism":"%s", "Rank":%d, "Peaktime":%s, "Phenotypes": %s,"homology": %s, "visible":%s,"url":%s}'''% (row["id1"], name,organism,row["rank"],row["peak_time"], row["phenotypes"], homology, visible,row["url"]))
+
+        def get_rows(self, rest, species, filter):
+                ortho_evidences = xpage.OrthoGroups.get_rows(self, rest, species, filter)
+                return get_cyclebase_gene_info(ortho_evidences)
 
 class CyclebaseComplexes(xpage.KnowledgeIndirect):
 	def create_table(self, rest, parent=None):
@@ -330,7 +351,7 @@ class CyclebasePage(mamba.task.Request):
 	for key in groups:
 	    db = groups[key]
 	    title = self.get_section(int(key))
-	    xpage.XAjaxContainer(associations.body, "CyclebaseGroups", "title=%s&type1=%d&id1=%s&type2=%d&db=%s" % (title,qtype1, qid1, int(key),db), 10)
+	    xpage.XAjaxContainer(associations.body, "CyclebaseOrthoGroups", "title=%s&type1=%d&id1=%s&key=%d&db=%s" % (title,qtype1, qid1, int(key),db), 10)
 	
 	
 	

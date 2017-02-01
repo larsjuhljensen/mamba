@@ -29,9 +29,7 @@ class TimeCourses(mamba.task.Request):
         sources_sql = "source IN (%s)" % (",".join(formated_sources))
         
         timecourses = database.Connect("timecourses")
-        print ("SELECT source,y_values FROM measurements WHERE %s AND %s;"%(id_sql,sources_sql))
         measurements = timecourses.query("SELECT source,y_values FROM measurements WHERE %s AND %s;"%(id_sql,sources_sql)).dictresult()
-        print ("SELECT source, pmid ,x_values FROM metadata WHERE %s;"%(sources_sql))
         metadata = timecourses.query("SELECT source,pmid,x_values FROM metadata WHERE %s;"%(sources_sql)).dictresult()
         
         json = ["{\"sources\":["]

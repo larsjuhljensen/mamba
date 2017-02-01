@@ -260,7 +260,6 @@ class SequenceQuery(mamba.task.Request):
 			stype = "blastx"
 		else:
 			stype = "blastp"
-		print stype
 		qtypes = mamba.setup.config().sections['SEARCH']
 		blast = mamba.setup.config().globals[stype]
 		blastdb = mamba.setup.config().globals['blastdb']
