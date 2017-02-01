@@ -4,6 +4,8 @@ import os
 import pg
 import re
 import urllib
+import pandas as pd
+import numpy as np
 
 import database
 import html
@@ -12,9 +14,7 @@ import visualization
 import mamba.setup
 import mamba.task
 
-
 _single_design = None
-
 
 def get_design():
 	global _single_design
@@ -84,10 +84,13 @@ class XAjaxTable(mamba.task.Request):
 			filter = True
 		rows = self.get_rows(rest, filter)
 		if format == "html":
-			if len(rows):
-				self.xtable = html.XDataTable(parent)
-				self.xtable["width"] = "100%"
-				self.add_head()
+			if rows is not None:
+				if len(rows):
+					self.xtable = html.XDataTable(parent)
+					self.xtable["width"] = "100%"
+					self.add_head()
+				else:
+					html.XP(parent, "No evidence of this type.", attr = {"class" : "clear"})
 			else:
 				html.XP(parent, "No evidence of this type.", attr = {"class" : "clear"})
 		elif format == "json":
@@ -99,16 +102,17 @@ class XAjaxTable(mamba.task.Request):
 		if "page" in rest:
 			page = int(rest["page"])
 		count = 0
-		if len(rows):
-			for row in rows:
-				count += 1
-				if count > limit*page:
-					break
-				if count > limit*(page-1):
-					name = html.xcase(database.preferred_name(int(rest["type2"]), row["id2"], dictionary))
-					stars = int(math.ceil(row["score"]))
-					stars = '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
-					self.add_row(row, name, stars, format)
+		if rows is not None:
+			if len(rows):
+				for row in rows:
+					count += 1
+					if count > limit*page:
+						break
+					if count > limit*(page-1):
+						name = html.xcase(database.preferred_name(int(rest["type2"]), row["id2"], dictionary))
+						stars = int(math.ceil(row["score"]))
+						stars = '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
+						self.add_row(row, name, stars, format)
 		return count
 	
 	def get_rows(self, rest, filter):
@@ -119,8 +123,6 @@ class XAjaxTable(mamba.task.Request):
 		if "page" in rest:
 			page = int(rest["page"])
 		evidence = database.Connect(self.action.lower())
-		return evidence.query(self.get_sql(rest, filter)+" LIMIT %d;" % (limit*page+1)).dictresult()
-		
 	def get_sql(self, rest, filter):
 		if "id2" in rest:
 			if filter:
@@ -202,6 +204,7 @@ class Combined(XAjaxTable):
 class Groups(XAjaxTable):
 	def create_table(self, rest, parent=None):
 		dictionary = database.Connect("dictionary")
+		species = mamba.setup.config().sections['HOMOLOGS'][rest["key"]]
 		format = "html"
 		if "format" in rest:
 			format = rest["format"]
@@ -215,7 +218,7 @@ class Groups(XAjaxTable):
 		limit = int(rest["limit"])
 		page = int(rest["page"])
 		count = 0
-		rows = self.get_rows(rest, filter)
+		rows = self.get_rows(rest, species, filter)
 		if len(rows):
 			self.add_head()
 			for r in rows:
@@ -253,9 +256,146 @@ class Groups(XAjaxTable):
 		evidence = database.Connect(db)
 		return evidence.query(self.get_sql(rest, filter)).dictresult()
 		
-	def get_sql(self, rest, filter):
-		return "SELECT id1,type1 FROM groups where type2 = %d and id1!='%s' and id2 IN (SELECT id2 FROM groups WHERE type1=%d AND id1='%s' AND type2=%d)" % (int(rest["type2"]),pg.escape_string(rest["id1"]),int(rest["type1"]),pg.escape_string(rest["id1"]),int(rest["type2"]))
+	def get_sql(self, rest, species, filter):
+		sql = "SELECT id1,type1 FROM groups where type2 = %d and id1!='%s' and type1 IN (%s) and id2 IN (SELECT id2 FROM groups WHERE type1=%d AND id1='%s' AND type2=%d)" % (int(rest["key"]),pg.escape_string(rest["id1"]), species,int(rest["type1"]),pg.escape_string(rest["id1"]),int(rest["key"]))
+		return sql
 
+class OrthoGroups(Groups):
+        def create_table(self, rest, parent=None):
+                dictionary = database.Connect("dictionary")
+		species = mamba.setup.config().sections['HOMOLOGS'][rest["key"]]
+                format = "html"
+                if "format" in rest:
+                        format = rest["format"]
+                filter = False
+                if format == "html":
+                        filter = True
+                        self.xtable = html.XDataTable(parent)
+                        self.xtable["width"] = "100%"
+                elif format == "json":
+                        self.json = []
+                limit = int(rest["limit"])
+                page = int(rest["page"])
+                count = 0
+                rows = self.get_rows(rest, species, filter)
+                if len(rows):
+                        self.add_head()
+                        for r in rows:
+                                count += 1
+                                if count > page*limit:
+                                        break
+                                if count > limit*(page-1):
+                                        name = html.xcase(database.preferred_name(int(r["type1"]), r["id1"], dictionary))
+                                        organism = html.xcase(database.preferred_type_name(int(r["type1"]), dictionary))
+                                        homology = html.xcase(r["homology"])
+                                        self.add_row(r, name, organism, homology, format)
+                else:
+                        html.XText(parent,"No evidences in this channel")
+                return count
+
+        def add_head(self):
+                self.xtable.addhead("Name", "Organism", "Homology")
+
+        def add_row(self, row, name, organism, homology, format):
+                if format == "html":
+                        if 'url' in row and row['url'] != "":
+                                link = '<a class="silent_link" href="%s">%%s</a>' % (row["url"])
+                                self.xtable.addrow(link % name, link % organism, link % homology)
+                        else:
+                                self.xtable.addrow(name, organism, homology)
+                elif format == "json":
+                        visible = "true"
+                        if "url" in row and row["url"] != "":
+                                self.json.append('''"%s":{"name":"%s", "organism":"%s", "homology":%s, "visible":%s, "url":%s}'''% (row["id1"], name, organism, homology, visible,row["url"]))
+                        else:
+                                self.json.append('''"%s":{"name":"%s", "organism":"%s", "homology":%s, "visible":%s}'''% (row["id1"], name, organism, homology, visible))
+
+        def get_rows(self, rest, species, filter):
+                db = rest["db"]
+		result = []
+                evidence = database.Connect(db)
+                groups = evidence.query(self.get_sql(rest, species, filter)).dictresult()
+                orthologs = evidence.query(self.get_orthologs_sql(rest, species, filter)).getresult()
+		if len(orthologs):
+			orthologs = [r[0] for r in orthologs]
+		result = [dict(i,**{'homology':'ortholog'}) if  i.values()[0] in orthologs or i.values()[1] in orthologs else dict(i,**{'homology':'paralog'}) for i in groups]
+                
+		return result
+
+        def get_orthologs_sql(self, rest, species,  filter):
+		sql = "SELECT id2 FROM orthologs WHERE type1=%d AND id1 = '%s' AND type2 IN (%s);" % (int(rest["type1"]),pg.escape_string(rest["id1"]), species)
+		return sql
+
+class CorrOrthoGroups(OrthoGroups):
+        def add_head(self):
+                self.xtable.addhead("Name", "Organism", "Homology", "Correlation")
+
+        def add_row(self, row, name, organism, homology, format):
+                if format == "html":
+                        if row.has_key("url") and row["url"] !="":
+                                link = '<a class="silent_link" target = _blank href="%s">%%s</a>' % (row["url"])
+                                self.xtable.addrow(link % name, link % organism, link % homology, link % row["correlation"])
+                        else:
+                                self.xtable.addrow(name, organism, homology, row["correlation"])
+                elif format == "json":
+                        visible = "true"
+			self.json.append('''"%s":{"name":"%s","organism":"%s", "homology": %s, "correlation": %s, "visible":%s,"url":%s}'''% (row["id1"], name,organism, homology, row["correlation"], visible,row["url"]))
+
+        def get_rows(self, rest, species, filter):
+                ortho_evidences = OrthoGroups.get_rows(self,rest,species, filter)
+                organism = int(rest["type1"])
+                id = pg.escape_string(rest["id1"])
+                entity_type = int(rest["type2"])
+
+                return self.get_correlation(ortho_evidences, organism, id, entity_type)
+
+	def get_entity_sql(self, id1,id2, type1, type2, entity_type, common):
+		if len(common):
+		        csql = ",".join(["'%s'" % id for id in common])
+        		sql = "SELECT id1, id2, score FROM pairs WHERE type1 IN (%d, %d) AND id1 IN('%s', '%s') AND type2 = %d  AND id2 IN (%s)" % (type1, type2,id1, id2, entity_type, csql)
+		else:
+			sql = "SELECT id1, id2, score FROM pairs WHERE type1 IN (%d, %d) AND id1 IN('%s', '%s') AND type2 = %d" % (type1, type2,id1, id2, entity_type)
+
+        	return sql
+	
+	def build_url(self, id, type):
+	        fix_url = '/Entity?figures=tissues_body_human&knowledge=10&experiments=10&homologs=10&type1=TYPE&type2=-25&id1=ID'
+        	
+		return fix_url.replace('ID',id).replace('TYPE',type)
+
+	def get_common_sql(self, type2):
+		sql = "SELECT DISTINCT id FROM colors WHERE type=%d" % type2
+		return sql
+
+	def get_correlation(self, data, type2, id2, entity_type):
+		evidences = []
+		if len(data):
+			integration_db = database.Connect("integration")
+			common = mamba.setup.config().sections['LABELS'][str(entity_type)].split(',')
+			vectors = []
+			for row in data:
+				evidence = {}
+				id1 = row["id1"]
+				type1 = row["type1"]
+				homology = row["homology"]
+				url = self.build_url(id1,str(type1))
+				evidence.update({"type1":type1, "id1":id1, "homology":homology, "url":url})
+				vectors = integration_db.query(self.get_entity_sql(id1,id2, type1, type2, entity_type, common)).getresult()
+				if(len(vectors) > 0):
+					df = pd.DataFrame(vectors)
+					df = df.pivot(index=0, columns=1, values=2)
+					df = df.fillna(0)
+					if df.shape[0] > 1:
+						pcorrelation = np.corrcoef(df.values[0],df.values[1],0)[0,1]
+						#pcorrelation, pvalue  = pearsonr(df.iloc[0],df.iloc[1])
+						evidence.update({"correlation": "%.2f" % pcorrelation})
+						evidences.append(evidence)
+		if len(evidences) > 1:
+			dfEvidences = pd.DataFrame.from_dict(evidences)
+			results = dfEvidences.sort_values(by=['homology','correlation'], ascending=[True, False]).reset_index().T.to_dict().values()
+		else:
+			results = evidences
+		return results
 
 class Knowledge(XAjaxTable):
 	
@@ -574,6 +714,8 @@ class Entity(mamba.task.Request):
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		dictionary = database.Connect("dictionary")
+		if 'GROUPS' in mamba.setup.config().sections:
+			groups = mamba.setup.config().sections['GROUPS']
 		
 		order = []
 		qfigures = []
@@ -619,6 +761,8 @@ class Entity(mamba.task.Request):
 			ndocuments = int(rest["documents"])
 			if "documents" not in order:
 				order.append("documents")
+		if "homologs" in rest:
+			order.append("homologs")
 		
 		qtype1 = int(rest["type1"])
 		qid1 = rest["id1"]
@@ -687,6 +831,12 @@ class Entity(mamba.task.Request):
 					XAjaxContainer(documents.body, "Mentions", "type=%d&id=%s" % (qtype1, qid1), ndocuments)
 				else:
 					XAjaxContainer(documents.body, "Comentions", "type1=%d&id1=%s&type2=%d&id2=%s" % (qtype1, qid1, qtype2, qid2), ndocuments)
+			elif section == "homologs":
+				if qtype2 is not None:
+					for key in groups:
+            					db = groups[key]
+						title = "Orthologs and paralogs"
+				        	XAjaxContainer(associations.body, "CorrOrthoGroups", "title=%s&type1=%d&id1=%s&type2=%d&key=%d&db=%s" % (title,qtype1, qid1, qtype2,int(key),db), 10)
 		
 		mamba.http.HTMLResponse(self, page.tohtml()).send()
 

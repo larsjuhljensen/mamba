@@ -37,7 +37,7 @@ class Textmining(xpage.XAjaxTable):
 		elif "query" in rest:
 			url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?" + urllib.urlencode({"db":"pubmed", "term":rest["query"], "retmax":100000, "rettype":"uilist"})
 			data, status, headers, page_url, charset = mamba.http.Internet().download(url)
-			print data
+			#print data
 			for document in etree.fromstring(data).getiterator("Id"):
 				documents.append(document.text)
 		return documents
