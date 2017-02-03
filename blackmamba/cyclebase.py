@@ -7,6 +7,7 @@ import html
 import xpage
 import search
 import hashlib
+import json
 from collections import defaultdict
 
 globPhases = ["G1","S","G2","M"]
@@ -131,6 +132,7 @@ class Cyclebase(mamba.task.Request):
 		organism = rest["type"]
 		org_sql = "type = %s" % (organism)
 		id_sql = "id = '%s'" %(identifier)
+		arrayjson = []
 		
 		#Get Cyclebase data - Cycle, Time-course data
 		conn_cyclebase = database.Connect("cyclebase")
@@ -147,12 +149,12 @@ class Cyclebase(mamba.task.Request):
 		colors = conn_visualization.query("SELECT figure, label FROM colors WHERE figure LIKE 'cyclebase_%%' AND %s AND %s AND score >= 2;"% (org_sql, id_sql)).getresult()
 		if(len(combined_results) > 0 and len(individual_results) > 0 and len(cycle_info) > 0):
 			combined_results = combined_results.pop(0)
-			average_expression = str(combined_results['average_expression']) #.replace("{","[").replace("}","]").replace('NaN','null')
+			average_expression = json.dumps(combined_results['average_expression'])#.replace("{","[").replace("}","]").replace('NaN','null')
 			average_prot = ""
 			if combined_results.has_key('average_protein') and combined_results['average_protein'] is not None:
-				average = str(combined_results['average_protein'])
+				average = json.dumps(combined_results['average_protein'])
 				average_prot = ",\"average_protein\":"+average
-			json = ["{\"id\":\""+identifier+"\",\"results\":[{\"combined\":{\"rank\":"+str(combined_results["rank"])+",\"peak\":\""+str(combined_results["peak_time"])+"\",\"p_value\":"+str(combined_results["periodicity_pvalue"])+",\"average_expression\":"+average_expression+average_prot+"}},{\"individual\":["]
+			arrayjson = ["{\"id\":\""+identifier+"\",\"results\":[{\"combined\":{\"rank\":"+str(combined_results["rank"])+",\"peak\":\""+str(combined_results["peak_time"])+"\",\"p_value\":"+str(combined_results["periodicity_pvalue"])+",\"average_expression\":"+average_expression+average_prot+"}},{\"individual\":["]
 			
 			string = "{\"id\":\"%s\",\"source\":\"%s\",\"visible\":\"%s\"}"
 			
@@ -160,10 +162,10 @@ class Cyclebase(mamba.task.Request):
 				probeset = registry["probeset"]
 				source = registry["source"]
 				show = registry["visible"]
-				json.append(string %(probeset,source,show))
-				json.append(",")
-			json = json[:-1]
-			json.append("]}],\"cycleinfo\":[")
+				arrayjson.append(string %(probeset,source,show))
+				arrayjson.append(",")
+			arrayjson = arrayjson[:-1]
+			arrayjson.append("]}],\"cycleinfo\":[")
 			
 			
 			phase_string = "{\"phase\": \"%s\",\"from\":%d,\"to\":%d}"
@@ -171,24 +173,24 @@ class Cyclebase(mamba.task.Request):
 				phase = registry["phase"]
 				start = float(registry["start_phase"])
 				end = float(registry["end_phase"])
-				json.append(phase_string%(phase,start,end))
-				json.append(",")
-			json = json[:-1]
-			json.append("]")
+				arrayjson.append(phase_string%(phase,start,end))
+				arrayjson.append(",")
+			arrayjson = arrayjson[:-1]
+			arrayjson.append("]")
 			if len(colors):
-				json.append(",\"icons\":[{")
+				arrayjson.append(",\"icons\":[{")
 				for figure,label in colors:
 					figure_data = conn_visualization.query("SELECT svg,paint FROM figures WHERE figure = '%s'" % figure).getresult()
 					for svg,paint in figure_data:
 						if paint:
-							json.append("\""+label+"\":\""+svg+"\"}")
-							json.append(",{")
-				json = json[:-1]
-				json.append("]")
-			json.append("}")
+							arrayjson.append("\""+label+"\":\""+svg+"\"}")
+							arrayjson.append(",{")
+				arrayjson = arrayjson[:-1]
+				arrayjson.append("]")
+			arrayjson.append("}")
 		else:
-		    json = {}
-		mamba.http.HTTPResponse(self,"".join(json), "application/json").send()
+		    arrayjson = ["{","}"]
+		mamba.http.HTTPResponse(self,"".join(arrayjson), "application/json").send()
 
 class CyclebaseGroups(xpage.Groups):
 	def add_head(self):
