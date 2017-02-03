@@ -358,11 +358,6 @@ class CorrOrthoGroups(OrthoGroups):
 
         	return sql
 	
-	def build_url(self, id, type):
-	        fix_url = '/Entity?figures=tissues_body_human&knowledge=10&experiments=10&homologs=10&type1=TYPE&type2=-25&id1=ID'
-        	
-		return fix_url.replace('ID',id).replace('TYPE',type)
-
 	def get_common_sql(self, type2):
 		sql = "SELECT DISTINCT id FROM colors WHERE type=%d" % type2
 		return sql
@@ -378,7 +373,7 @@ class CorrOrthoGroups(OrthoGroups):
 				id1 = row["id1"]
 				type1 = row["type1"]
 				homology = row["homology"]
-				url = self.build_url(id1,str(type1))
+				url = "/%d.%s" % (type1, id1)
 				evidence.update({"type1":type1, "id1":id1, "homology":homology, "url":url})
 				vectors = integration_db.query(self.get_entity_sql(id1,id2, type1, type2, entity_type, common)).getresult()
 				if(len(vectors) > 0):

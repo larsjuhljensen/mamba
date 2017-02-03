@@ -30,7 +30,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:alb.santosdel@gmail.com">Alberto Santos</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sean.o'donoghue@csiro.au">Sean O'Donoghue</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:alberto.santosdel@cpr.ku.dk">Alberto Santos</a>, <a href="oana.palasca@gmail.com">Oana Palasca</a>, <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sean.o'donoghue@csiro.au">Sean O'Donoghue</a>, <a href="gorodkin@rth.dk">Jan Gorodkin</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>, <a href="http://rth.dk/">Center for non-coding RNA in Technology and Health</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>
@@ -48,7 +48,7 @@ ga('send', 'pageview');
 <p class="footer_description">Each tissue&ndash;gene association is based on a text-mining score, which is proportional to 1) the absolute number of comentionings and 2) the ratio of observed to expected comentionings (i.e. the enrichment). These scores are normalized to z-scores by comparing them to a random background. This is represented by stars, each star corresponding to two standard deviations above the mean of the background distribution.</p>
 
 [CONTENT:SEARCH]
-Search for a human gene:
+Search for a gene:
 
 [EXAMPLES:SEARCH]
 CYP3A4
@@ -61,22 +61,28 @@ Insulin
 <table cellpadding="6">
 <tr>
 <td>Knowledge channel:</td>
-<td><a href="http://download.jensenlab.org/human_tissue_knowledge_full.tsv">full</a></td>
-<td><a href="http://download.jensenlab.org/human_tissue_knowledge_filtered.tsv">filtered</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_knowledge_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_tissue_knowledge_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_tissue_knowledge_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/pig_tissue_knowledge_full.tsv">pig</a></td>
 </tr>
 <tr>
 <td>Experiments channel:</td>
-<td><a href="http://download.jensenlab.org/human_tissue_experiments_full.tsv">full</a></td>
-<td><a href="http://download.jensenlab.org/human_tissue_experiments_filtered.tsv">filtered</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_experiments_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_tissue_experiments_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_tissue_experiments_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/pig_tissue_experiments_full.tsv">pig</a></td>
 </tr>
 <tr>
 <td>Text mining channel:</td>
-<td><a href="http://download.jensenlab.org/human_tissue_textmining_full.tsv">full</a></td>
-<td><a href="http://download.jensenlab.org/human_tissue_textmining_filtered.tsv">filtered</a></td>
+<td><a href="http://download.jensenlab.org/human_tissue_textmining_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_tissue_textmining_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_tissue_textmining_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/pig_tissue_textmining_full.tsv">pig</a></td>
 </tr>
 </table>
 </p>
-<p style="width: 50em;">The <em>full</em> files contain all links in the TISSUES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
+<p style="width: 50em;">The <em>full</em> files contain all links in the TISSUES database. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
 
