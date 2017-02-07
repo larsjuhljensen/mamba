@@ -150,11 +150,16 @@ class Cyclebase(mamba.task.Request):
 		if(len(combined_results) > 0 and len(individual_results) > 0 and len(cycle_info) > 0):
 			combined_results = combined_results.pop(0)
 			average_expression = combined_results['average_expression']
+                        if isinstance(average_expression, basestring):
+                                average_expression = average_expression.replace("{","").replace("}","").split(",")
+                        average_expression = map(float, average_expression)
 			average_prot = ""
 			cresults = {}
 			jsondict['results'] = []
 			if combined_results.has_key('average_protein') and combined_results['average_protein'] is not None:
 				average = combined_results['average_protein']
+                                if isinstance(average, basestring):
+                                        average = json.loads(average)
 				jsondict['id']  = identifier
 				cresults = {'combined': {'rank' : combined_results['rank'], 
 							'peak' : combined_results['peak_time'], 

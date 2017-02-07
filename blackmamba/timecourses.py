@@ -37,6 +37,8 @@ class TimeCourses(mamba.task.Request):
         for dbregistry in measurements:
             source = dbregistry["source"]
             y_values = dbregistry["y_values"]
+            if isinstance(y_values, basestring):
+                y_values = y_values.replace("{","").replace("}","").split(",")
             time_course[source] = {"y_values": map(float, y_values)}
             
         for dbregistry in metadata:
@@ -44,6 +46,8 @@ class TimeCourses(mamba.task.Request):
             link = dbregistry["pmid"] if dbregistry["pmid"] is not None else ""
             if(time_course.has_key(source)):
                 x_values = dbregistry["x_values"]
+                if isinstance(x_values, basestring):
+                    x_values = x_values.replace("{","").replace("}","").split(",")
                 time_course[source].update({"x_values": map(float, x_values), "link":link})
         
         for source in time_course:
