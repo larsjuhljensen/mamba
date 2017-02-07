@@ -132,7 +132,7 @@ class Cyclebase(mamba.task.Request):
 		organism = rest["type"]
 		org_sql = "type = %s" % (organism)
 		id_sql = "id = '%s'" %(identifier)
-		arrayjson = []
+		jsondict = {}
 		
 		#Get Cyclebase data - Cycle, Time-course data
 		conn_cyclebase = database.Connect("cyclebase")
@@ -149,48 +149,51 @@ class Cyclebase(mamba.task.Request):
 		colors = conn_visualization.query("SELECT figure, label FROM colors WHERE figure LIKE 'cyclebase_%%' AND %s AND %s AND score >= 2;"% (org_sql, id_sql)).getresult()
 		if(len(combined_results) > 0 and len(individual_results) > 0 and len(cycle_info) > 0):
 			combined_results = combined_results.pop(0)
-			average_expression = json.dumps(combined_results['average_expression'])#.replace("{","[").replace("}","]").replace('NaN','null')
+			average_expression = combined_results['average_expression']
 			average_prot = ""
+			cresults = {}
+			jsondict['results'] = []
 			if combined_results.has_key('average_protein') and combined_results['average_protein'] is not None:
-				average = json.dumps(combined_results['average_protein'])
-				average_prot = ",\"average_protein\":"+average
-			arrayjson = ["{\"id\":\""+identifier+"\",\"results\":[{\"combined\":{\"rank\":"+str(combined_results["rank"])+",\"peak\":\""+str(combined_results["peak_time"])+"\",\"p_value\":"+str(combined_results["periodicity_pvalue"])+",\"average_expression\":"+average_expression+average_prot+"}},{\"individual\":["]
-			
-			string = "{\"id\":\"%s\",\"source\":\"%s\",\"visible\":\"%s\"}"
-			
+				average = combined_results['average_protein']
+				jsondict['id']  = identifier
+				cresults = {'combined': {'rank' : combined_results['rank'], 
+							'peak' : combined_results['peak_time'], 
+							'p_value' : combined_results['periodicity_pvalue'], 
+							'average_expression' : average_expression,
+							'average_protein' : average}}
+			jsondict['results'].append(cresults)
+			iresults = {'individual' : []}	
 			for registry in individual_results:
+				indivRegistry = {}
 				probeset = registry["probeset"]
 				source = registry["source"]
 				show = registry["visible"]
-				arrayjson.append(string %(probeset,source,show))
-				arrayjson.append(",")
-			arrayjson = arrayjson[:-1]
-			arrayjson.append("]}],\"cycleinfo\":[")
+				indivRegistry['id'] = probeset
+				indivRegistry['source'] = source
+				indivRegistry['visible'] = show
+				iresults['individual'].append(indivRegistry)
 			
-			
-			phase_string = "{\"phase\": \"%s\",\"from\":%d,\"to\":%d}"
+			jsondict['results'].append(iresults)
+			jsondict['cycleinfo'] = []
 			for registry in cycle_info:
+				phaseRegistry = {}
 				phase = registry["phase"]
 				start = float(registry["start_phase"])
 				end = float(registry["end_phase"])
-				arrayjson.append(phase_string%(phase,start,end))
-				arrayjson.append(",")
-			arrayjson = arrayjson[:-1]
-			arrayjson.append("]")
+				phaseRegistry['phase'] = phase
+				phaseRegistry['from'] = start
+				phaseRegistry['to'] = end
+				jsondict['cycleinfo'].append(phaseRegistry)
+			jsondict['icons'] = []
 			if len(colors):
-				arrayjson.append(",\"icons\":[{")
 				for figure,label in colors:
 					figure_data = conn_visualization.query("SELECT svg,paint FROM figures WHERE figure = '%s'" % figure).getresult()
 					for svg,paint in figure_data:
+						figureRegistry = {}
 						if paint:
-							arrayjson.append("\""+label+"\":\""+svg+"\"}")
-							arrayjson.append(",{")
-				arrayjson = arrayjson[:-1]
-				arrayjson.append("]")
-			arrayjson.append("}")
-		else:
-		    arrayjson = ["{","}"]
-		mamba.http.HTTPResponse(self,"".join(arrayjson), "application/json").send()
+							figureRegistry[label] = svg
+							jsondict['icons'].append(figureRegistry)
+		mamba.http.HTTPResponse(self, json.dumps(jsondict), "application/json").send()
 
 class CyclebaseGroups(xpage.Groups):
 	def add_head(self):
