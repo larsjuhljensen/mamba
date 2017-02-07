@@ -32,38 +32,24 @@ class TimeCourses(mamba.task.Request):
         measurements = timecourses.query("SELECT source,y_values FROM measurements WHERE %s AND %s;"%(id_sql,sources_sql)).dictresult()
         metadata = timecourses.query("SELECT source,pmid,x_values FROM metadata WHERE %s;"%(sources_sql)).dictresult()
         
-        arrayjson = ["{\"sources\":["]
+        jsondict = {'sources' : []}
         time_course = {}
         for dbregistry in measurements:
             source = dbregistry["source"]
-            y_values_str = json.dumps(dbregistry["y_values"])
-            y_values_str = y_values_str.replace("[","")
-            y_values_str = y_values_str.replace("]","")
-	    y_values_str = y_values_str.replace("\"","")	
-            y_values_str = y_values_str.replace("NA","null")
-            y_values = y_values_str.split(",")
-            time_course[source] = {"y_values": y_values}
+            y_values = dbregistry["y_values"]
+            time_course[source] = {"y_values": map(float, y_values)}
             
         for dbregistry in metadata:
             source = dbregistry["source"]
             link = dbregistry["pmid"] if dbregistry["pmid"] is not None else ""
             if(time_course.has_key(source)):
-                x_values_str = json.dumps(dbregistry["x_values"])
-                x_values_str = x_values_str.replace("[","")
-                x_values_str = x_values_str.replace("]","")
-		x_values_str = x_values_str.replace("\"","")
-                x_values = x_values_str.split(",")
-                time_course[source].update({"x_values": x_values, "link":link})
-            
+                x_values = dbregistry["x_values"]
+                time_course[source].update({"x_values": map(float, x_values), "link":link})
+        
         for source in time_course:
-            arrayjson.append("{\"name\":\""+source+"\",\"link\":\""+time_course[source]["link"]+"\",\"values\":[")
+	    sourceRegistry = {'name': source, 'link' : time_course[source]["link"], 'values' : []}
             for i in range(0,len(time_course[source]["x_values"])):
-                arrayjson.append("["+time_course[source]["x_values"][i]+",")
-                arrayjson.append(time_course[source]["y_values"][i]+"]")
-                arrayjson.append(",")
-            arrayjson = arrayjson[:-1]
-            arrayjson.append("]}")
-            arrayjson.append(",")
-        arrayjson = arrayjson[:-1]
-        arrayjson.append("]}")
-        mamba.http.HTTPResponse(self,"".join(arrayjson), "application/json").send()
+		sourceRegistry['values'].append([time_course[source]["x_values"][i], time_course[source]["y_values"][i]])
+	    jsondict['sources'].append(sourceRegistry)
+
+        mamba.http.HTTPResponse(self,json.dumps(jsondict), "application/json").send()
