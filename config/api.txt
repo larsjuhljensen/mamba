@@ -38,7 +38,7 @@ ga('send', 'pageview');
 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
-<p>This API provides RESTful access to data related to the <a href="http://compartments.jensenlab.org/">COMPARTMENTS</a>, <a href="http://tissues.jensenlab.org/">TISSUES</a>, and <a href="http://diseases.jensenlab.org.org/">DISEASES</a> databases as well as the underlying text mining results. Below is a nonexhaustive list of examples of what can be done via the API:</p>
+<p>This API provides RESTful access to data related to the <a href="http://compartments.jensenlab.org/">COMPARTMENTS</a>, <a href="http://tissues.jensenlab.org/">TISSUES</a>, and <a href="http://diseases.jensenlab.org/">DISEASES</a> databases as well as the underlying text mining results. Below is a nonexhaustive list of examples of what can be done via the API:</p>
 <ul>
 <li><a href="/Knowledge?type1=-22&id1=GO:0005777&type2=4932&limit=1000&format=json">Retrieve yeast genes annotated as peroxisomal</a></li>
 <li><a href="/Experiments?type1=9606&id1=ENSP00000337915&type2=-25&id2=BTO:0000759&format=json">Get the experimental evidence for CYP3A4 expression in liver</a></li>
