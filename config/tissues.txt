@@ -82,7 +82,9 @@ Insulin
 </tr>
 </table>
 </p>
-<p style="width: 50em;">The <em>full</em> files contain all links in the TISSUES database. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
+<p style="width: 50em;">The files contain all links in the TISSUES database. All files start with the following four columns: gene identifier, gene name, tissue identifier, and tissue name. The <strong>knowledge</strong> files further contain the source database, the evidence type, and the confidence score. The <strong>experiments</strong> files instead contains the source dataset, the expression score, and the confidence score. Finally, the <strong>textmining</strong> files contain the z-score, the confidence score, and a URL to a viewer of the underlying abstracts.</p>
+<p style="width: 50em;">For cross-species comparisons we provide a <a href="http://download.jensenlab.org/TISSUES_ortholog_pairs.tsv">file</a> with pairwise orthologs derived from the <a href="http://eggnog.embl.de">eggNOG</a> database.</p>
+<p style="width: 50em;">Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
 
@@ -91,4 +93,5 @@ Insulin
 <p>TISSUES is a frequently updated web resource that integrates evidence on tissue expression from manually curated literature, proteomics and transcriptomics screens, and automatic text mining. We map all evidence to common protein identifiers and Brenda Tissue Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence. We finally visualize these scores on a schematic human body to provide a convenient overview.</p>
 <p>For further details please refer to the following Open Access article describing the database:</p>
 <p><a href="https://peerj.com/articles/1054/">Comprehensive comparison of large-scale tissue expression datasets</a></p>
+<p>Code for benchmarking and comparison of datasets is available on <a href="https://github.com/opalasca/TISSUES_Update">GitHub</a>.</p>
 </div>
