@@ -32,7 +32,7 @@ ga('send', 'pageview');
 [CONTENT:SEARCH]
 Search for an organism:
 
-[CONTENT:DOWNLOAD]
+[CONTENT:DOWNLOADS]
 <div style="width: 50em;">
 <p>
 To support systematic analysis of the data from ORGANISMS, we provide the following three download files:
