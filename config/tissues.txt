@@ -60,6 +60,12 @@ Insulin
 <p>
 <table cellpadding="6">
 <tr>
+<td>All channels integrated:</td>
+<td><a href="http://download.jensenlab.org/human_tissue_integrated_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_tissue_integrated_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_tissue_integrated_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/pig_tissue_integrated_full.tsv">pig</a></td>
+<tr>
 <td>Knowledge channel:</td>
 <td><a href="http://download.jensenlab.org/human_tissue_knowledge_full.tsv">human</a></td>
 <td><a href="http://download.jensenlab.org/mouse_tissue_knowledge_full.tsv">mouse</a></td>
