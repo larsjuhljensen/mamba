@@ -59,6 +59,16 @@ COX1
 <p>
 <table cellpadding="6">
 <tr>
+<td>All channels integrated:</td>
+<td><a href="http://download.jensenlab.org/human_compartment_integrated_full.tsv">human</a></td>
+<td><a href="http://download.jensenlab.org/mouse_compartment_integrated_full.tsv">mouse</a></td>
+<td><a href="http://download.jensenlab.org/rat_compartment_integrated_full.tsv">rat</a></td>
+<td><a href="http://download.jensenlab.org/fly_compartment_integrated_full.tsv">fly</a></td>
+<td><a href="http://download.jensenlab.org/worm_compartment_integrated_full.tsv">worm</a></td>
+<td><a href="http://download.jensenlab.org/yeast_compartment_integrated_full.tsv">yeast</a></td>
+<td><a href="http://download.jensenlab.org/arabidopsis_compartment_integrated_full.tsv">arabidopsis</a></td>
+</tr>
+<tr>
 <td>Knowledge channel:</td>
 <td><a href="http://download.jensenlab.org/human_compartment_knowledge_full.tsv">human</a></td>
 <td><a href="http://download.jensenlab.org/mouse_compartment_knowledge_full.tsv">mouse</a></td>
