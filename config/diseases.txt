@@ -24,7 +24,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alexander.junge@cpr.ku.dk">Alexander Junge</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:dhouha.grissa.@cpr.ku.dk>Dhouha Grissa</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alexander.junge@cpr.ku.dk">Alexander Junge</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:dhouha.grissa.@cpr.ku.dk">Dhouha Grissa</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>
@@ -79,4 +79,5 @@ Alzheimer\'s disease
 <p>DISEASES is a weekly updated web resource that integrates evidence on disease-gene associations from automatic text mining, manually curated literature, cancer mutation data, and genome-wide association studies. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence.</p>
 <p>For further details please refer to the following Open Access article about the database:</p>
 <p><a href="http://www.sciencedirect.com/science/article/pii/S1046202314003831">DISEASES: Text mining and data integration of disease-gene associations</a></p>
+<p>The work on DISEASES was funded by the Novo Nordisk Foundation (NNF14CC0001), the National Institutes of Health (U54 CA189205 and U24 224370), and the European Union's Seventh Framework Programme (n259348).</p>
 </div>
