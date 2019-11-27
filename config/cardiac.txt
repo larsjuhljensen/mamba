@@ -1,0 +1,67 @@
+[CSS]
+css/blackmamba.css
+
+[CSS:ENTITY]
+css/cardiac.css
+
+[KEYWORDS]
+gene expression
+protein expression
+tissue expression
+
+[SCRIPTS:ENTITY]
+scripts/cardiac.js
+
+[TITLE]
+CARDIAC PROTEOME
+
+[SUBTITLE]
+Tissue expression database
+
+[LINK]
+http://www.cpr.ku.dk
+
+[LOGO]
+cpr.png
+
+[MENU]
+Search
+Downloads
+About
+
+[FOOTER]
+<p class="footer_description">Developed by <a href="mailto:nora.linscheid@gmail.com">Nora Linscheid</a>, <a href="mailto:alberto.santosdel@cpr.ku.dk">Alberto Santos</a>, <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a>, <a href="mailto:alicia.lundby@sund.ku.dk">Alicia Lundby</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>, <a href="http://rth.dk/">Center for non-coding RNA in Technology and Health</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
+<script>
+if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
+</script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-36065925-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+[FOOTER:ENTITY]
+<p class="footer_description">The protein expression level of each chamber is represented by the color, where darker colors mean higher abundance.</p>
+
+[CONTENT:SEARCH]
+Search for a protein:
+
+[EXAMPLES:SEARCH]
+BMP10
+NPPB
+
+[CONTENT:DOWNLOADS]
+<div style="width: 50em;">
+</div>
+
+[CONTENT:ABOUT]
+<div style="width: 50em;">
+<p>TISSUES is a weekly updated web resource that integrates evidence on tissue expression from manually curated literature, proteomics and transcriptomics screens, and automatic text mining. We map all evidence to common protein identifiers and Brenda Tissue Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence. We finally visualize these scores on a schematic human body to provide a convenient overview.</p>
+<p>For further details please refer to the following Open Access articles describing the database:</p>
+<p><a href="https://https://academic.oup.com/database/article/doi/10.1093/database/bay003/4851151">TISSUES 2.0: an integrative web resource on mammalian tissue expression</a></p>
+<p><a href="https://peerj.com/articles/1054/">Comprehensive comparison of large-scale tissue expression datasets</a></p>
+<p>Code for benchmarking and comparison of datasets is available on <a href="https://github.com/opalasca/TISSUES_Update">GitHub</a>.</p>
+</div>
