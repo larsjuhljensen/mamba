@@ -8,7 +8,7 @@ ORGANISMS
 Taxonomy-based retrieval of documents
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png
@@ -19,7 +19,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.hcmr.gr/en/">Institute of Marine Biology, Biotechnology and Aquaculture, Hellenic Centre for Marine Research</a> and the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research, University of Copenhagen</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:pafilis@hcmr.gr">Evangelos Pafilis</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.hcmr.gr/en/">Institute of Marine Biology, Biotechnology and Aquaculture, Hellenic Centre for Marine Research</a> and the <a href="https://www.cpr.ku.dk">Novo Nordisk Foundation Center for Protein Research, University of Copenhagen</a>.</p>
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

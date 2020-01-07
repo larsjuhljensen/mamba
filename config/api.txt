@@ -17,7 +17,7 @@ Database API
 REST interface for accessing databases from the JensenLab
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png

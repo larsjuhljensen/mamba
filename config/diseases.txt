@@ -13,7 +13,7 @@ DISEASES
 Disease-gene associations mined from literature
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png
@@ -24,7 +24,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alexander.junge@cpr.ku.dk">Alexander Junge</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:dhouha.grissa.@cpr.ku.dk">Dhouha Grissa</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:alexander.junge@cpr.ku.dk">Alexander Junge</a>, <a href="mailto:alberto.palleja.caro@cpr.ku.dk">Albert Pallej&agrave;</a>, <a href="mailto:dhouha.grissa.@cpr.ku.dk">Dhouha Grissa</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="https://www.cpr.ku.dk">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>

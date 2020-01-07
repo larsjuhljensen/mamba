@@ -16,21 +16,20 @@ scripts/cardiac.js
 CARDIAC PROTEOME
 
 [SUBTITLE]
-Tissue expression database
+Multispecies protein expresion landscape of the heart
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.ku.dk
 
 [LOGO]
-cpr.png
+ku.png
 
 [MENU]
 Search
-Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:nora.linscheid@gmail.com">Nora Linscheid</a>, <a href="mailto:alberto.santosdel@cpr.ku.dk">Alberto Santos</a>, <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a>, <a href="mailto:alicia.lundby@sund.ku.dk">Alicia Lundby</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>, <a href="http://rth.dk/">Center for non-coding RNA in Technology and Health</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:nora.linscheid@gmail.com">Nora Linscheid</a>, <a href="mailto:alberto.santosdel@cpr.ku.dk">Alberto Santos</a>, <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a>, and <a href="mailto:alicia.lundby@sund.ku.dk">Alicia Lundby</a> from the <a href="https://bmi.ku.dk">Department of Biomedical Sciences, University of Copenhagen</a>, the <a href="https://www.cpr.ku.dk">Novo Nordisk Foundation Center for Protein Research</a>, and the <a href="https://www.nygenome.org">New York Genome Center</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>
@@ -55,13 +54,14 @@ NPPB
 
 [CONTENT:DOWNLOADS]
 <div style="width: 50em;">
+The Cardiac Proteome resource is available for download:
+<p>The proteinGroups files contain all proteins reliably identified in the cardiac proteomes of each species. The experiments files contain the source dataset converted for database format with the columns: gene identifier, gene name, tissue identifier, tissue name, expression score, and the confidence score for each protein.</p>
+<p>For cross-species comparisons, we provide a file with pairwise orthologs derived from the eggNOG database.</p>
 </div>
 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
-<p>TISSUES is a weekly updated web resource that integrates evidence on tissue expression from manually curated literature, proteomics and transcriptomics screens, and automatic text mining. We map all evidence to common protein identifiers and Brenda Tissue Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence. We finally visualize these scores on a schematic human body to provide a convenient overview.</p>
-<p>For further details please refer to the following Open Access articles describing the database:</p>
-<p><a href="https://https://academic.oup.com/database/article/doi/10.1093/database/bay003/4851151">TISSUES 2.0: an integrative web resource on mammalian tissue expression</a></p>
-<p><a href="https://peerj.com/articles/1054/">Comprehensive comparison of large-scale tissue expression datasets</a></p>
-<p>Code for benchmarking and comparison of datasets is available on <a href="https://github.com/opalasca/TISSUES_Update">GitHub</a>.</p>
+<p>Cardiovascular diseases are among the leading cause of death in the developed world. To acquire a better molecular understanding of cardiac diseases and develop novel treatment strategies, it is essential to perform experimental studies in model organisms. However, translating findings between humans and model organisms is a major challenge.</p>
+<p>The Cardiac Proteome resource is a knowledge base on cardiac protein expression across species, aiming to fill this knowledge gap. The basis behind this database is a global analysis of cardiac protein expression in humans and commonly used model organisms across cardiac chambers using quantitative proteomics. We measured ~7,000 proteins in humans, mouse, rat, pig, horse and zebrafish, and created a global comparison of cardiac protein expression across species. The data is accessible in this open-access online database, enabling scientist to query specific protein profiles across species and thereby facilitate knowledge transfer and translational prospect of cardiac studies from model organisms to humans.</p>
+<p>We map all evidence to common protein identifiers and Brenda Tissue Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different species. We finally visualize these scores on a schematic heart to provide a convenient overview.</p>
 </div>
