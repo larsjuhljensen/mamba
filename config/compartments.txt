@@ -19,7 +19,7 @@ COMPARTMENTS
 Subcellular localization database
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png
@@ -30,7 +30,7 @@ Downloads
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>,  <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:sean.o'donoghue@csiro.au">Sean O'Donoghue</a>, <a href="mailto:reinhard.schneider@uni.lu">Reinhard Schneider</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research (CPR)</a>, the <a href="http://wwwen.uni.lu/lcsb">Luxembourg Centre for Systems Biomedicine (LCSB)</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:janos.binder@embl.de">Janos Binder</a>, <a href="mailto:sune.frankild@cpr.ku.dk">Sune Frankild</a>, <a href="mailto:kalliopi.tsafou@cpr.ku.dk">Kalliopi Tsafou</a>,  <a href="mailto:christian.stolte@csiro.au">Christian Stolte</a>, <a href="mailto:sean.o'donoghue@csiro.au">Sean O'Donoghue</a>, <a href="mailto:reinhard.schneider@uni.lu">Reinhard Schneider</a>, and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="https://www.cpr.ku.dk">Novo Nordisk Foundation Center for Protein Research (CPR)</a>, the <a href="http://wwwen.uni.lu/lcsb">Luxembourg Centre for Systems Biomedicine (LCSB)</a>, and the <a href="http://www.csiro.au">Commonwealth Scientific and Industrial Research Organisation (CSIRO)</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>

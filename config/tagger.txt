@@ -17,7 +17,7 @@ Real-time named entity recognition
 Text-mining-assisted extraction of terms
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png

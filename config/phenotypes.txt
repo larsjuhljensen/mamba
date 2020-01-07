@@ -18,7 +18,7 @@ PHENOTYPES
 Mammalian phenotype database
 
 [LINK]
-http://www.cpr.ku.dk
+https://www.cpr.ku.dk
 
 [LOGO]
 cpr.png
@@ -28,7 +28,7 @@ Search
 About
 
 [FOOTER]
-<p class="footer_description">Developed by <a href="mailto:rudolfs.berzins.bio@gmail.com">Rudolfs Berzins</a>, <a href="mailto:helen.cook@cpr.ku.dk">Helen Cook</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="http://www.cpr.ku.dk/">Novo Nordisk Foundation Center for Protein Research</a>.</p>
+<p class="footer_description">Developed by <a href="mailto:rudolfs.berzins.bio@gmail.com">Rudolfs Berzins</a>, <a href="mailto:helen.cook@cpr.ku.dk">Helen Cook</a> and <a href="mailto:lars.juhl.jensen@cpr.ku.dk">Lars Juhl Jensen</a> from the <a href="https://www.cpr.ku.dk">Novo Nordisk Foundation Center for Protein Research</a>.</p>
 <script>
 if(window.top!=window.self){document.body.className+=' iframe';a=document.getElementById("title");a.href=document.location.href;a.target="_blank";}
 </script>
