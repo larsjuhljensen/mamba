@@ -37,19 +37,19 @@ Search for an organism:
 <p>
 To support systematic analysis of the data from ORGANISMS, we provide the following three download files:
 <ul>
-<li><a href="http://download.jensenlab.org/organism_textmining_mentions.tsv">Organism mentions</a></li>
-<li><a href="http://download.jensenlab.org/organism_disease_textmining_full.tsv">Organism-disease associations</a></li>
-<li><a href="http://download.jensenlab.org/organism_tissue_textmining_full.tsv">Organism-tissue associations</a></li>
+<li><a href="https://download.jensenlab.org/organism_textmining_mentions.tsv">Organism mentions</a></li>
+<li><a href="https://download.jensenlab.org/organism_disease_textmining_full.tsv">Organism-disease associations</a></li>
+<li><a href="https://download.jensenlab.org/organism_tissue_textmining_full.tsv">Organism-tissue associations</a></li>
 </ul>
 All three files are tab-delimited. The mentions file has two columns, the first being an NCBI Taxonomy identifier and the second being a list of associated PubMed identifiers. The two other files  have the following columns: NCBI Taxonomy identifier, taxon name, disease/tissue identifier, disease/tissue name, z-score, confidence score, and a URL to viewer of the underlying abstracts.
 </p>
-<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+<p><a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
 <p>ORGANISMS is a weekly updated web resource that facilitates taxonomy-aware search and retrieval of articles. To this end, the the resource performs named entity recognition of terms from the NCBI Taxonomy on PubMed abstracts. The resource further provides download files of organism-disease and organism-tissue associations extracted through automatic text mining.</p>
 <p>For further details please refer to the following Open Access article about the database:</p>
-<p><a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0065390">The SPECIES and ORGANISMS resources for fast and accurate identification of taxonomic names in text</a></p>
+<p><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0065390">The SPECIES and ORGANISMS resources for fast and accurate identification of taxonomic names in text</a></p>
 </div>
 
