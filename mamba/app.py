@@ -90,7 +90,7 @@ class HTTPServer(mamba.util.Logger):
 	def initialize(self):
 		self._www_dir = mamba.setup.config().server.www_dir
 		if mamba.setup.config().server.auto_restart:
-			self._deadman = str("/tmp/deadman.%i" % os.getpid())
+			self._deadman = str("/tmp/deadman.%i.%i" % (mamba.setup.config().server.port, os.getpid()))
 			try:
 				f = open(self._deadman, "w")
 				f.write("cd %s\n" % os.path.abspath("./"))
