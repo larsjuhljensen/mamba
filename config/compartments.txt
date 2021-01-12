@@ -60,27 +60,27 @@ COX1
 <table cellpadding="6">
 <tr>
 <td>All channels integrated:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_integrated_full.tsv">human</a></td>
-<td><a href="http://download.jensenlab.org/mouse_compartment_integrated_full.tsv">mouse</a></td>
-<td><a href="http://download.jensenlab.org/rat_compartment_integrated_full.tsv">rat</a></td>
-<td><a href="http://download.jensenlab.org/fly_compartment_integrated_full.tsv">fly</a></td>
-<td><a href="http://download.jensenlab.org/worm_compartment_integrated_full.tsv">worm</a></td>
-<td><a href="http://download.jensenlab.org/yeast_compartment_integrated_full.tsv">yeast</a></td>
-<td><a href="http://download.jensenlab.org/arabidopsis_compartment_integrated_full.tsv">arabidopsis</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_integrated_full.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/mouse_compartment_integrated_full.tsv">mouse</a></td>
+<td><a href="https://download.jensenlab.org/rat_compartment_integrated_full.tsv">rat</a></td>
+<td><a href="https://download.jensenlab.org/fly_compartment_integrated_full.tsv">fly</a></td>
+<td><a href="https://download.jensenlab.org/worm_compartment_integrated_full.tsv">worm</a></td>
+<td><a href="https://download.jensenlab.org/yeast_compartment_integrated_full.tsv">yeast</a></td>
+<td><a href="https://download.jensenlab.org/arabidopsis_compartment_integrated_full.tsv">arabidopsis</a></td>
 </tr>
 <tr>
 <td>Knowledge channel:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_knowledge_full.tsv">human</a></td>
-<td><a href="http://download.jensenlab.org/mouse_compartment_knowledge_full.tsv">mouse</a></td>
-<td><a href="http://download.jensenlab.org/rat_compartment_knowledge_full.tsv">rat</a></td>
-<td><a href="http://download.jensenlab.org/fly_compartment_knowledge_full.tsv">fly</a></td>
-<td><a href="http://download.jensenlab.org/worm_compartment_knowledge_full.tsv">worm</a></td>
-<td><a href="http://download.jensenlab.org/yeast_compartment_knowledge_full.tsv">yeast</a></td>
-<td><a href="http://download.jensenlab.org/arabidopsis_compartment_knowledge_full.tsv">arabidopsis</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_knowledge_full.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/mouse_compartment_knowledge_full.tsv">mouse</a></td>
+<td><a href="https://download.jensenlab.org/rat_compartment_knowledge_full.tsv">rat</a></td>
+<td><a href="https://download.jensenlab.org/fly_compartment_knowledge_full.tsv">fly</a></td>
+<td><a href="https://download.jensenlab.org/worm_compartment_knowledge_full.tsv">worm</a></td>
+<td><a href="https://download.jensenlab.org/yeast_compartment_knowledge_full.tsv">yeast</a></td>
+<td><a href="https://download.jensenlab.org/arabidopsis_compartment_knowledge_full.tsv">arabidopsis</a></td>
 </tr>
 <tr>
 <td>Experiments channel:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_experiments_full.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_experiments_full.tsv">human</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -90,43 +90,43 @@ COX1
 </tr>
 <tr>
 <td>Text mining channel:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_textmining_full.tsv">human</a></td>
-<td><a href="http://download.jensenlab.org/mouse_compartment_textmining_full.tsv">mouse</a></td>
-<td><a href="http://download.jensenlab.org/rat_compartment_textmining_full.tsv">rat</a></td>
-<td><a href="http://download.jensenlab.org/fly_compartment_textmining_full.tsv">fly</a></td>
-<td><a href="http://download.jensenlab.org/worm_compartment_textmining_full.tsv">worm</a></td>
-<td><a href="http://download.jensenlab.org/yeast_compartment_textmining_full.tsv">yeast</a></td>
-<td><a href="http://download.jensenlab.org/arabidopsis_compartment_textmining_full.tsv">arabidopsis</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_textmining_full.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/mouse_compartment_textmining_full.tsv">mouse</a></td>
+<td><a href="https://download.jensenlab.org/rat_compartment_textmining_full.tsv">rat</a></td>
+<td><a href="https://download.jensenlab.org/fly_compartment_textmining_full.tsv">fly</a></td>
+<td><a href="https://download.jensenlab.org/worm_compartment_textmining_full.tsv">worm</a></td>
+<td><a href="https://download.jensenlab.org/yeast_compartment_textmining_full.tsv">yeast</a></td>
+<td><a href="https://download.jensenlab.org/arabidopsis_compartment_textmining_full.tsv">arabidopsis</a></td>
 </tr>
 <tr>
 <td>Predictions channel:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_predictions_full.tsv">human</a></td>
-<td><a href="http://download.jensenlab.org/mouse_compartment_predictions_full.tsv">mouse</a></td>
-<td><a href="http://download.jensenlab.org/rat_compartment_predictions_full.tsv">rat</a></td>
-<td><a href="http://download.jensenlab.org/fly_compartment_predictions_full.tsv">fly</a></td>
-<td><a href="http://download.jensenlab.org/worm_compartment_predictions_full.tsv">worm</a></td>
-<td><a href="http://download.jensenlab.org/yeast_compartment_predictions_full.tsv">yeast</a></td>
-<td><a href="http://download.jensenlab.org/arabidopsis_compartment_predictions_full.tsv">arabidopsis</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_predictions_full.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/mouse_compartment_predictions_full.tsv">mouse</a></td>
+<td><a href="https://download.jensenlab.org/rat_compartment_predictions_full.tsv">rat</a></td>
+<td><a href="https://download.jensenlab.org/fly_compartment_predictions_full.tsv">fly</a></td>
+<td><a href="https://download.jensenlab.org/worm_compartment_predictions_full.tsv">worm</a></td>
+<td><a href="https://download.jensenlab.org/yeast_compartment_predictions_full.tsv">yeast</a></td>
+<td><a href="https://download.jensenlab.org/arabidopsis_compartment_predictions_full.tsv">arabidopsis</a></td>
 </tr>
 <tr>
 <td>Benchmark set:</td>
-<td><a href="http://download.jensenlab.org/human_compartment_benchmark.tsv">human</a></td>
+<td><a href="https://download.jensenlab.org/human_compartment_benchmark.tsv">human</a></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
-<td><a href="http://download.jensenlab.org/yeast_compartment_benchmark.tsv">yeast</a></td>
+<td><a href="https://download.jensenlab.org/yeast_compartment_benchmark.tsv">yeast</a></td>
 </tr>
 </table>
 </p>
-<p>Evidence has been propagated through is_a and part_of relationships to list all applicable ontology terms. Download files from earlier versions are archived on <a href="http://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
-<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+<p>Evidence has been propagated through is_a and part_of relationships to list all applicable ontology terms. Download files from earlier versions are archived on <a href="https://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
+<p><a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
 
 [CONTENT:ABOUT]
 <div style="width: 50em;">
 <p>COMPARTMENTS is a weekly updated web resource that integrates evidence on protein subcellular localization from manually curated literature, high-throughput screens, automatic text mining, and sequence-based prediction methods. We map all evidence to common protein identifiers and Gene Ontology terms, and further unify it by assigning confidence scores that facilitate comparison of the different types and sources of evidence and visualize these scores on a schematic cell.</p>
 <p>For further details please refer to the following Open Access article about the database:</p><p>
-<a href="http://database.oxfordjournals.org/content/2014/bau012.full">COMPARTMENTS: unification and visualization of protein subcellular localization evidence</a><br /></p>
+<a href="https://database.oxfordjournals.org/content/2014/bau012.full">COMPARTMENTS: unification and visualization of protein subcellular localization evidence</a><br /></p>
 <p>The work on COMPARTMENTS was funded by the Novo Nordisk Foundation (NNF14CC0001), the EMBL International PhD Programme, the European Molecular Biology Organization, and CSIRO.</p>
 </div>
