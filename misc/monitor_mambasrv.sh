@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# change to correct directory
+cd /data/mamba
+
 # check for deadman files
 for f in /tmp/*
 do
@@ -26,7 +29,7 @@ do
 		#eval "$start_command" &
 		eval "sudo -u $uname $start_command &"
 	else
-		status=$(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 1 --max-time 2 http://localhost:$my_port/GetStatus)
+		status=$(curl -s -w '%{http_code}' -o /dev/null --connect-timeout 5 --max-time 10 http://localhost:$my_port/GetStatus)
 		if [[ ! $status == "200" ]]
 		then
 			#echo "Server restart needed."
