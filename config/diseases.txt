@@ -70,7 +70,7 @@ Alzheimer\'s disease
 </table>
 </p>
 <p>The <em>full</em> files contain all links in the DISEASES database. The <em>filtered</em> files contain only the non-redundant associations that are shown within the web interface when querying for a gene. Download files from earlier versions are archived on <a href="https://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
-<p>The <a href="http://download.jensenlab.org/diseases_tagger.tar.gz">DISEASES tagger</a> of human gene and disease names can also be downloaded for local installation on Unix platforms.</p>
+<p>The <a href="https://download.jensenlab.org/diseases_tagger.tar.gz">DISEASES tagger</a> and the latest <a href="https://download.jensenlab.org/diseases_dictionary.tar.gz">dictionary</a> of human gene and disease names can also be downloaded for local installation on Unix platforms.</p>
 <p><a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
 
