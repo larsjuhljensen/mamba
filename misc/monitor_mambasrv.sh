@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change to correct directory
-cd /data/mamba
+cd /data/string_v11/mamba
 
 # check for deadman files
 for f in /tmp/*
