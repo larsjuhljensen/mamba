@@ -1,5 +1,15 @@
 #!/bin/bash
 
+## Look for duplicated deadman files for the same port/web service:
+## remove them and kill their processes
+cd /tmp/
+for deadman in `ls deadman* | sort | uniq --check-chars=13 -c | grep  -v '1 ' | awk '{print $2}' `
+do
+    # echo $deadman # only keep this copy 
+    find -type f -name "${deadman::13}*" ! -name $deadman -exec bash -c ' kill `echo {} | cut -d. -f4` ; rm {} ' \;  2>/dev/null
+done
+
+
 # change to correct directory
 cd /data/string_v11/mamba
 
