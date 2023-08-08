@@ -91,7 +91,8 @@ Alzheimer\'s disease
 [CONTENT:ABOUT]
 <div style="width: 50em;">
 <p>DISEASES is a weekly updated web resource that integrates evidence on disease-gene associations from automatic text mining, manually curated literature, cancer mutation data, and genome-wide association studies. We further unify the evidence by assigning confidence scores that facilitate comparison of the different types and sources of evidence.</p>
-<p>For further details please refer to the following Open Access article about the database:</p>
+<p>For further details please refer to the following Open Access articles about the database:</p>
+<p><a href="https://academic.oup.com/database/article/doi/10.1093/database/baac019/6554833">DISEASES 2.0: a weekly updated database of disease–gene associations from text mining and data integration</a></p>
 <p><a href="http://www.sciencedirect.com/science/article/pii/S1046202314003831">DISEASES: Text mining and data integration of disease-gene associations</a></p>
 <p>The work on DISEASES was funded by the Novo Nordisk Foundation (NNF14CC0001), the National Institutes of Health (U54 CA189205 and U24 224370), and the European Union's Seventh Framework Programme (n259348).</p>
 </div>
