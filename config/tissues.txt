@@ -96,7 +96,6 @@ BMP10
 </table>
 </p>
 <p style="width: 50em;">The files contain all links in the TISSUES database. All files start with the following four columns: gene identifier, gene name, tissue identifier, and tissue name. The <strong>knowledge</strong> files further contain the source database, the evidence type, and the confidence score. The <strong>experiments</strong> files instead contain the source dataset, the expression score, and the confidence score. Finally, the <strong>textmining</strong> files contain the z-score, the confidence score, and a URL to a viewer of the underlying abstracts.</p>
-<p style="width: 50em;">For cross-species comparisons we provide a <a href="https://download.jensenlab.org/TISSUES_ortholog_pairs.tsv">file</a> with pairwise orthologs derived from the <a href="http://eggnog.embl.de">eggNOG</a> database.</p>
 <p style="width: 50em;">Download files from earlier versions are archived on <a href="https://figshare.com/authors/Lars_Juhl_Jensen/96428">figshare</a>.</p>
 <p><a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
 </div>
