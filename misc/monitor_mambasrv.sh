@@ -46,6 +46,7 @@ do
 			start_command=`cat $f`
 			kill -9 $my_pid
 			rm $f
+			sleep 10
 			eval "sudo -u $uname $start_command &"
 			#eval "$start_command" &
 		#else
