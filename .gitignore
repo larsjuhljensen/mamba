@@ -1,4 +1,3 @@
-
 *.pyc
 
 test.ini
@@ -7,12 +6,12 @@ test.log
 www/cpr.png
 www/css
 www/ku.png
-www/scriptslog/*
+www/scripts/
 
-blackmamba/*
-log/*
+blackmamba/
+log/
 
 hoods/human_network.tsv
 hoods/yeast_network.tsv
 
-tagger/*
+tagger
