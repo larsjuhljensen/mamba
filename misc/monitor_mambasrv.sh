@@ -11,7 +11,8 @@ done
 
 
 # change to correct directory
-cd /data/string_v12/mamba
+source ~/.jensenlab.conf
+cd "$base_dir/mamba"
 
 # check for deadman files
 for f in /tmp/*
