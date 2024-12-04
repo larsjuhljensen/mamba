@@ -48,7 +48,7 @@ if(window.top!=window.self){document.body.className+=' iframe';a=document.getEle
 <p>This API provides RESTful access to data related to the <a href="https://compartments.jensenlab.org/">COMPARTMENTS</a>, <a href="https://tissues.jensenlab.org/">TISSUES</a>, and <a href="https://diseases.jensenlab.org/">DISEASES</a> databases as well as the underlying text mining results. Below is a nonexhaustive list of examples of what can be done via the API:</p>
 <ul>
 <li><a href="/Knowledge?type1=-22&id1=GO:0005777&type2=4932&limit=1000&format=json">Retrieve yeast genes annotated as peroxisomal</a></li>
-<li><a href="/Experiments?type1=9606&id1=ENSP00000337915&type2=-25&id2=BTO:0000759&format=json">Get the experimental evidence for CYP3A4 expression in liver</a></li>
+<li><a href="/Experiments?type1=9606&id1=ENSP00000498939&type2=-25&id2=BTO:0000759&format=json">Get the experimental evidence for CYP3A4 expression in liver</a></li>
 <li><a href="/Textmining?type1=-26&id1=DOID:10652&type2=9606&limit=10&format=json">Get the top-10 human genes associated with Alzheimer's disease</a></li>
 <li><a href="/Textmining?query=jetlag[tiab]%20OR%20jet-lag[tiab]&type2=9606&limit=10&format=json">Find the top-10 human genes co-mentioned with "jetlag" in PubMed</a></li>
 </ul>
