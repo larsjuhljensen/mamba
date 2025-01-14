@@ -10,10 +10,6 @@ do
 done
 
 
-# change to correct directory
-source ../../jensenlab.conf
-cd "$base_dir/mamba"
-
 # check for deadman files
 for f in /tmp/*
 do
